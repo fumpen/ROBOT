@@ -1,0 +1,55 @@
+import robot
+from time import sleep
+
+frindo = robot.Robot()
+
+frindo.set_speed(100)
+frindo.set_turnspeed(150)
+frindo.set_step_time(2000)
+frindo.set_turn_time(1500)
+
+sleep(1)
+
+# moves for big batteri pack
+
+def go_forward(n):
+	frindo.go_diff(100,123,1,1)	
+	sleep(n)
+	frindo.stop()
+
+def turn_right(degree):
+	frindo.go_diff(100,123,1,0)
+	sleep(degree*0.82)
+	frindo.stop()
+
+def turn_left(degree):
+        frindo.go_diff(100,123,0,1)
+        sleep(degree*0.82)
+        frindo.stop()
+
+def forward_right(n):
+	frindo.go_diff(100,100,1,1)
+	sleep(n)
+	frindo.stop()
+
+def forward_left(n):
+	frindo.go_diff(100,146,1,1)
+	sleep(n)
+	frindo.stop()
+
+# moves ni V batteri
+def go_forward_ni(n):
+	frindo.go_diff(100,128,1,1)
+	sleep(n)
+	frindo.stop()
+
+def turn_right_ni(n):
+	frindo.go_diff(100,123,1,0)
+	sleep(float(n)/4.0)
+	frindo.stop()
+
+def turn_right_ni(n):
+   ƒ     frindo.go_diff(100,123,1,0)
+        sleep(float(n)/4.0)
+        frindo.stop()
+

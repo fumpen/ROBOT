@@ -1,0 +1,15 @@
+import moves as mv
+
+mv.forward(100)
+mv.pause()
+mv.turn_right(90)
+mv.pause()
+mv.forward(100)
+mv.pause()
+mv.turn_right(90)
+mv.pause()
+mv.forward(100)
+mv.pause()
+mv.turn_right(90)
+mv.pause()
+mv.forward(100)
