@@ -55,7 +55,7 @@ def calculated_acceleration(left_w, right_w, left_dir, right_dir, time,
 
 def alternate_forward(cm):
 	NEW_SCALE = 0.06
-	calculated_acceleration(80, 103, 1, 1, (cm * NEW_SCALE), INTERVAL)
+	calculated_acceleration(160, 185, 1, 1, (cm * NEW_SCALE), INTERVAL)
 	pause()
 
 def alternate_turn(degree_turn):
