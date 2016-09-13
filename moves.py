@@ -1,6 +1,5 @@
-from time import sleep
-
 import robot
+from time import sleep
 
 frindo = robot.Robot()
 
@@ -15,6 +14,7 @@ sleep(1)
 
 SLEEP_SCALE = 0.059
 SLEEP_SCALE_NI = 0.043
+INTERVAL = 0.5
 
 # moves for big batteri pack
 off_set = 0.64
@@ -22,6 +22,56 @@ off_set = 0.64
 
 def pause():
 	sleep(0.5)
+
+
+def calculated_acceleration(left_w, right_w, left_dir, right_dir, time, 
+			   interval):
+	print '------------------------'
+	print time
+	print '------------------------'
+	rounds = 0
+	left_wheel = int(left_w / 4)
+	right_wheel = int(right_w / 4)
+	while time > (rounds + (3 * interval)):
+		rounds += interval
+		print rounds
+		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
+		if (left_wheel * 2) > left_w:
+			left_wheel = left_w
+		else:
+			left_wheel = left_wheel * 2
+		if (right_wheel * 2) > right_w:
+			right_wheel = right_w
+		else:
+			right_wheel = right_wheel * 2
+		sleep(interval)
+	print 'going to slow down now------'
+	while time > rounds:
+		rounds += INTERVAL
+		print rounds
+		left_wheel = int(left_wheel / 1.3)
+		print 'go past left'
+		right_wheel = int(right_wheel / 1.3)
+		print 'go past rigth'
+		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
+		print 'go past frindo'
+		sleep(interval)
+		print 'go past sleep'
+	
+	frindo.stop()
+	print 'reached stop!'
+
+def alternate_forward(cm):
+	NEW_SCALE = 0.06
+	calculated_acceleration(80, 103, 1, 1, (cm * NEW_SCALE), INTERVAL)
+	pause()
+
+def alternate_turn(degree_turn):
+	NEW_TURN_SCALE = 0.0188
+	calculated_acceleration(100, 123, 1, 0, (NEW_TURN_SCALE * degree_turn),
+				0.25)
+	pause()	
+
 
 def forward(cm):
 	frindo.go_diff(80,103,1,1)
