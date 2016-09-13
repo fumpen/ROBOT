@@ -14,7 +14,7 @@ sleep(1)
 
 SLEEP_SCALE = 0.059
 SLEEP_SCALE_NI = 0.043
-INTERVAL = 0.5
+INTERVAL = 0.4
 
 # moves for big batteri pack
 off_set = 0.64
@@ -23,6 +23,23 @@ off_set = 0.64
 def pause():
 	sleep(0.5)
 
+def ac_fw(left_w, right_w, interval, time):
+	rounds = 0
+	left_wheel = int(left_w / 3)
+	right_wheel = int(right_w / 3)
+	while time > (rounds + (3 * interval)):
+		rounds += interval
+		frindo.go_diff(left_wheel, right_wheel, 1, 1)
+		if (left_wheel * 2) > left_w:
+			left_wheel = left_w
+		else:
+			left_wheel = left_wheel * 2
+		if (right_wheel * 2) > right_w:
+			right_wheel = right_w
+		else:
+			right_wheel = right_wheel * 2
+		sleep(interval)
+	frindo.stop()
 
 def calculated_acceleration(left_w, right_w, left_dir, right_dir, time, 
 			   interval):
