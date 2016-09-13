@@ -14,7 +14,7 @@ sleep(1)
 
 SLEEP_SCALE = 0.059
 SLEEP_SCALE_NI = 0.043
-INTERVAL = 0.5
+INTERVAL = 0.4
 
 # moves for big batteri pack
 off_set = 0.64
