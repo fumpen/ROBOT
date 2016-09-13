@@ -23,7 +23,7 @@ sleep(1)
 # -------------------------------------#
 
 BATTERY        = 1
-SLEEP_SCALE    = 0.059
+SLEEP_SCALE    = 0.057
 SLEEP_SCALE_NI = 0.043
 OFF_SET        = 0.64
 
@@ -42,7 +42,7 @@ OFF_SET        = 0.64
 # -------------------------------------#
 
 def pause():
-	sleep(0.5)
+	sleep(1)
 
 
 # -------------------------------------#
@@ -69,7 +69,7 @@ def forward(cm):
         
         if BATTERY:
 
-	    frindo.go_diff(80,103,1,1)
+	    frindo.go_diff(112,133,1,1)
             secToSleep = cm * SLEEP_SCALE
         else:
 
@@ -101,8 +101,8 @@ def turn_left(degree):
 
     if BATTERY:
 
-        frindo.go_diff(100,123,0,1)
-        secToSleep = ((degree*0.66)/90.0)
+        frindo.go_diff(115,139,0,1)
+        secToSleep = ((degree*0.85)/150)
     else:
         frindo.go_diff(65,78,0,1)
         secToSleep = (float(degree)/(134))
@@ -141,3 +141,11 @@ def forward_left(degree):
     frindo.stop()
     pause()
 
+def frontSensor():
+	return frindo.read_front_ir_sensor()
+
+def rightSensor():
+	return frindo.read_right_ir_sensor()
+
+def leftSensor():
+	return frindo.read_left_ir_sensor()
