@@ -30,11 +30,10 @@ def calculated_acceleration(left_w, right_w, left_dir, right_dir, time,
 	print time
 	print '------------------------'
 	rounds = 0
-	left_wheel = int(left_w / 4)
-	right_wheel = int(right_w / 4)
+	left_wheel = int(left_w / 3)
+	right_wheel = int(right_w / 3)
 	while time > (rounds + (3 * interval)):
 		rounds += interval
-		print rounds
 		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
 		if (left_wheel * 2) > left_w:
 			left_wheel = left_w
@@ -45,19 +44,12 @@ def calculated_acceleration(left_w, right_w, left_dir, right_dir, time,
 		else:
 			right_wheel = right_wheel * 2
 		sleep(interval)
-	print 'going to slow down now------'
 	while time > rounds:
 		rounds += INTERVAL
-		print rounds
 		left_wheel = int(left_wheel / 1.3)
-		print 'go past left'
 		right_wheel = int(right_wheel / 1.3)
-		print 'go past rigth'
 		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
-		print 'go past frindo'
 		sleep(interval)
-		print 'go past sleep'
-	
 	frindo.stop()
 	print 'reached stop!'
 
