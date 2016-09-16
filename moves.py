@@ -23,67 +23,8 @@ off_set = 0.64
 def pause():
 	sleep(0.5)
 
-def ac_fw(left_w, right_w, interval, time):
-	rounds = 0
-	left_wheel = int(left_w / 1)
-	right_wheel = int(right_w / 1)
-	while time > (rounds):
-		rounds += interval
-		frindo.go_diff(left_wheel, right_wheel, 1, 1)
-		if (left_wheel * 2) > left_w:
-			left_wheel = left_w
-		else:
-			left_wheel = left_wheel * 2
-		if (right_wheel * 2) > right_w:
-			right_wheel = right_w
-		else:
-			right_wheel = right_wheel * 2
-		sleep(interval)
-	frindo.stop()
-
-def calculated_acceleration(left_w, right_w, left_dir, right_dir, time, 
-			   interval):
-	print '------------------------'
-	print time
-	print '------------------------'
-	rounds = 0
-	left_wheel = int(left_w / 3)
-	right_wheel = int(right_w / 3)
-	while time > (rounds + (3 * interval)):
-		rounds += interval
-		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
-		if (left_wheel * 2) > left_w:
-			left_wheel = left_w
-		else:
-			left_wheel = left_wheel * 2
-		if (right_wheel * 2) > right_w:
-			right_wheel = right_w
-		else:
-			right_wheel = right_wheel * 2
-		sleep(interval)
-	while time > rounds:
-		rounds += INTERVAL
-		left_wheel = int(left_wheel / 1.3)
-		right_wheel = int(right_wheel / 1.3)
-		frindo.go_diff(left_wheel, right_wheel, left_dir, right_dir)
-		sleep(interval)
-	frindo.stop()
-	print 'reached stop!'
-
-def alternate_forward(cm):
-	NEW_SCALE = 0.06
-	calculated_acceleration(160, 185, 1, 1, (cm * NEW_SCALE), INTERVAL)
-	pause()
-
-def alternate_turn(degree_turn):
-	NEW_TURN_SCALE = 0.0188
-	calculated_acceleration(100, 123, 1, 0, (NEW_TURN_SCALE * degree_turn),
-				0.25)
-	pause()	
-
-
 def forward(cm):
-	frindo.go_diff(80,103,1,1)
+	frindo.go_diff(80,97,1,1)
 	
 	# movement = cm * SLEEP_SCALE
 	sleep(cm)

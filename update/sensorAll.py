@@ -1,10 +1,8 @@
 import moves as mv
+from time import sleep
 
-#print "Left", "Front", "Right" 
 
 for x in range(0,100):
-    #print mv.leftSensor(), mv.frontSensor(), mv.rightSensor()
-    #print mv.frontSensor()
-    print mv.rightSensor()
+     print mv.rightSensor()
+     sleep(0.3)
 
-#mv.turn_right(460)

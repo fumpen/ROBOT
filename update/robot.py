@@ -92,15 +92,15 @@ class Robot(object):
             
     def read_front_ir_sensor(self):
         """Read the front IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
-        return self.read_ir_sensor(1)
+        return self.read_ir_sensor(0)
         
     def read_right_ir_sensor(self):
         """Read the right IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
-        return self.read_ir_sensor(2)
+        return self.read_ir_sensor(1)
         
     def read_left_ir_sensor(self):
         """Read the left IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
-        return self.read_ir_sensor(0)
+        return self.read_ir_sensor(2)
         
     def set_speed(self, speed):
         """Speed must be a value in the range [0; 255]"""
