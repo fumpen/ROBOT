@@ -4,5 +4,7 @@ import moves as mv
 
 for x in range(0,100):
     #print mv.leftSensor(), mv.frontSensor(), mv.rightSensor()
-    print mv.frontSensor()
+    #print mv.frontSensor()
+    print mv.rightSensor()
+
 #mv.turn_right(460)
