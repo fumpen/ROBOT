@@ -1,5 +1,5 @@
 import moves as mv
 
-mv.forward(30)
+mv.forward(0.5)
 
-#mv.turn_right(460)
+#mv.forward(1.5)

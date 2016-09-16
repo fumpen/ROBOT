@@ -1,10 +1,8 @@
 import moves as mv
 
-while(True):
-    print "Front Sensor = ", mv.frontSensor()
-    print "Right Sensor = ", mv.rightSensor()
-    print "Left Sensor = ", mv.leftSensor()
-    print " "
-    mv.pause()
-    mv.pause()
+#print "Left", "Front", "Right" 
+
+for x in range(0,100):
+    #print mv.leftSensor(), mv.frontSensor(), mv.rightSensor()
+    print mv.frontSensor()
 #mv.turn_right(460)

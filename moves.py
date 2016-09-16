@@ -25,9 +25,9 @@ def pause():
 
 def ac_fw(left_w, right_w, interval, time):
 	rounds = 0
-	left_wheel = int(left_w / 3)
-	right_wheel = int(right_w / 3)
-	while time > (rounds + (3 * interval)):
+	left_wheel = int(left_w / 1)
+	right_wheel = int(right_w / 1)
+	while time > (rounds):
 		rounds += interval
 		frindo.go_diff(left_wheel, right_wheel, 1, 1)
 		if (left_wheel * 2) > left_w:
@@ -85,8 +85,8 @@ def alternate_turn(degree_turn):
 def forward(cm):
 	frindo.go_diff(80,103,1,1)
 	
-	movement = cm * SLEEP_SCALE
-	sleep(movement)
+	# movement = cm * SLEEP_SCALE
+	sleep(cm)
 	
 	frindo.stop()
         
