@@ -42,7 +42,7 @@ OFF_SET        = 0.64
 # -------------------------------------#
 
 def pause():
-        sleep(1)
+    sleep(1)
 
 
 # -------------------------------------#
@@ -66,26 +66,26 @@ def pause():
 # -------------------------------------#
 
 def forward(cm):
-        
-        if BATTERY:
 
-            frindo.go_diff(112,133,1,1)
-            secToSleep = cm * SLEEP_SCALE
-        else:
+    if BATTERY:
 
-            frindo.go_diff(66,83,1,1)
-            secToSleep = cm * SLEEP_SCALE_NI
-        
-        
-        sleep(secToSleep)
-        frindo.stop()
-        pause()
+        frindo.go_diff(112,133,1,1)
+        secToSleep = cm * SLEEP_SCALE
+    else:
+
+        frindo.go_diff(66,83,1,1)
+        secToSleep = cm * SLEEP_SCALE_NI
+
+
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
 
 
 def turn_right(degree):
 
     if BATTERY:
-        
+
         frindo.go_diff(100,123,1,0)
         secToSleep = ((degree*OFF_SET)/82.0)
     else:
@@ -106,22 +106,22 @@ def turn_left(degree):
     else:
         frindo.go_diff(65,78,0,1)
         secToSleep = (float(degree)/(134))
-        
+
     sleep(secToSleep)
     frindo.stop()
     pause()
 
 def forward_right(degree):
-    
+
     if BATTERY:
-        
+
         frindo.go_diff(68,68,1,1)
         secToSleep = degree
     else:
 
         frindo.go_diff(100,105,1,1)
         secToSleep = degree
-        
+
     sleep(secToSleep)
     frindo.stop()
     pause()
@@ -129,47 +129,122 @@ def forward_right(degree):
 def forward_left(degree):
 
     if BATTERY:
-        
+
         frindo.go_diff(100,146,1,1)
         secToSleep = degree
     else:
-        
+
         frindo.go_diff(100,146,1,1)
         secToSleep = degree
-    
+
     sleep(secToSleep)
     frindo.stop()
     pause()
 
 def frontSensor():
-        return frindo.read_front_ir_sensor()
+    return frindo.read_front_ir_sensor()
 
 def rightSensor():
-        return frindo.read_right_ir_sensor()
+    return frindo.read_right_ir_sensor()
 
 def leftSensor():
-        return frindo.read_left_ir_sensor()
+    return frindo.read_left_ir_sensor()
 
 
 ###########################
 #     Movement control    #
 ###########################
 
+def allSensorBoundary():
+    while (rightSensor() < 300 and
+           frontSensor() < 300 and
+           leftSensor() < 300):
+        continue
+    return 0
+
 def rightSensorBoundary():
-        #some function
-        return 0
+    while rightSensor() < 300:
+        continue
+    return 0
 
 def frontSensorBoundary():
-        #some function
-        return 0
+    while frontSensor() < 300:
+        continue
+    return 0
 
 def leftSensorBoundary():
-        #some function
-        return 0
+    while leftSensor() < 300:
+        continue
+    return 0
+
+def rightSensorFree():
+    while rightSensor() > 325:
+        continue
+    return 0
+
+def frontSensorFree():
+    while frontSensor() > 325:
+        continue
+    return 0
+
+def leftSensorFree():
+    while leftSensor() > 325:
+        continue
+    return 0
 
 def obstacle_ident():
-        if frontSensor() >= frontSensorBoundary():
-                if righttSensor() >= rightSensorBoundary():
-                        if leftSensor() >= leftSensorBoundary():
-                                return 0
-                                
+    if frontSensor() >= frontSensorBoundary():
+        if righttSensor() >= rightSensorBoundary():
+            if leftSensor() >= leftSensorBoundary():
+                return 0
+
+# Run forward till it meats an object within ~10 cm.
+# Breaks and holds.
+
+def forward_stop():
+    if BATTERY:
+
+        frindo.go_diff(102,123,1,1)
+        allSensorBoundary()
+        print "Found Object"
+
+    else:
+
+        frindo.go_diff(66,83,1,1)
+        allSensorBoundary()
+        print "Found Object"
+
+
+    frindo.stop()
+    pause()
+
+# Rotates clockwise untill front and left sensor is free,
+# making the robot stand parallel with object in front.
+
+def turn_right_stop():
+    if BATTERY:
+
+        frindo.go_diff(100,123,1,0)
+        frontSensorFree()
+        leftSensorFree()
+        print "free"
+
+    else:
+        frindo.go_diff(110,128,1,0)
+
+    frindo.stop()
+    pause()
+
+def turn_left_stop():
+    if BATTERY:
+
+        frindo.go_diff(100,123,0,1)
+        frontSensorFree()
+        rightSensorFree()
+        print "free"
+
+    else:
+        frindo.go_diff(110,128,1,0)
+
+    frindo.stop()
+    pause()
