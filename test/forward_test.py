@@ -1,5 +1,5 @@
-import ROBOT.moves as mv
+import moves as mv
 
-mv.forward(7)
+mv.forward(30)
 
-#mv.forward(1.5)
+#mv.turn_right(460)

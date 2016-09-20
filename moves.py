@@ -1,88 +1,153 @@
-import ROBOT.robot
+import robot
 from time import sleep
 
-frindo = ROBOT.robot.Robot()
 
-frindo.set_speed(100)
-frindo.set_turnspeed(130)
-frindo.set_step_time(2000)
-frindo.set_turn_time(1500)
+# -------------------------------------#
+#               CONSTANTS              #
+# -------------------------------------#
+#                                      #
+#                                      #
+#   Description:                       #
+#                                      #
+#   BATTERY     - 0 (9v battery)       #
+#               - 1 (Big battery pack) #
+#                                      #
+#   SLEEP_SCALE    - Scalar to sleep   #
+#   SLEEP_SCALE_NI - Scalar to 9v      #
+#                                      #
+#   OFF_SET - Scalar to rotation       #
+# -------------------------------------#
 
-sleep(1)
-
-# Constants
-
-SLEEP_SCALE = 0.059
+SLEEP_SCALE    = 0.057
 SLEEP_SCALE_NI = 0.043
-INTERVAL = 0.4
-
-# moves for big batteri pack
-off_set = 0.64
+OFF_SET        = 0.64
 
 
 def pause():
-	sleep(0.5)
+    """ Ensures the robot does nothing prior to next action
+    :return: nothing
+    """
+    sleep(1)
 
-def forward(cm):
-	frindo.go_diff(80,97,1,1)
-	
-	# movement = cm * SLEEP_SCALE
-	sleep(cm)
-	
-	frindo.stop()
-        
-	pause()
+def forward(frindo, cm, BATTERY):
+    """This makes the robot goe straight forward
+    :param cm: the number of centimeters the robot must traverse
+    :return: nothing
+    """
+    if BATTERY:
 
-def turn_right(degree):
-	frindo.go_diff(100,123,1,0)
-	sleep((degree*off_set)/82.0)
-	frindo.stop()
-        pause()
+        frindo.go_diff(112,133,1,1)
+        secToSleep = cm * SLEEP_SCALE
+    else:
 
-def turn_left(degree):
-        frindo.go_diff(100,123,0,1)
-        sleep((degree*0.66)/90.0)
-        frindo.stop()
-        pause()
+        frindo.go_diff(66,83,1,1)
+        secToSleep = cm * SLEEP_SCALE_NI
 
-def forward_right(n):
-	frindo.go_diff(68,68,1,1)
-	sleep(n)
-	frindo.stop()
-        pause()
 
-def forward_left(n):
-	frindo.go_diff(100,146,1,1)
-	sleep(n)
-	frindo.stop()
-        pause()
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
 
-# moves ni V batteri
 
-def go_forward_ni(cm):
-	frindo.go_diff(66,83,1,1)
+def turn_right(frindo, degree, BATTERY):
 
-	movement = cm * SLEEP_SCALE_NI
-	sleep(movement)
+    if BATTERY:
 
-	frindo.stop()
+        frindo.go_diff(100,123,1,0)
+        secToSleep = ((degree*OFF_SET)/82.0)
+    else:
 
-def turn_right_ni(degree):
-	frindo.go_diff(110,128,1,0)
-	sleep(float(degree)/(4.0*90.0))
-	frindo.stop()
+        frindo.go_diff(110,128,1,0)
+        secToSleep = (float(degree)/(4.0*90.0))
 
-def turn_left_ni(degree):
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
+
+def turn_left(frindo, degree, BATTERY):
+
+    if BATTERY:
+
+        frindo.go_diff(115,139,0,1)
+        secToSleep = ((degree*0.85)/150)
+    else:
         frindo.go_diff(65,78,0,1)
-        sleep(float(degree)/(134))
-        frindo.stop()
+        secToSleep = (float(degree)/(134))
 
-def forward_right_ni(degree):
-	frindo.go_diff(100,105,1,1)
-	sleep(degree)
-	frindo.stop()
-	
-def forward_left_ni(degree):
-	frindo.go_diff(100,105,1,1)
-        sleep(degree)
-        frindo.stop()
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
+
+def forward_right(frindo, degree, BATTERY):
+
+    if BATTERY:
+
+        frindo.go_diff(68,68,1,1)
+        secToSleep = degree
+    else:
+
+        frindo.go_diff(100,105,1,1)
+        secToSleep = degree
+
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
+
+def forward_left(frindo, degree, BATTERY):
+
+    if BATTERY:
+
+        frindo.go_diff(100,146,1,1)
+        secToSleep = degree
+    else:
+
+        frindo.go_diff(100,146,1,1)
+        secToSleep = degree
+
+    sleep(secToSleep)
+    frindo.stop()
+    pause()
+
+# ------------------------------------------#
+# Toolbox for scalable movement starts here
+# ------------------------------------------#
+def force_break(frindo):
+    frindo.go_diff(INNIT_SPEED_L, INNIT_SPEED_R, 0, 0)
+    sleep(0.2)
+    frindo.stop()
+
+def select_scale_params(cm, BATTERY):
+    return ['acc_interval', 'dcc_interval', 'speed_l', 'speed_r', 'acc_time',
+            'dcc_time', 'rest_time']
+
+
+INNIT_SPEED_L = 80
+INNIT_SPEED_R = 100
+# ---------------------------------------#
+# Toolbox for scalable movement ends here
+# ---------------------------------------#
+
+def scale(cm, frindo, BATTERY):
+    parameters = select_scale_params(cm, BATTERY)
+
+    speed_l = INNIT_SPEED_L
+    speed_r = INNIT_SPEED_R
+
+    x = 0
+    while x < parameters[0]:
+        frindo.go_diff(speed_l, speed_r, 1, 1)
+        x += 1
+        speed_l += int((parameters[2] - INNIT_SPEED_L)/ parameters[0])
+        speed_r += int((parameters[3] - INNIT_SPEED_R) / parameters[0])
+        sleep(parameters[4])
+
+    frindo.go_diff(speed_l, speed_r, 1, 1)
+    sleep(parameters[6])
+
+    x = 0
+    while x < parameters[1]:
+        x += 1
+        speed_l -= int((parameters[2] - INNIT_SPEED_L)/ parameters[0])
+        speed_r -= int((parameters[3] - INNIT_SPEED_R) / parameters[0])
+        sleep(parameters[5])
+    force_break()
