@@ -1,4 +1,4 @@
-import moves as mv
+from ROBOT import moves as mv
 
 mv.go_forward_ni(100)
 mv.pause()

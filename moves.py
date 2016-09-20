@@ -1,7 +1,7 @@
-import robot
+import ROBOT.robot
 from time import sleep
 
-frindo = robot.Robot()
+frindo = ROBOT.robot.Robot()
 
 frindo.set_speed(100)
 frindo.set_turnspeed(130)
