@@ -1,4 +1,5 @@
 import os
+import math
 import numpy as np
 import argparse as ap
 import matplotlib.pyplot as plt
@@ -9,7 +10,7 @@ parser = ap.ArgumentParser(description='process sensor data.')
 parser.add_argument('sensor', help='sensor data to process')
 args = parser.parse_args()
 
-if args.sensor == "front" or "left" or "right":
+if args.sensor == "front" or "left" or "right" or "driveFront" or "driveLeft" or "driveRight":
   print "processing data from ", args.sensor, " sensor"
 else:
   print "program takes 'front', 'left' or 'right' as input"
@@ -31,13 +32,12 @@ for fn in os.listdir('.'):
 mean_np = np.array(mean_ir_vals)
 print "means:", mean_ir_vals
 print "variances:", var_ir_vals
-
 def func(x, a, c, d):
     return a*np.exp(-c*x)+d
 
 popt, pcov = curve_fit(func, mean_np, distance, p0=(1, 1e-6, 1))
 print "a:", popt[0], "\nb:", popt[1], "\nc:", popt[2]
-print "function: a*exp(-c*x)+d"
+print "function: a*exp(-b*x)+c"
 xx = np.linspace(50, 450, 1000)
 yy = func(xx, *popt)
 
