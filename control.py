@@ -3,6 +3,8 @@ import moves
 import sensor
 
 frindo = robot.Robot()
+
+
 BATTERY = 1
 
 

@@ -55,7 +55,10 @@ class RobotShield
      * reverse or HIGH for forward) and the right motor speed to velRight and direction to dirRight
      */
     void go_diff(int velLeft, int velRight, int dirLeft, int dirRight);
-    
+
+
+// Added by desperate participants of robot-course
+    int stop_watch(int start_or_stop);
 };
 
 #endif

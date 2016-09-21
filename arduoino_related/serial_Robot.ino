@@ -41,6 +41,8 @@
 // 
 //    d128,200,1,0
 //
+//  c = start/stop stopwatch in milliseconds
+//
 //  Analog measurements are requested by sending a single numeric character over the serial port, the character 
 //  from 0 to 5 represents the Arduino port number. The Arduino makes an analog measurement (0 to 5 volts) and 
 //  returns a digital value (0 to 1023) where 0 = 0 volts and 1023 = 5 volts.
@@ -267,6 +269,18 @@ void loop() {
           } else {
             Serial.println("ERROR");
           }
+        }
+        else if ((char)incoming == 'c')
+        {
+          int param[1];
+          String inString = "";
+          int len = 1;
+          char inChars[len];
+          Serial.readBytesUntil('\n', inChars, len);
+          inString += inChars[0];
+          int z = inString.toInt();
+          int x = rs.stop_watch(z);
+          Serial.print(x);
         }
     }        
 }

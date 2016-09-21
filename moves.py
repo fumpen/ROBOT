@@ -151,3 +151,39 @@ def scale(cm, frindo, BATTERY):
         speed_r -= int((parameters[3] - INNIT_SPEED_R) / parameters[0])
         sleep(parameters[5])
     force_break()
+
+
+def scale_test(cm, frindo, BATTERY):
+    parameters = select_scale_params(cm, BATTERY)
+
+    speed_l = INNIT_SPEED_L
+    speed_r = INNIT_SPEED_R
+
+    x = 0
+    while x < parameters[0]:
+        frindo.go_diff(speed_l, speed_r, 1, 1)
+        x += 1
+        speed_l += int((parameters[2] - INNIT_SPEED_L)/ parameters[0])
+        speed_r += int((parameters[3] - INNIT_SPEED_R) / parameters[0])
+        sleep(parameters[4])
+
+    frindo.go_diff(speed_l, speed_r, 1, 1)
+    sleep(parameters[6])
+    force_break()
+
+
+def lige_test(frindo, tid, venstre, hoejre):
+    speed_l = INNIT_SPEED_L
+    speed_r = INNIT_SPEED_R
+
+    x = 0
+    while x < 3:
+        frindo.go_diff(speed_l, speed_r, 1, 1)
+        x += 1
+        speed_l += int((venstre - INNIT_SPEED_L) / 3)
+        speed_r += int((hoejre - INNIT_SPEED_R) / 3)
+        sleep(0.5)
+    frindo.go_diff(venstre, hoejre, 1, 1)
+
+    sleep(tid - 1.5)
+    force_break()

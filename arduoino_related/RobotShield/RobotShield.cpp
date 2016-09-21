@@ -39,6 +39,10 @@ int dist;
 int angle;
 int vel;
 
+//values for stopwatch
+unsigned long start_time = 0;
+unsigned long stop_time = 0;
+unsigned long time_diff = 0;
 
 RobotShield::RobotShield()                           // sets up the pinModes for the pins we are using
 {
@@ -172,4 +176,19 @@ void RobotShield::go_diff(int velLeft, int velRight, int dirLeft, int dirRight)
     digitalWrite (dirB, dirLeft);
     analogWrite (speedA, velRight);
     analogWrite (speedB, velLeft);
+}
+
+
+int RobotShield::stop_watch(int start_or_stop)      // stopwatch
+{
+    if(start_or_stop == 1){
+        start_time = millis();
+        return start_time;
+    } else{
+        stop_time = millis();
+        time_diff = stop_time - start_time;
+        start_time = 0;
+        stop_time = 0;
+        return time_diff;
+    }
 }

@@ -121,5 +121,9 @@ class Robot(object):
         """turntime is the amount of miliseconds used in the step_rotate_left and step_rotate_right commands."""
         cmd='y' + str(turntime) + '\n'
         return self.send_command(cmd)
-        
+
+    def set_stopwatch(self, startTime):
+        """turntime is the amount of miliseconds used in the step_rotate_left and step_rotate_right commands."""
+        cmd='c' + str(startTime) + '\n'
+        return self.send_command(cmd)
 
