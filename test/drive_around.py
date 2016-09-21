@@ -1,5 +1,6 @@
+import sys
+sys.path.append('/home/pi/Robot/ROBOT')
 import moves as mv
-
 
 while True:
     mv.forward_stop()

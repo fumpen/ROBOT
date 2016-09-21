@@ -1,4 +1,4 @@
-import robot.py
+import robot
 import moves
 
 def frontSensor(frindo):
