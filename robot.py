@@ -4,8 +4,6 @@
 from time import sleep
 import serial
 
-
-
 class Robot(object):
     """Defines the Frindo robot API""" 
     def __init__(self):
