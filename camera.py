@@ -23,7 +23,7 @@ def capture(name):
 
 
 #Colors
-greenLower = np.array([35, 250, 25])
+greenLower = np.array([29, 86, 6])
 greenUpper = np.array([64, 255, 255])
 
 lower_blue = np.array([110,50,50])
@@ -44,4 +44,3 @@ def findColor(name):
 
 
 
-del(camera)
