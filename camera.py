@@ -1,42 +1,46 @@
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import cv2
 import numpy as np
-
-#Port on camera
-CAMPORT = 0
-
-# Open camera device for capturing
-camera = cv2.VideoCapture(CAMPORT);
+import time
 
 
-def cap_image(name):
-    
+cam = PiCamera()
+rawCapture = PiRGBArray(cam)
+
+
+def capture(name):
+
     file = "image/" + name + '.png'
     print("Taking picture")
     
-    retval, im = camera.read()
-    cv2.imwrite(file, im)
+    cam.capture(rawCapture, format="bgr")
+    image = rawCapture.array
+    cv2.imwrite(file, image)
     
     print("Location: " + file)
 
 
 
-def findLines(name):
+#Colors
+greenLower = np.array([35, 250, 25])
+greenUpper = np.array([64, 255, 255])
+
+lower_blue = np.array([110,50,50])
+upper_blue = np.array([130,255,255])
+
+
+def findColor(name):
     img = cv2.imread("image/" + name + '.png')
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 50, 150, apertureSize = 3)
+    
+    blur = cv2.GaussianBlur(img, (5,5), 0)    
+    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)   
+    mask = cv2.inRange(hsv, greenLower, greenUpper)
+    
+    bmask = cv2.GaussianBlur(mask, (5,5), 0)
 
-    minLineLength = 100
-    maxLineGap = 10
-
-    lines = cv2.HoughLinesP(edges, 1, np.pi/180, 100, minLineLength, maxLineGap)
-
-    for x1,y1,x2,y2 in lines[0]:
-        cv2.line(img, (x1, y1), (x2, y2), (0,255,0), 2)
-
-    cv2.imwrite('image/' + name + 'Lines.png', img)
-
-
-
+    
+    cv2.imwrite('image/' + name + 'Color.png', bmask)
 
 
 
