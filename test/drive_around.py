@@ -1,5 +1,4 @@
-import sys
-sys.path.append('/home/pi/Robot/ROBOT')
+import hacked_path
 import moves as mv
 
 while True:
