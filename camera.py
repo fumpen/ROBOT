@@ -24,7 +24,11 @@ def capturePerm(name):
     print("Location: " + file)
 
 
-def capture():
+def capture(name, name2):
+
+    file = "image/" + name + '.png'
+    file2 = "image/" + name2 + '.png'
+    
     with picamera.PiCamera() as camera:
 	with picamera.array.PiRGBArray(camera) as output:
 	    camera.capture(output, format="bgr")
@@ -48,12 +52,16 @@ def capture():
 		    cv2.circle(mask, (int(x), int(y)), int(radius),
 					(0, 255, 255), 2)
 		    cv2.circle(mask, center, 5, (100, 100, 100), -1) 
+            
+            cv2.imwrite(file, img)
+            cv2.imwrite(file2, mask)
+	    
 	    output.truncate(0)
     print(center)
     return center[0]
 
 #Colors
-greenLower = np.array([50, 90, 50])
+greenLower = np.array([35, 90, 50])
 greenUpper = np.array([89, 255, 255])
 
 
@@ -85,6 +93,4 @@ def findColor(name):
     
     return center
 
-
-capturePerm('base')
-
+capturePerm('new4')
