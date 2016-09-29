@@ -23,24 +23,26 @@ def capture(name):
 
 
 #Colors
-greenLower = np.array([60, 90, 132])
-greenUpper = np.array([255, 255, 255])
+greenLower = np.array([58, 100, 50])
+greenUpper = np.array([89, 255, 255])
 
-lower_blue = np.array([110,50,50])
-upper_blue = np.array([130,255,255])
 
 
 def findColor(name):
     img = cv2.imread("image/" + name + '.png')
     
-    blur = cv2.GaussianBlur(img, (5,5), 0)    
-    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)   
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   
     mask = cv2.inRange(hsv, greenLower, greenUpper)
-    mask = cv2.erode(mask, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)    
-
     
     cv2.imwrite('image/' + name + 'Color.png', mask)
 
 
-findColor('first')
+findColor('first');
+findColor('sec');
+findColor('third');
+findColor('fourth');
+findColor('test5');
+findColor('test6');
+findColor('test7');
+findColor('test8');
+
