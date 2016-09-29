@@ -129,8 +129,8 @@ def forwardv2(frindo, cm, BATTERY):
     x_t = datetime.timedelta(seconds=secToSleep)
     x_2 = x_1 + x_t
     
-    while x_1 < x_2 and sensor.allSensorBoundary(frindo):
-        x_1 = datetime.datetime.now()
+    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300: 
+      x_1 = datetime.datetime.now()
 
     frindo.stop()
     pause()

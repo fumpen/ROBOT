@@ -2,6 +2,7 @@ import robot
 import moves
 import sensor
 import camera
+import numpy as np
 from time import sleep
 
 frindo = robot.Robot()
@@ -19,15 +20,21 @@ def evergreen():
 		x = camera.capture("img" + str(y), "out" + str(y))
 		sleep(1.5)
 		if x:
-			if x in range(368):
-				if int(110/368) * x > 15:
-					moves.turn_right(frindo, int(110/368) * x, BATTERY)
+			if x < 368:
+				z = np.divide(50, 368.) * (368 - x)
+				print('z er: ' + str(z) + ' og x er: ' + str(x))
+				if int(z) > 15:
+					print("left")
+					moves.turn_left(frindo, int(z), BATTERY)
 		    
-			if x  not in range(368) and x in range(736):
-				if int(110/368) * x > 15:
-					moves.turn_left(frindo, int(110/368) * x, BATTERY)
+			if 368 < x:
+				z = np.divide(50, 368.) * (x-368)
+				print('z er: ' + str(z) + ' og x er: ' + str(x))
+				if z > 15:
+					print("right")
+					moves.turn_right(frindo, int(z), BATTERY)
 		    
-			moves.forwardv2(frindo, 15, BATTERY)
+			moves.forwardv2(frindo, 25, BATTERY)
 		else:
 			moves.turn_left(frindo, 50, BATTERY)
 		

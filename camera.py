@@ -48,7 +48,7 @@ def capture(name, name2):
 		M = cv2.moments(c)
 		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		
-		if radius > 10:
+		if radius > 15:
 		    cv2.circle(mask, (int(x), int(y)), int(radius),
 					(0, 255, 255), 2)
 		    cv2.circle(mask, center, 5, (100, 100, 100), -1) 
@@ -93,4 +93,5 @@ def findColor(name):
     
     return center
 
-capturePerm('new4')
+capturePerm('new6')
+findColor('new6')
