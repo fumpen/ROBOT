@@ -1,5 +1,7 @@
+import datetime
 import robot
 from time import sleep
+import sensor
 
 
 # -------------------------------------#
@@ -107,6 +109,34 @@ def forward_left(frindo, degree, BATTERY):
     sleep(secToSleep)
     frindo.stop()
     pause()
+
+
+def forwardv2(frindo, cm, BATTERY):
+    """This makes the robot goe straight forward
+    :param cm: the number of centimeters the robot must traverse
+    :return: nothing
+    """
+    if BATTERY:
+
+        frindo.go_diff(112,133,1,1)
+        secToSleep = cm * SLEEP_SCALE
+    else:
+
+        frindo.go_diff(66,83,1,1)
+        secToSleep = cm * SLEEP_SCALE_NI
+    
+    x_1 = datetime.datetime.now()
+    x_t = datetime.timedelta(seconds=secToSleep)
+    x_2 = x_1 + x_t
+    
+    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300: 
+      x_1 = datetime.datetime.now()
+
+    frindo.stop()
+    pause()
+
+
+
 
 # ------------------------------------------#
 # Toolbox for scalable movement starts here
