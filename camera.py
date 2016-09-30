@@ -5,12 +5,8 @@ import numpy as np
 import time
 
 
-#cam = PiCamera()
-#rawCapture = PiRGBArray(cam)
-
-
 def capturePerm(name):
-    file = "image/" + name + '.png'
+    file = "imgMeasure/" + name + '.png'
     print("Taking picture")
 
     with picamera.PiCamera() as camera:
@@ -19,8 +15,9 @@ def capturePerm(name):
 	    img = output.array
     
     
-    cv2.imwrite(file, img)
+    	    cv2.imwrite(file, img)
     
+	    output.truncate(0)
     print("Location: " + file)
 
 
@@ -92,6 +89,3 @@ def findColor(name):
     
     
     return center
-
-capturePerm('new6')
-findColor('new6')
