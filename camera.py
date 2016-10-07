@@ -71,7 +71,7 @@ def capture(name, name2):
     return center[0]
 
 #Colors
-greenLower = np.array([35, 90, 50])
+greenLower = np.array([40, 100, 50])
 greenUpper = np.array([89, 255, 255])
 
 
@@ -111,3 +111,8 @@ def sizeObject(name):
 
     return center
 
+
+
+
+capturePerm('1_25m')
+findColor('1_25m')
