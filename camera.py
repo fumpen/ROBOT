@@ -23,7 +23,7 @@ greenUpper = np.array([89, 255, 255])
 
 def capturePerm(name):
 
-    file = "imgTest/" + name + '.png'
+    file = "image/" + name + '.png'
     print("Taking picture")
 
     with picamera.PiCamera() as camera:
@@ -88,7 +88,7 @@ def capture(name, name2):
 
 
 def findColor(name):
-    img = cv2.imread("imgTest/" + name + '.png')
+    img = cv2.imread("image/" + name + '.png')
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, greenLower, greenUpper)
@@ -109,7 +109,7 @@ def findColor(name):
 				(0, 255, 255), 2)
 	    cv2.circle(mask, center, 5, (100, 100, 100), -1)
 
-    cv2.imwrite('imgTest/' + name + 'Color.png', mask)
+    cv2.imwrite('image/' + name + 'Color.png', mask)
 
     return center
 
@@ -126,6 +126,8 @@ def pixels(name):
 
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     center = None
+
+    vertical = 0
 
     if(len(cnts) > 0):
         c = max(cnts, key=cv2.contourArea)
