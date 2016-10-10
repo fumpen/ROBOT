@@ -71,8 +71,8 @@ def capture(name, name2):
     return center[0]
 
 #Colors
-greenLower = np.array([35, 90, 50])
-greenUpper = np.array([89, 255, 255])
+greenLower = np.array([43, 72, 35])
+greenUpper = np.array([85, 255, 255])
 
 
 
