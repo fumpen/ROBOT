@@ -171,6 +171,8 @@ def averagePix(name):
 
     return (pix_sum / N)
 
+print(averagePix(distances))
+
 # Makes a list of pixel size
 
 def listPix(ls):
@@ -201,5 +203,6 @@ def statistic_Distance(files):
 		calc = distance(SIZE_BOX, foc, i)
 		diff = calc - total
 		print("%i\t\t%.2f\t\t%.2f" % (total, calc, diff))
+
 
 
