@@ -103,16 +103,33 @@ def findColor(name):
     return center
 
 
-def sizeObject(name):
+def pixels(name):
+
     img = cv2.imread("imgTest/" + name + '.png')
 
-
-    cv2.imwrite('imgTest/' + name + 'Color.png', mask)
-
-    return center
-
-
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, greenLower, greenUpper)
+    mask = cv2.erode(mask, None, iterations=4)
+    mask = cv2.dilate(mask, None, iterations=4)
 
 
-capturePerm('1_25m')
-findColor('1_25m')
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    center = None
+
+    if(len(cnts) > 0):
+        c = max(cnts, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+	
+	if radius > 20:
+		min_y = np.min(np.min(c, axis=1), axis=0)[1]
+		max_y = np.max(np.max(c, axis=1), axis=0)[1]
+		
+		vertical = max_y - min_y
+	
+	
+
+    return vertical
+
+
+
+
