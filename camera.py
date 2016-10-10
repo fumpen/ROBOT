@@ -4,9 +4,25 @@ import cv2
 import numpy as np
 import time
 
+# The box size in cm.
+# Used to calculate the focal length
+
+SIZE_BOX = 27.5
+
+
+# File name on the files
+# used to calculate focal length.
+
+distances = ['3m', '2_75m', '2_5m', '2_25m', '2m', '1_75m', '1_5m', '1_25m']
+
+#Colors
+greenLower = np.array([40, 100, 50])
+greenUpper = np.array([89, 255, 255])
+
 
 
 def capturePerm(name):
+
     file = "imgTest/" + name + '.png'
     print("Taking picture")
 
@@ -70,11 +86,6 @@ def capture(name, name2):
     print(center)
     return center[0]
 
-#Colors
-greenLower = np.array([40, 100, 50])
-greenUpper = np.array([89, 255, 255])
-
-
 
 def findColor(name):
     img = cv2.imread("imgTest/" + name + '.png')
@@ -131,5 +142,62 @@ def pixels(name):
     return vertical
 
 
+
+
+def focalLength(pixel, distance, boxSize):
+	focal = (pixel * distance) / boxSize
+	
+	return focal
+
+
+
+def distance(boxSize, focal, pixel):
+	distance = (boxSize * focal) / pixel
+	
+	return distance
+
+
+# Calculate the average pixel
+# Used to calculate the average focal length
+
+def averagePix(name):
+    N = len(name)
+    pix_sum = 0
+
+    for i in distances:
+        pix_sum += pixels(i)		
+
+    return (pix_sum / N)
+
+# Makes a list of pixel size
+
+def listPix(ls):
+    pix_list = []
+    pix_sum = 0
+
+    for i in ls:
+        pix_list.append(pixels(i))
+
+    return pix_list
+
+
+
+def statistic_Distance(files):
+	pix_avg = averagePix(files)
+	average_distance = 212
+
+	listx = listPix(files)
+	foc = focalLength(pix_avg, average_distance, 27.5)
+
+	print("Measure\t\tCalculated\tDifference")
+
+	total = 325
+	step = 25
+
+	for i in listx:
+		total -= step
+		calc = distance(SIZE_BOX, foc, i)
+		diff = calc - total
+		print("%i\t\t%.2f\t\t%.2f" % (total, calc, diff))
 
 
