@@ -16,8 +16,8 @@ SIZE_BOX = 27.5
 distances = ['3m', '2_75m', '2_5m', '2_25m', '2m', '1_75m', '1_5m', '1_25m']
 
 #Colors
-greenLower = np.array([40, 100, 50])
-greenUpper = np.array([89, 255, 255])
+greenLower = np.array([43, 72, 35])
+greenUpper = np.array([85, 255, 255])
 
 
 
