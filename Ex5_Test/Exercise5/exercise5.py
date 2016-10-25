@@ -24,6 +24,16 @@ CBLACK = (0, 0, 0)
 landmarks = [(0, 0), (300, 0)]
 
 
+def add_to_angular(present, delta):
+    # Ensures that the orientation of the particle stays in range 0-360
+    if 0.0 <= (present + delta) < 360.0:
+        return present + delta
+    elif present + delta < 0.0:
+        return 360.0 + (present + delta)
+    else:
+        return (present + delta) - 360.0
+
+
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of 
     a particle from its weight."""
@@ -120,6 +130,7 @@ while True:
         velocity += 4.0;
     elif action == ord('x'): # Backwards
         velocity -= 4.0;
+        angular_velocity = 0.0;
     elif action == ord('s'): # Stop
         velocity = 0.0;
         angular_velocity = 0.0;
@@ -130,11 +141,44 @@ while True:
     elif action == ord('q'): # Quit
         break
 
-
-    # XXX: Make the robot drive
-    # Read odometry, see how far we have moved, and update particles.
-    # Or use motor controls to update particles
-    # XXX: You do this
+    # This loop updates position for all current particles
+    for p in particles:
+        # calculates new orientation
+        curr_angle = add_to_angular(p.getTheta, angular_velocity)
+        # The following if-statements decides wether were going up or down
+        # on the axis'es and ensures that angle a is within range 0-90
+        if 0.0 <= curr_angle < 90.0:
+            x_dir = 1.0
+            y_dir = -1.0
+            A = curr_angle
+        elif 90.0 <= curr_angle < 180.0:
+            x_dir = -1.0
+            y_dir = -1.0
+            A = curr_angle - 90.0
+        elif 180.0 <= curr_angle < 270.0:
+            x_dir = -1.0
+            y_dir = 1.0
+            A = curr_angle - 180.0
+        elif 270.0 <= curr_angle < 360.0:
+            x_dir = 1.0
+            y_dir = 1.0
+            A = curr_angle - 270.0
+        else:
+            # should not happen....
+            print "Fuck, something went wrong in move-particle"
+            raise
+        # avoid div by zero if particle have not moved
+        if velocity > 0:
+            # calculates delta_x/y by triangle calculations...
+            C = 90.0
+            B = 180.0 - A - C
+            c = velocity
+            a = (c * np.sin(A)) / np.sin(C)
+            b = (c * np.sin(B)) / np.sin(C)
+            
+            particle.move_particle(p, b * x_dir, a * y_dir, curr_angle)
+        else:
+            particle.move_particle(p, 0.0, 0.0, curr_angle)
 
 
     # Fetch next frame
