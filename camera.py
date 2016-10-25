@@ -87,6 +87,14 @@ def capture(name, name2):
     print(center)
     return center[0]
 
+<<<<<<< HEAD
+#Colors
+greenLower = np.array([43, 72, 35])
+greenUpper = np.array([85, 255, 255])
+
+
+=======
+>>>>>>> 6367eb8f24553b67522c3df46b9365616a543ae4
 
 def findColor(name):
     img = cv2.imread("image/" + name + '.png')
