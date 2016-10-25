@@ -1,3 +1,4 @@
+from  __future__ import division
 from picamera.array import PiRGBArray
 import picamera
 import cv2
@@ -19,18 +20,18 @@ distances = ['3m', '2_75m', '2_5m', '2_25m', '2m', '1_75m', '1_5m', '1_25m']
 greenLower = np.array([43, 72, 35])
 greenUpper = np.array([85, 255, 255])
 
-
-
 def capturePerm(name):
 
     file = "image/" + name + '.png'
     print("Taking picture")
 
     with picamera.PiCamera() as camera:
+
 	with picamera.array.PiRGBArray(camera) as output:
-	    
+
             time.sleep(1)
 
+            camera.resolution = (736,480)
 	    camera.framerate = 30
 	    camera.shutter_speed = camera.exposure_speed
 	    camera.exposure_mode = 'off'
@@ -124,7 +125,7 @@ def findColor(name):
 
 def pixels(name):
 
-    img = cv2.imread("imgTest/" + name + '.png')
+    img = cv2.imread("image/" + name + '.png')
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, greenLower, greenUpper)
@@ -140,30 +141,22 @@ def pixels(name):
     if(len(cnts) > 0):
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
-	
+
 	if radius > 20:
 		min_y = np.min(np.min(c, axis=1), axis=0)[1]
 		max_y = np.max(np.max(c, axis=1), axis=0)[1]
-		
+
 		vertical = max_y - min_y
-	
-	
-
     return vertical
-
-
-
 
 def focalLength(pixel, distance, boxSize):
 	focal = (pixel * distance) / boxSize
-	
+
 	return focal
-
-
 
 def distance(boxSize, focal, pixel):
 	distance = (boxSize * focal) / pixel
-	
+
 	return distance
 
 
@@ -175,11 +168,10 @@ def averagePix(name):
     pix_sum = 0
 
     for i in distances:
-        pix_sum += pixels(i)		
+        pix_sum += pixels(i)
 
     return (pix_sum / N)
 
-print(averagePix(distances))
 
 # Makes a list of pixel size
 
@@ -192,6 +184,9 @@ def listPix(ls):
 
     return pix_list
 
+# def avg_focalLength(pixels, distance, height):
+#     avg= 0.0
+#     for i in range(0,len(pixels)):
 
 
 def statistic_Distance(files):
@@ -200,7 +195,7 @@ def statistic_Distance(files):
 
 	listx = listPix(files)
 	foc = focalLength(pix_avg, average_distance, 27.5)
-
+	print(foc)
 	print("Measure\t\tCalculated\tDifference")
 
 	total = 325
@@ -213,4 +208,4 @@ def statistic_Distance(files):
 		print("%i\t\t%.2f\t\t%.2f" % (total, calc, diff))
 
 
-
+statistic_Distance(distances)
