@@ -34,6 +34,12 @@ def add_to_angular(present, delta):
         return (present + delta) - 360.0
 
 
+def vector_angle(v1, v2):
+    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
+    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
+    dot = v1[0] * v2[0] + v1[1] * v2[1]
+    return np.arccos(np.divide(dot, (l1 * l2)))
+
 def calc_x_y(velocity, angle):
     if 0.0 <= angle < 90.0:
         x_dir = 1.0
@@ -66,6 +72,21 @@ def calc_x_y(velocity, angle):
         return b, a, x_dir, y_dir
     else:
         raise
+
+
+def ret_landmark_coordinates(color, horizontal_or_vertical):
+    if color[1] >= color[2]:
+        x = 'Green'
+    else:
+        x = 'Red'
+    if color == 'Red' and horizontal_or_vertical == 'horizontal':
+        return landmarks[0]
+    elif color == 'Red' and horizontal_or_vertical == 'vertical':
+        return landmarks[1]
+    elif color == 'Green' and horizontal_or_vertical == 'vertical':
+        return None
+    elif color == 'Green' and horizontal_or_vertical == 'horizontal':
+        return None
 
 
 def return_when_in_range(list_of_weigthed_particles, random_number, indexing = 500):
@@ -165,7 +186,7 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 #cam = camera.Camera(0, 'macbookpro')
-cam = camera.Camera(0, 'frindo')
+cam = camera.Camera('frindo')
 
 while True:
 
@@ -228,11 +249,12 @@ while True:
         list_of_particles = []
 
         # The observed measured coordinates
-        obs_x, obs_y, a, b = calc_x_y(measured_distance, measured_angle)
+        obs_xy = ret_landmark_coordinates(colour, objectType)
         for p in particles:
-            diff_x = np.absolute(np.absolute(obs_x) - np.absolute(p.getX()))
-            diff_y = np.absolute(np.absolute(obs_y) - np.absolute(p.getY()))
+            diff_x = np.absolute(np.absolute(obs_xy[0]) - np.absolute(p.getX()))
+            diff_y = np.absolute(np.absolute(obs_xy[1]) - np.absolute(p.getY()))
 
+            actual_vector = vector_angle(obs_xy, [p.getX(), p.getY()])
             diff_ang = np.absolute(np.absolute(p.getWeight) - np.absolute(measured_angle))
 
             sum_of_angle_diff += diff_ang
