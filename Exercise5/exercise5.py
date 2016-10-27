@@ -124,27 +124,42 @@ def weight(p, obs_angle, obs_dist, mark_nr):
 
 
 def ret_landmark_coordinates(color, horizontal_or_vertical):
-    if color[1] >= color[2]:
+    if color[1] >= color[0]:
         x = 'Green'
     else:
         x = 'Red'
-    if color == 'Red' and horizontal_or_vertical == 'horizontal':
+    if x == 'Red' and horizontal_or_vertical == 'horizontal':
         return landmarks[0]
-    elif color == 'Red' and horizontal_or_vertical == 'vertical':
+    elif x == 'Red' and horizontal_or_vertical == 'vertical':
+        return landmarks[0]
+    elif x == 'Green' and horizontal_or_vertical == 'vertical':
         return landmarks[1]
-    elif color == 'Green' and horizontal_or_vertical == 'vertical':
-        return None
-    elif color == 'Green' and horizontal_or_vertical == 'horizontal':
-        return None
+    elif x == 'Green' and horizontal_or_vertical == 'horizontal':
+        return landmarks[1]
 
 
-def return_when_in_range(list_of_weigthed_particles, random_number, indexing = 500):
+def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
+    print indexing
+    print n
+    print random_number
+
     if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
         return list_of_weigthed_particles[indexing][2]
+
     elif list_of_weigthed_particles[indexing][1] < random_number:
-        return return_when_in_range(list_of_particles, random_number, round(indexing * 1.5))
+
+	newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
+	new_n    = n + 1
+
+        return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
+
     elif list_of_weigthed_particles[indexing][0] > random_number:
-        return return_when_in_range(list_of_particles, random_number, round(indexing * 0.5))
+	
+	newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
+	new_n    = n + 1
+        
+	return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
+    
     else:
         print '---return when in range--- fucked up.... ( -__- )'
         raise
@@ -261,8 +276,8 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 
-cam = camera.Camera(0, 'macbookpro')
-#cam = camera.Camera(0, 'frindo')
+#cam = camera.Camera(0, 'macbookpro')
+cam = camera.Camera(0)
 
 while True:
 
@@ -327,7 +342,7 @@ while True:
         list_of_particles = []
 
         # The observed measured coordinates
-        obs_xy = ret_landmark_coordinates(colour, objectType)
+        obs_xy = ret_landmark_coordinates(colourProb, objectType)
         for p in particles:
             diff_x = np.absolute(np.absolute(obs_xy[0]) - np.absolute(p.getX()))
             diff_y = np.absolute(np.absolute(obs_xy[1]) - np.absolute(p.getY()))
@@ -363,7 +378,7 @@ while True:
         num_of_particles = len(particles)
         particles = []
         while count in range(0, num_of_particles):
-            particles.append(return_when_in_range(possible_new_particles, np.random.uniform(0.0, 1.0)))
+            particles.append(return_when_in_range(possible_new_particles, np.random.uniform(0.0, 1.0), 500, 2, len(possible_new_particles)))
             count += 1
 
         # Draw detected pattern
