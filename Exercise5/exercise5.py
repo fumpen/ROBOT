@@ -31,15 +31,13 @@ def add_to_angular(present, delta):
         new_angle = new_angle - 360.0
     elif new_angle < 0.0:
         new_angle = new_angle +  360.0
-
     return new_angle
 
-    # if 0.0 <= (present + delta) < 360.0:
-    #     return present + delta
-    # elif present + delta < 0.0:
-    #     return 360.0 + (present + delta)
-    # else:
-    #     return (present + delta) - 360.0
+def vector_angle(v1, v2):
+    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
+    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
+    dot = v1[0] * v2[0] + v1[1] * v2[1]
+    return np.arccos(np.divide(dot, (l1 * l2)))
 
 def calc_x_y(velocity, angle):
     if 0.0 <= angle < 90.0:
@@ -112,7 +110,6 @@ def angle_between(v1, v2):
     #print "orient", v1_u
     v2_u = unit_vector(v2)
     #print "mark", v2_u
-    #print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 
@@ -128,6 +125,63 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     angle_weight = 1.0/(angle_to_mark - obs_angle)
 
     return dist_weight, angle_weight
+
+
+def ret_landmark_coordinates(color, horizontal_or_vertical):
+    if color[1] >= color[0]:
+        x = 'Green'
+    else:
+        x = 'Red'
+    if x == 'Red' and horizontal_or_vertical == 'horizontal':
+        return landmarks[0]
+    elif x == 'Red' and horizontal_or_vertical == 'vertical':
+        return landmarks[0]
+    elif x == 'Green' and horizontal_or_vertical == 'vertical':
+        return landmarks[1]
+    elif x == 'Green' and horizontal_or_vertical == 'horizontal':
+        return landmarks[1]
+
+
+def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
+    print indexing
+    print n
+    print random_number
+
+    if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
+        return list_of_weigthed_particles[indexing][2]
+
+    elif list_of_weigthed_particles[indexing][1] < random_number:
+
+	newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
+	new_n    = n + 1
+
+        return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
+
+    elif list_of_weigthed_particles[indexing][0] > random_number:
+
+	newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
+	new_n    = n + 1
+
+	return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
+
+    else:
+        print '---return when in range--- fucked up.... ( -__- )'
+        raise
+
+def when_in_range(w_particles, lower, upper, value):
+    ind = (upper-lower)/2
+    if w_particles[lower+ind][0] > value:
+        if w_partiles[lower+ind-1][0] <= value:
+            return w_particles[lower+ind][2]
+
+        when_in_range(w_particles, lower, upper-ind, value)
+
+    elif w_particles[lower+ind] < value:
+        if w_particles[lower+ind+1] >= value:
+            return w_particles[lower+ind][2]
+
+        when_in_range(w_particles, lower+ind, upper, value)
+
 
 
 def jet(x):
@@ -240,10 +294,9 @@ draw_world(est_pose, particles, world)
 
 print "Opening and initializing camera"
 
-cam = camera.Camera(0, 'macbookpro')
-#cam = camera.Camera(0, 'frindo')
 
-
+#cam = camera.Camera(0, 'macbookpro')
+cam = camera.Camera(0)
 
 while True:
 
@@ -297,15 +350,18 @@ while True:
             continue
 
         # *********** set weights ***********
+
+        obs_landmark = ret_landmark_coordinates(colourProb, objectType)
         # sum of the weight
         sum_dist_w = 0.0
         sum_angle_w = 0.0
+
+        sum_of_angle_diff = 0.0
 
         # List of particles and their pre-normalized weigth
         list_of_particles = []
 
         # The observed measured coordinates
-        #obs_x, obs_y, a, b = calc_x_y(measured_distance, measured_angle)
 
         for p in particles:
             # pre-normalized measured weight
@@ -325,15 +381,28 @@ while True:
         # Because distance is only 0.5 of the weight
         scale = 2
 
+        accum = 0.0
         for p in list_of_particles:
             # setting the dist part of particle weight for all particles
-            p[2].setWeight(p[0] + p[1])
+            tmp_w = p[0] + p[1]
+            p[2].setWeight(tmp_w)
+            accum += tmp_w
+            p[0] = accum
 
             #p[2].setWeight(np.divide(np.divide(p[0], sum_of_weigth), scale))
         # *********** || ***********
 
-        # Resampling
-        # XXX: You do this
+
+        lower = 0
+        num_of_particles = len(particles)
+        particles = []
+        for count in range(0,num_of_particles):
+            particles.append(when_in_range(list_of_particles,
+                                           lower,
+                                           num_of_particles,
+                                           np.random.uniform(0.0, 1.0)))
+            #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
+
 
         # Draw detected pattern
         cam.draw_object(colour)
