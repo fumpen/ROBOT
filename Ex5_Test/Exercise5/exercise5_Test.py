@@ -25,7 +25,7 @@ landmarks = [(0, 0), (300, 0)]
 
 
 def jet(x):
-    """Colour map for drawing particles. This function determines the colour of 
+    """Colour map for drawing particles. This function determines the colour of
     a particle from its weight."""
     r = (x >= 3.0/8.0 and x < 5.0/8.0) * (4.0 * x - 3.0/2.0) + (x >= 5.0/8.0 and x < 7.0/8.0) + (x >= 7.0/8.0) * (-4.0 * x + 9.0/2.0)
     g = (x >= 1.0/8.0 and x < 3.0/8.0) * (4.0 * x - 1.0/2.0) + (x >= 3.0/8.0 and x < 5.0/8.0) + (x >= 5.0/8.0 and x < 7.0/8.0) * (-4.0 * x + 7.0/2.0)
@@ -36,11 +36,11 @@ def jet(x):
 def draw_world(est_pose, particles, world):
     """Visualization.
     This functions draws robots position in the world."""
-    
+
     offset = 100;
-    
+
     world[:] = CWHITE # Clear background to white
-    
+
     # Find largest weight
     max_weight = 0
     for particle in particles:
@@ -52,19 +52,19 @@ def draw_world(est_pose, particles, world):
         y = int(particle.getY()) + offset
         colour = jet(particle.getWeight() / max_weight)
         cv2.circle(world, (x,y), 2, colour, 2)
-        b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset, 
+        b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset,
                                      int(particle.getY() - 15.0*np.sin(particle.getTheta()))+offset)
         cv2.line(world, (x,y), b, colour, 2)
-    
+
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
     lm1 = (landmarks[1][0]+offset, landmarks[1][1]+offset)
     cv2.circle(world, lm0, 5, CRED, 2)
     cv2.circle(world, lm1, 5, CGREEN, 2)
-    
+
     # Draw estimated robot pose
     a = (int(est_pose.getX())+offset, int(est_pose.getY())+offset)
-    b = (int(est_pose.getX() + 15.0*np.cos(est_pose.getTheta()))+offset, 
+    b = (int(est_pose.getX() + 15.0*np.cos(est_pose.getTheta()))+offset,
                                  int(est_pose.getY() - 15.0*np.sin(est_pose.getTheta()))+offset)
     cv2.circle(world, a, 5, CMAGENTA, 2)
     cv2.line(world, a, b, CMAGENTA, 2)
@@ -114,7 +114,7 @@ while True:
 
     # Move the robot according to user input (for testing)
     action = cv2.waitKey(10)
-    
+
     if action == ord('w'): # Forward
         velocity += 4.0;
     elif action == ord('x'): # Backwards
@@ -129,17 +129,17 @@ while True:
     elif action == ord('q'): # Quit
         break
 
-
     # XXX: Make the robot drive
+
     # Read odometry, see how far we have moved, and update particles.
     # Or use motor controls to update particles
     # XXX: You do this
 
 
     # Fetch next frame
-    colour, distorted = cam.get_colour()    
-    
-    
+    colour, distorted = cam.get_colour()
+
+
     # Detect objects
     objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
     if objectType != 'none':
@@ -169,18 +169,18 @@ while True:
         for p in particles:
             p.setWeight(1.0/num_particles)
 
-    
+
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
 
     # Draw map
     draw_world(est_pose, particles, world)
-    
+
     # Show frame
     cv2.imshow(WIN_RF1, colour);
 
     # Show world
     cv2.imshow(WIN_World, world);
-    
-    
+
+
 # Close all windows
 cv2.destroyAllWindows()
