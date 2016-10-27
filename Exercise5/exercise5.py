@@ -28,9 +28,9 @@ def add_to_angular(present, delta):
     # Ensures that the orientation of the particle stays in range 0-360
     new_angle = present + delta
     if new_angle >= 360.0:
-        new_angle -= 360.0
+        new_angle = new_angle - 360.0
     elif new_angle < 0.0:
-        new_angle += 360.0
+        new_angle = new_angle +  360.0
 
     return new_angle
 
@@ -73,6 +73,56 @@ def calc_x_y(velocity, angle):
         return b, a, x_dir, y_dir
     else:
         raise
+
+def particle_landmark_vector(mark, particle):
+    (mark_x, mark_y) = landmarks[mark]
+    x = mark_x - particle.getX()
+    y = -1.0 * (mark_y - particle.getY())
+    return [x, y]
+
+def direction(angle):
+    x = np.cos(angle)
+    y = (np.sin(angle))
+    return [x, y]
+
+def dist_vector(vec):
+    return np.sqrt(vec[0]**2 + vec[1]**2)
+
+def unit_vector(vector):
+    """ Returns the unit vector of the vector.  """
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+
+            >>> angle_between((1, 0, 0), (0, 1, 0))
+            1.5707963267948966
+            >>> angle_between((1, 0, 0), (1, 0, 0))
+            0.0
+            >>> angle_between((1, 0, 0), (-1, 0, 0))
+            3.141592653589793
+    """
+    #v1_u = unit_vector(v1)
+    v1_u = v1
+    print "orient", v1_u
+    v2_u = unit_vector(v2)
+    print "mark", v2_u
+    print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
+    return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+
+
+# function finds weight for distance and angle for given particle to observed landmark
+# turning right will cause for positive angle, and reversed
+def weight(p, obs_angle, obs_dist, mark_nr):
+    part2Mark = particle_landmark_vector(mark_nr, p)
+    mark_dist = dist_vector(part2Mark)
+    dist_weight = 0.5/abs(obs_dist-mark_dist)
+
+    orientation = direction(p.getTheta())
+    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_weight = 0.5/(angle_to_mark - obs_angle)
+
+    return dist_weight, angle_weight
 
 
 def jet(x):
@@ -154,6 +204,32 @@ angular_velocity = 0.0; # radians/sec
 # Allocate space for world map
 world = np.zeros((500,500,3), dtype=np.uint8)
 
+
+####################
+# TESTING PURPOSES #
+####################
+
+# print landmarks[0]
+
+# particles = [particle.Particle(-50,-50, 45.0, 1.0/num_particles),
+#              particle.Particle(50,50, 270.0, 1.0/num_particles),
+#              particle.Particle(50,-50, 180.0, 1.0/num_particles),
+#              particle.Particle(-50,50, 0.0, 1.0/num_particles)]
+# obs = (75.000, 15.0)
+
+# for p in particles:
+#     vec = particle_landmark_vector(0, p)
+#     print "vector mark", vec
+#     dist = dist_vector(vec)
+#     print "dist to mark", dist
+#     orientation = direction(p.getTheta())
+#     print "orienttation", orientation
+
+#     print weight(p, obs[1], obs[0], 0)
+#     print
+
+
+
 # Draw map
 draw_world(est_pose, particles, world)
 
@@ -161,6 +237,8 @@ print "Opening and initializing camera"
 
 cam = camera.Camera(0, 'macbookpro')
 #cam = camera.Camera(0, 'frindo')
+
+
 
 while True:
 
@@ -185,7 +263,7 @@ while True:
     # This loop updates position for all current particles
     for p in particles:
         # calculates new orientation
-        curr_angle = add_to_angular(p.getTheta, angular_velocity)
+        curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         if velocity > 0:
             x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
             particle.move_particle(p, x * x_dir, y * y_dir, curr_angle)
