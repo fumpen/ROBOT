@@ -104,9 +104,9 @@ def angle_between(v1, v2):
     """
     #v1_u = unit_vector(v1)
     v1_u = v1
-    print "orient", v1_u
+    #print "orient", v1_u
     v2_u = unit_vector(v2)
-    print "mark", v2_u
+    #print "mark", v2_u
     print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
