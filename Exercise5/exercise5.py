@@ -26,13 +26,12 @@ landmarks = [(0, 0), (300, 0)]
 
 def add_to_angular(present, delta):
     # Ensures that the orientation of the particle stays in range 0-360
-    if 0.0 <= (present + delta) < 360.0:
-        return present + delta
-    elif present + delta < 0.0:
-        return 360.0 + (present + delta)
-    else:
-        return (present + delta) - 360.0
-
+    new_angle = present + delta
+    if new_angle >= 360.0:
+        new_angle = new_angle - 360.0
+    elif new_angle < 0.0:
+        new_angle = new_angle +  360.0
+    return new_angle
 
 def vector_angle(v1, v2):
     l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
@@ -73,6 +72,56 @@ def calc_x_y(velocity, angle):
     else:
         raise
 
+def particle_landmark_vector(mark, particle):
+    (mark_x, mark_y) = mark
+    x = mark_x - particle.getX()
+    y = -1.0 * (mark_y - particle.getY())
+    return [x, y]
+
+def direction(angle):
+    x = np.cos(angle)
+    y = (np.sin(angle))
+    return [x, y]
+
+def dist_vector(vec):
+    return np.sqrt(vec[0]**2 + vec[1]**2)
+
+def unit_vector(vector):
+    """ Returns the unit vector of the vector.  """
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+
+            >>> angle_between((1, 0, 0), (0, 1, 0))
+            1.5707963267948966
+            >>> angle_between((1, 0, 0), (1, 0, 0))
+            0.0
+            >>> angle_between((1, 0, 0), (-1, 0, 0))
+            3.141592653589793
+    """
+    #v1_u = unit_vector(v1)
+    v1_u = v1
+    #print "orient", v1_u
+    v2_u = unit_vector(v2)
+    #print "mark", v2_u
+    # print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
+    return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+
+
+# function finds weight for distance and angle for given particle to observed landmark
+# turning right will cause for positive angle, and reversed
+def weight(p, obs_angle, obs_dist, mark_nr):
+    part2Mark = particle_landmark_vector(mark_nr, p)
+    mark_dist = dist_vector(part2Mark)
+    # dist_weight = 0.5/abs(obs_dist-mark_dist)
+
+    orientation = direction(p.getTheta())
+    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_weight = abs(angle_to_mark - obs_angle)
+
+    return angle_weight
+
 
 def ret_landmark_coordinates(color, horizontal_or_vertical):
     if color[1] >= color[2]:
@@ -102,7 +151,7 @@ def return_when_in_range(list_of_weigthed_particles, random_number, indexing = 5
 
 
 def jet(x):
-    """Colour map for drawing particles. This function determines the colour of 
+    """Colour map for drawing particles. This function determines the colour of
     a particle from its weight."""
     r = (x >= 3.0/8.0 and x < 5.0/8.0) * (4.0 * x - 3.0/2.0) + (x >= 5.0/8.0 and x < 7.0/8.0) + (x >= 7.0/8.0) * (-4.0 * x + 9.0/2.0)
     g = (x >= 1.0/8.0 and x < 3.0/8.0) * (4.0 * x - 1.0/2.0) + (x >= 3.0/8.0 and x < 5.0/8.0) + (x >= 5.0/8.0 and x < 7.0/8.0) * (-4.0 * x + 7.0/2.0)
@@ -113,11 +162,11 @@ def jet(x):
 def draw_world(est_pose, particles, world):
     """Visualization.
     This functions draws robots position in the world."""
-    
+
     offset = 100;
-    
+
     world[:] = CWHITE # Clear background to white
-    
+
     # Find largest weight
     max_weight = 0
     for particle in particles:
@@ -129,19 +178,19 @@ def draw_world(est_pose, particles, world):
         y = int(particle.getY()) + offset
         colour = jet(particle.getWeight() / max_weight)
         cv2.circle(world, (x,y), 2, colour, 2)
-        b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset, 
+        b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset,
                                      int(particle.getY() - 15.0*np.sin(particle.getTheta()))+offset)
         cv2.line(world, (x,y), b, colour, 2)
-    
+
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
     lm1 = (landmarks[1][0]+offset, landmarks[1][1]+offset)
     cv2.circle(world, lm0, 5, CRED, 2)
     cv2.circle(world, lm1, 5, CGREEN, 2)
-    
+
     # Draw estimated robot pose
     a = (int(est_pose.getX())+offset, int(est_pose.getY())+offset)
-    b = (int(est_pose.getX() + 15.0*np.cos(est_pose.getTheta()))+offset, 
+    b = (int(est_pose.getX() + 15.0*np.cos(est_pose.getTheta()))+offset,
                                  int(est_pose.getY() - 15.0*np.sin(est_pose.getTheta()))+offset)
     cv2.circle(world, a, 5, CMAGENTA, 2)
     cv2.line(world, a, b, CMAGENTA, 2)
@@ -180,13 +229,40 @@ angular_velocity = 0.0; # radians/sec
 # Allocate space for world map
 world = np.zeros((500,500,3), dtype=np.uint8)
 
+
+####################
+# TESTING PURPOSES #
+####################
+
+# print landmarks[0]
+
+# particles = [particle.Particle(-50,-50, 45.0, 1.0/num_particles),
+#              particle.Particle(50,50, 270.0, 1.0/num_particles),
+#              particle.Particle(50,-50, 180.0, 1.0/num_particles),
+#              particle.Particle(-50,50, 0.0, 1.0/num_particles)]
+# obs = (75.000, 15.0)
+
+# for p in particles:
+#     vec = particle_landmark_vector(0, p)
+#     print "vector mark", vec
+#     dist = dist_vector(vec)
+#     print "dist to mark", dist
+#     orientation = direction(p.getTheta())
+#     print "orienttation", orientation
+
+#     print weight(p, obs[1], obs[0], 0)
+#     print
+
+
+
 # Draw map
 draw_world(est_pose, particles, world)
 
 print "Opening and initializing camera"
 
-#cam = camera.Camera(0, 'macbookpro')
-cam = camera.Camera('frindo')
+
+cam = camera.Camera(0, 'macbookpro')
+#cam = camera.Camera(0, 'frindo')
 
 while True:
 
@@ -211,7 +287,7 @@ while True:
     # This loop updates position for all current particles
     for p in particles:
         # calculates new orientation
-        curr_angle = add_to_angular(p.getTheta, angular_velocity)
+        curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         if velocity > 0:
             x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
             particle.move_particle(p, x * x_dir, y * y_dir, curr_angle)
@@ -220,9 +296,9 @@ while True:
 
 
     # Fetch next frame
-    colour, distorted = cam.get_colour()    
-    
-    
+    colour, distorted = cam.get_colour()
+
+
     # Detect objects
     objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
     if objectType != 'none':
@@ -240,6 +316,8 @@ while True:
             continue
 
         # *********** set weights ***********
+
+        obs_landmark = ret_landmark_coordinates(colourProb, objectType)
         # sum of the weight
         sum_of_weigth = 0.0
 
@@ -254,9 +332,7 @@ while True:
             diff_x = np.absolute(np.absolute(obs_xy[0]) - np.absolute(p.getX()))
             diff_y = np.absolute(np.absolute(obs_xy[1]) - np.absolute(p.getY()))
 
-            actual_vector = vector_angle(obs_xy, [p.getX(), p.getY()])
-            diff_ang = np.absolute(np.absolute(p.getWeight) - np.absolute(measured_angle))
-
+            diff_ang = weight(p, measured_angle, measured_distance, obs_landmark)
             sum_of_angle_diff += diff_ang
             # Distance between observation and particle
             diff_dist = np.sqrt(np.power(diff_x, 2) + np.power(diff_y, 2))
@@ -290,7 +366,6 @@ while True:
             particles.append(return_when_in_range(possible_new_particles, np.random.uniform(0.0, 1.0)))
             count += 1
 
-
         # Draw detected pattern
         cam.draw_object(colour)
     else:
@@ -298,18 +373,18 @@ while True:
         for p in particles:
             p.setWeight(1.0/num_particles)
 
-    
+
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
 
     # Draw map
     draw_world(est_pose, particles, world)
-    
+
     # Show frame
     cv2.imshow(WIN_RF1, colour);
 
     # Show world
     cv2.imshow(WIN_World, world);
-    
-    
+
+
 # Close all windows
 cv2.destroyAllWindows()
