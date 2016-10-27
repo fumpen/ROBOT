@@ -68,6 +68,18 @@ def calc_x_y(velocity, angle):
         raise
 
 
+def return_when_in_range(list_of_weigthed_particles, random_number, indexing = 500):
+    if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
+        return list_of_weigthed_particles[indexing][2]
+    elif list_of_weigthed_particles[indexing][1] < random_number:
+        return return_when_in_range(list_of_particles, random_number, round(indexing * 1.5))
+    elif list_of_weigthed_particles[indexing][0] > random_number:
+        return return_when_in_range(list_of_particles, random_number, round(indexing * 0.5))
+    else:
+        print '---return when in range--- fucked up.... ( -__- )'
+        raise
+
+
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of 
     a particle from its weight."""
@@ -210,6 +222,8 @@ while True:
         # sum of the weight
         sum_of_weigth = 0.0
 
+        sum_of_angle_diff = 0.0
+
         # List of particles and their pre-normalized weigth
         list_of_particles = []
 
@@ -218,22 +232,42 @@ while True:
         for p in particles:
             diff_x = np.absolute(np.absolute(obs_x) - np.absolute(p.getX()))
             diff_y = np.absolute(np.absolute(obs_y) - np.absolute(p.getY()))
+
+            diff_ang = np.absolute(np.absolute(p.getWeight) - np.absolute(measured_angle))
+
+            sum_of_angle_diff += diff_ang
             # Distance between observation and particle
-            dist = np.sqrt(np.power(diff_x, 2) + np.power(diff_y, 2))
+            diff_dist = np.sqrt(np.power(diff_x, 2) + np.power(diff_y, 2))
+            if diff_dist == 0:
+                diff_dist += 0.00001
             # pre-normalized weight
-            dist_weight = np.divide(1.0, np.absolute(dist - measured_distance))
+            dist_weight = np.divide(1.0, np.absolute(diff_dist - measured_distance))
             sum_of_weigth += dist_weight
-            list_of_particles.append([dist_weight, p])
+            list_of_particles.append([dist_weight, p, diff_ang])
+
+        # To pick the new particles [lower_bound, upper_bound, particle]
+        possible_new_particles = []
+        tot_sum_weight = 0.0
 
         # Because distance is only 0.5 of the weight
         scale = 2
         for p in list_of_particles:
             # setting the dist part of particle weight for all particles
-            p[1].setWeight(np.divide(np.divide(p[0], sum_of_weigth), scale))
+            dist_weight = np.divide(np.divide(p[0], sum_of_weigth), scale)
+            angle_weight = np.divide(np.divide(p[2], sum_of_angle_diff), scale)
+            p[1].setWeight(dist_weight + angle_weight)
+            l_weigth = tot_sum_weight
+            tot_sum_weight += dist_weight + angle_weight
+            possible_new_particles.append([l_weigth, tot_sum_weight, p[1]])
         # *********** || ***********
-        
-        # Resampling
-        # XXX: You do this
+
+        count = 0
+        num_of_particles = len(particles)
+        particles = []
+        while count in range(0, num_of_particles):
+            particles.append(return_when_in_range(possible_new_particles, np.random.uniform(0.0, 1.0)))
+            count += 1
+
 
         # Draw detected pattern
         cam.draw_object(colour)
