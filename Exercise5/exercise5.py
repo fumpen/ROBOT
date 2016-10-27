@@ -82,11 +82,16 @@ def particle_landmark_vector(mark, particle):
 
 def direction(angle):
     x = np.cos(angle)
-    y = (np.sin(angle))
+    y = np.sin(angle)
     return [x, y]
 
+def move_vector(p, velocity):
+    unit_v = direction(p.getTheta())
+    return [unit_v[0]*velocity, -unit_v[1]*velocity]
+
+
 def dist_vector(vec):
-    return np.sqrt(vec[0]**2 + vec[1]**2)
+    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
@@ -107,7 +112,7 @@ def angle_between(v1, v2):
     #print "orient", v1_u
     v2_u = unit_vector(v2)
     #print "mark", v2_u
-    print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
+    #print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 
@@ -116,11 +121,11 @@ def angle_between(v1, v2):
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
     mark_dist = dist_vector(part2Mark)
-    dist_weight = 0.5/abs(obs_dist-mark_dist)
+    dist_weight = 1.0/abs(obs_dist-mark_dist)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
-    angle_weight = 0.5/(angle_to_mark - obs_angle)
+    angle_weight = 1.0/(angle_to_mark - obs_angle)
 
     return dist_weight, angle_weight
 
@@ -209,24 +214,24 @@ world = np.zeros((500,500,3), dtype=np.uint8)
 # TESTING PURPOSES #
 ####################
 
-# print landmarks[0]
+print landmarks[0]
 
-# particles = [particle.Particle(-50,-50, 45.0, 1.0/num_particles),
-#              particle.Particle(50,50, 270.0, 1.0/num_particles),
-#              particle.Particle(50,-50, 180.0, 1.0/num_particles),
-#              particle.Particle(-50,50, 0.0, 1.0/num_particles)]
-# obs = (75.000, 15.0)
+particles = [particle.Particle(-5,-50, 45.0, 1.0/num_particles),
+             particle.Particle(500,50, 270.0, 1.0/num_particles),
+             particle.Particle(50,-100, 180.0, 1.0/num_particles),
+             particle.Particle(-500,50, 0.0, 1.0/num_particles)]
+obs = (50.000, 15.0)
 
-# for p in particles:
-#     vec = particle_landmark_vector(0, p)
-#     print "vector mark", vec
-#     dist = dist_vector(vec)
-#     print "dist to mark", dist
-#     orientation = direction(p.getTheta())
-#     print "orienttation", orientation
+for p in particles:
+    vec = particle_landmark_vector(0, p)
+    print "vector mark", vec
+    dist = dist_vector(vec)
+    print "dist to mark", dist
+    orientation = direction(p.getTheta())
+    print "orienttation", orientation
 
-#     print weight(p, obs[1], obs[0], 0)
-#     print
+    print weight(p, obs[1], obs[0], 0)
+    print
 
 
 
@@ -254,9 +259,9 @@ while True:
         velocity = 0.0;
         angular_velocity = 0.0;
     elif action == ord('a'): # Left
-        angular_velocity -= 0.2;
-    elif action == ord('d'): # Right
         angular_velocity += 0.2;
+    elif action == ord('d'): # Right
+        angular_velocity -= 0.2;
     elif action == ord('q'): # Quit
         break
 
@@ -265,11 +270,11 @@ while True:
         # calculates new orientation
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         if velocity > 0:
-            x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
-            particle.move_particle(p, x * x_dir, y * y_dir, curr_angle)
+            [x,y] = move_vector(p, velocity)
+            #x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
+            particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
-
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -293,28 +298,38 @@ while True:
 
         # *********** set weights ***********
         # sum of the weight
-        sum_of_weigth = 0.0
+        sum_dist_w = 0.0
+        sum_angle_w = 0.0
 
         # List of particles and their pre-normalized weigth
         list_of_particles = []
 
         # The observed measured coordinates
-        obs_x, obs_y, a, b = calc_x_y(measured_distance, measured_angle)
-        for p in particles:
-            diff_x = np.absolute(np.absolute(obs_x) - np.absolute(p.getX()))
-            diff_y = np.absolute(np.absolute(obs_y) - np.absolute(p.getY()))
-            # Distance between observation and particle
-            dist = np.sqrt(np.power(diff_x, 2) + np.power(diff_y, 2))
-            # pre-normalized weight
-            dist_weight = np.divide(1.0, np.absolute(dist - measured_distance))
-            sum_of_weigth += dist_weight
-            list_of_particles.append([dist_weight, p])
+        #obs_x, obs_y, a, b = calc_x_y(measured_distance, measured_angle)
 
+        for p in particles:
+            # pre-normalized measured weight
+            dist_w, angle_w = weight(p, measured_angle, measured_distance, 0)
+
+            # accum weights
+            sum_dist_w += dist_w
+            sum_angle_w += angle_w
+
+            list_of_particles.append([dist_w*0.75, angle_w*0.25, p])
+
+        list_of_particles = np.array(list_of_particles)
+
+        # normalize weights
+        list_of_particles[:,0] = np.divide(list_of_particles[:,0], sum_dist_w)
+        list_of_particles[:,1] = np.divide(list_of_particles[:,1], sum_angle_w)
         # Because distance is only 0.5 of the weight
         scale = 2
+
         for p in list_of_particles:
             # setting the dist part of particle weight for all particles
-            p[1].setWeight(np.divide(np.divide(p[0], sum_of_weigth), scale))
+            p[2].setWeight(p[0] + p[1])
+
+            #p[2].setWeight(np.divide(np.divide(p[0], sum_of_weigth), scale))
         # *********** || ***********
 
         # Resampling
@@ -338,7 +353,7 @@ while True:
 
     # Show world
     cv2.imshow(WIN_World, world);
-
+    break
 
 # Close all windows
 cv2.destroyAllWindows()
