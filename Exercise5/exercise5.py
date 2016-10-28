@@ -169,18 +169,22 @@ def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n,
         raise
 
 def when_in_range(w_particles, lower, upper, value):
-    ind = (upper-lower)/2
-    if w_particles[lower+ind][0] > value:
-        if w_partiles[lower+ind-1][0] <= value:
-            return w_particles[lower+ind][2]
+    while True:
+        ind = (upper-lower)/2
+        if lower-upper == 1:
+            return w_particles[lower][2]
 
-        when_in_range(w_particles, lower, upper-ind, value)
+        if w_particles[lower+ind][0] > value:
+            if w_particles[lower+ind-1][0] <= value:
+                return w_particles[lower+ind][2]
+            else:
+                upper -= ind
 
-    elif w_particles[lower+ind] < value:
-        if w_particles[lower+ind+1] >= value:
-            return w_particles[lower+ind][2]
-
-        when_in_range(w_particles, lower+ind, upper, value)
+        elif w_particles[lower+ind][0] < value:
+            if w_particles[lower+ind+1][0] >= value:
+                return w_particles[lower+ind][2]
+            else:
+                lower += ind
 
 
 
@@ -268,24 +272,24 @@ world = np.zeros((500,500,3), dtype=np.uint8)
 # TESTING PURPOSES #
 ####################
 
-print landmarks[0]
+# print landmarks[0]
 
-particles = [particle.Particle(-5,-50, 45.0, 1.0/num_particles),
-             particle.Particle(500,50, 270.0, 1.0/num_particles),
-             particle.Particle(50,-100, 180.0, 1.0/num_particles),
-             particle.Particle(-500,50, 0.0, 1.0/num_particles)]
-obs = (50.000, 15.0)
+# particles = [particle.Particle(-5,-50, 45.0, 1.0/num_particles),
+#              particle.Particle(500,50, 270.0, 1.0/num_particles),
+#              particle.Particle(50,-100, 180.0, 1.0/num_particles),
+#              particle.Particle(-500,50, 0.0, 1.0/num_particles)]
+# obs = (50.000, 15.0)
 
-for p in particles:
-    vec = particle_landmark_vector(0, p)
-    print "vector mark", vec
-    dist = dist_vector(vec)
-    print "dist to mark", dist
-    orientation = direction(p.getTheta())
-    print "orienttation", orientation
+# for p in particles:
+#     vec = particle_landmark_vector(0, p)
+#     print "vector mark", vec
+#     dist = dist_vector(vec)
+#     print "dist to mark", dist
+#     orientation = direction(p.getTheta())
+#     print "orienttation", orientation
 
-    print weight(p, obs[1], obs[0], 0)
-    print
+#     print weight(p, obs[1], obs[0], 0)
+#     print
 
 
 
@@ -295,8 +299,8 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 
-#cam = camera.Camera(0, 'macbookpro')
-cam = camera.Camera(0)
+cam = camera.Camera(0, 'macbookpro')
+#cam = camera.Camera(0)
 
 while True:
 
@@ -395,13 +399,21 @@ while True:
 
         lower = 0
         num_of_particles = len(particles)
+        weight_sum = 0.0
         particles = []
         for count in range(0,num_of_particles):
-            particles.append(when_in_range(list_of_particles,
-                                           lower,
-                                           num_of_particles,
-                                           np.random.uniform(0.0, 1.0)))
-            #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
+            p = when_in_range(list_of_particles,
+                              lower,
+                              num_of_particles,
+                              np.random.uniform(0.0, 1.0))
+            weight_sum += p.getWeight()
+            particles.append(p)
+         #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
+
+        particle.add_uncertainty(particles, 0.5, 0.5)
+
+        for p in particles:
+            p.setWeight(p.getWeight()/weight_sum)
 
 
         # Draw detected pattern
@@ -418,11 +430,11 @@ while True:
     draw_world(est_pose, particles, world)
 
     # Show frame
-    cv2.imshow(WIN_RF1, colour);
+    #cv2.imshow(WIN_RF1, colour);
 
     # Show world
     cv2.imshow(WIN_World, world);
-    break
+
 
 # Close all windows
 cv2.destroyAllWindows()
