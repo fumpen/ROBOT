@@ -142,27 +142,26 @@ def ret_landmark_coordinates(color, horizontal_or_vertical):
         return landmarks[1]
 
 
-def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
-    print indexing
-    print n
-    print random_number
+def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
+    if list_of_weigthed_particles[dicte['i']][1] <= random_number < list_of_weigthed_particles[dicte['i']][0]:
+        return list_of_weigthed_particles[dicte['i']][2]
 
-    if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
-        return list_of_weigthed_particles[indexing][2]
+    elif list_of_weigthed_particles[dicte['i']][0] < random_number:
+	a = np.power(2.0, dicte['n'])
+	b = np.divide(1.0, a)
+	c = b * listLength
+	x = int(round(c))
+	dicte['i'] += x 
+	dicte['n'] += 1
 
-    elif list_of_weigthed_particles[indexing][1] < random_number:
+        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
 
-	newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
-	new_n    = n + 1
+    elif list_of_weigthed_particles[dicte['i']][1] > random_number:
+	print 'lower'
+	dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
+	dicte['n'] += 1
 
-        return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
-
-    elif list_of_weigthed_particles[indexing][0] > random_number:
-
-	newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
-	new_n    = n + 1
-
-	return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
+	return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
 
     else:
         print '---return when in range--- fucked up.... ( -__- )'
@@ -394,6 +393,7 @@ while True:
             # setting the dist part of particle weight for all particles
             tmp_w = p[0] + p[1]
             p[2].setWeight(tmp_w)
+	    p[1] = accum
             accum += tmp_w
             p[0] = accum
 
@@ -406,13 +406,17 @@ while True:
         weight_sum = 0.0
         particles = []
         for count in range(0,num_of_particles):
-            p = when_in_range(list_of_particles,
-                              lower,
-                              num_of_particles,
-                              np.random.uniform(0.0, 1.0))
-            weight_sum += p.getWeight()
+            #p = when_in_range(list_of_particles,
+            #                  lower,
+            #                  num_of_particles,
+            #                  np.random.uniform(0.0, 1.0))
+            #weight_sum += p.getWeight()
+	    indx = 500
+	    n_start = 2
+            dicte = {'i': indx,
+		     'n': n_start}
+	    p = in_range(list_of_particles, np.random.uniform(0.0, 1.0), dicte, num_of_particles)
             particles.append(p)
-         #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
 
         #particle.add_uncertainty(particles, 0.5, 0.5)
 
