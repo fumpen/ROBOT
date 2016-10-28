@@ -169,9 +169,13 @@ def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n,
         raise
 
 def when_in_range(w_particles, lower, upper, value):
+    lower = lower
+    upper = upper
+
     while True:
+        #print "running when in range"
         ind = (upper-lower)/2
-        if lower-upper == 1:
+        if lower-upper <= 1:
             return w_particles[lower][2]
 
         if w_particles[lower+ind][0] > value:
@@ -375,7 +379,7 @@ while True:
             sum_dist_w += dist_w
             sum_angle_w += angle_w
 
-            list_of_particles.append([dist_w*0.75, angle_w*0.25, p])
+            list_of_particles.append([dist_w*0.95, angle_w*0.05, p])
 
         list_of_particles = np.array(list_of_particles)
 
@@ -410,10 +414,12 @@ while True:
             particles.append(p)
          #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
 
-        particle.add_uncertainty(particles, 0.5, 0.5)
+        #particle.add_uncertainty(particles, 0.5, 0.5)
 
         for p in particles:
-            p.setWeight(p.getWeight()/weight_sum)
+            tmp = p.getWeight()/weight_sum
+            #print tmp
+            p.setWeight(tmp)
 
 
         # Draw detected pattern
@@ -425,12 +431,12 @@ while True:
 
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-
+    print est_pose.getX(), est_pose.getY(), est_pose.getTheta()
     # Draw map
     draw_world(est_pose, particles, world)
 
     # Show frame
-    #cv2.imshow(WIN_RF1, colour);
+    cv2.imshow(WIN_RF1, colour);
 
     # Show world
     cv2.imshow(WIN_World, world);
