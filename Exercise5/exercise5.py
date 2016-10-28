@@ -145,21 +145,14 @@ def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n,
 
     if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
         return list_of_weigthed_particles[indexing][2]
-
     elif list_of_weigthed_particles[indexing][1] < random_number:
-
-	newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
-	new_n    = n + 1
-
-        return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
-
+        newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
+        new_n = n + 1
+        return return_when_in_range(list_of_weigthed_particles, random_number, newIndex, new_n, listLength)
     elif list_of_weigthed_particles[indexing][0] > random_number:
-	
-	newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
-	new_n    = n + 1
-        
-	return_when_in_range(list_of_particles, random_number, newIndex, new_n, listLength)
-    
+        newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
+        new_n = n + 1
+        return return_when_in_range(list_of_weigthed_particles, random_number, newIndex, new_n, listLength)
     else:
         print '---return when in range--- fucked up.... ( -__- )'
         raise
@@ -276,8 +269,8 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 
-#cam = camera.Camera(0, 'macbookpro')
-cam = camera.Camera(0)
+cam = camera.Camera(0, 'macbookpro')
+#cam = camera.Camera(0)
 
 while True:
 
