@@ -73,18 +73,23 @@ def calc_x_y(velocity, angle):
         raise
 
 def particle_landmark_vector(mark, particle):
-    (mark_x, mark_y) = mark
+    (mark_x, mark_y) = landmarks[mark]
     x = mark_x - particle.getX()
     y = -1.0 * (mark_y - particle.getY())
     return [x, y]
 
 def direction(angle):
     x = np.cos(angle)
-    y = (np.sin(angle))
+    y = np.sin(angle)
     return [x, y]
 
+def move_vector(p, velocity):
+    unit_v = direction(p.getTheta())
+    return [unit_v[0]*velocity, -unit_v[1]*velocity]
+
+
 def dist_vector(vec):
-    return np.sqrt(vec[0]**2 + vec[1]**2)
+    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
@@ -105,7 +110,6 @@ def angle_between(v1, v2):
     #print "orient", v1_u
     v2_u = unit_vector(v2)
     #print "mark", v2_u
-    # print np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 
@@ -114,13 +118,13 @@ def angle_between(v1, v2):
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
     mark_dist = dist_vector(part2Mark)
-    # dist_weight = 0.5/abs(obs_dist-mark_dist)
+    dist_weight = 1.0/abs(obs_dist-mark_dist)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
-    angle_weight = abs(angle_to_mark - obs_angle)
+    angle_weight = 1.0/(angle_to_mark - obs_angle)
 
-    return angle_weight
+    return dist_weight, angle_weight
 
 
 def ret_landmark_coordinates(color, horizontal_or_vertical):
@@ -137,25 +141,70 @@ def ret_landmark_coordinates(color, horizontal_or_vertical):
     elif x == 'Green' and horizontal_or_vertical == 'horizontal':
         return landmarks[1]
 
+def where_to_go(particle, goal):
+    """ Takes a particle (which must be our best bet for our actual position)
+    and the place we want to be (goal = [x, y])
 
-def return_when_in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
+    returns a list of the length the robot needs to drive, the degrees it
+    needs to turn and the direction it needs to turn"""
+    ang = vector_angle([particle.getX(), particle.getY()], goal)
+    if ang <= 180:
+        turn_dir = 'right'
+        turn_deg = ang
+    else:
+        turn_dir = 'left'
+        turn_deg = 180 - ang
+    length = np.sqrt(
+        np.power((particle.getX() - goal[0]), 2) + np.power(
+            (particle.getY() - goal[1]), 2))
+    return [length, turn_dir, turn_deg]
+
+def in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
     print indexing
     print n
     print random_number
 
-    if list_of_weigthed_particles[indexing][0] <= random_number < list_of_weigthed_particles[indexing][1]:
+    if list_of_weigthed_particles[indexing][0
+    ] <= random_number < list_of_weigthed_particles[indexing][1]:
         return list_of_weigthed_particles[indexing][2]
     elif list_of_weigthed_particles[indexing][1] < random_number:
-        newIndex = int(round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
+        new_index = int(
+            round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
         new_n = n + 1
-        return return_when_in_range(list_of_weigthed_particles, random_number, newIndex, new_n, listLength)
+        return in_range(list_of_weigthed_particles,
+                        random_number, new_index, new_n, listLength)
     elif list_of_weigthed_particles[indexing][0] > random_number:
-        newIndex = int(round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
+        new_index = int(
+            round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
         new_n = n + 1
-        return return_when_in_range(list_of_weigthed_particles, random_number, newIndex, new_n, listLength)
+        return in_range(list_of_weigthed_particles,
+                        random_number, new_index, new_n, listLength)
     else:
         print '---return when in range--- fucked up.... ( -__- )'
         raise
+
+def when_in_range(w_particles, lower, upper, value):
+    lower = lower
+    upper = upper
+
+    while True:
+        #print "running when in range"
+        ind = (upper-lower)/2
+        if lower-upper <= 1:
+            return w_particles[lower][2]
+
+        if w_particles[lower+ind][0] > value:
+            if w_particles[lower+ind-1][0] <= value:
+                return w_particles[lower+ind][2]
+            else:
+                upper -= ind
+
+        elif w_particles[lower+ind][0] < value:
+            if w_particles[lower+ind+1][0] >= value:
+                return w_particles[lower+ind][2]
+            else:
+                lower += ind
+
 
 
 def jet(x):
@@ -244,11 +293,11 @@ world = np.zeros((500,500,3), dtype=np.uint8)
 
 # print landmarks[0]
 
-# particles = [particle.Particle(-50,-50, 45.0, 1.0/num_particles),
-#              particle.Particle(50,50, 270.0, 1.0/num_particles),
-#              particle.Particle(50,-50, 180.0, 1.0/num_particles),
-#              particle.Particle(-50,50, 0.0, 1.0/num_particles)]
-# obs = (75.000, 15.0)
+# particles = [particle.Particle(-5,-50, 45.0, 1.0/num_particles),
+#              particle.Particle(500,50, 270.0, 1.0/num_particles),
+#              particle.Particle(50,-100, 180.0, 1.0/num_particles),
+#              particle.Particle(-500,50, 0.0, 1.0/num_particles)]
+# obs = (50.000, 15.0)
 
 # for p in particles:
 #     vec = particle_landmark_vector(0, p)
@@ -286,9 +335,9 @@ while True:
         velocity = 0.0;
         angular_velocity = 0.0;
     elif action == ord('a'): # Left
-        angular_velocity -= 0.2;
-    elif action == ord('d'): # Right
         angular_velocity += 0.2;
+    elif action == ord('d'): # Right
+        angular_velocity -= 0.2;
     elif action == ord('q'): # Quit
         break
 
@@ -297,11 +346,11 @@ while True:
         # calculates new orientation
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         if velocity > 0:
-            x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
-            particle.move_particle(p, x * x_dir, y * y_dir, curr_angle)
+            [x,y] = move_vector(p, velocity)
+            #x, y, x_dir, y_dir = calc_x_y(velocity, curr_angle)
+            particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
-
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -327,7 +376,8 @@ while True:
 
         obs_landmark = ret_landmark_coordinates(colourProb, objectType)
         # sum of the weight
-        sum_of_weigth = 0.0
+        sum_dist_w = 0.0
+        sum_angle_w = 0.0
 
         sum_of_angle_diff = 0.0
 
@@ -335,44 +385,57 @@ while True:
         list_of_particles = []
 
         # The observed measured coordinates
-        obs_xy = ret_landmark_coordinates(colourProb, objectType)
+
         for p in particles:
-            diff_x = np.absolute(np.absolute(obs_xy[0]) - np.absolute(p.getX()))
-            diff_y = np.absolute(np.absolute(obs_xy[1]) - np.absolute(p.getY()))
+            # pre-normalized measured weight
+            dist_w, angle_w = weight(p, measured_angle, measured_distance, 0)
 
-            diff_ang = weight(p, measured_angle, measured_distance, obs_landmark)
-            sum_of_angle_diff += diff_ang
-            # Distance between observation and particle
-            diff_dist = np.sqrt(np.power(diff_x, 2) + np.power(diff_y, 2))
-            if diff_dist == 0:
-                diff_dist += 0.00001
-            # pre-normalized weight
-            dist_weight = np.divide(1.0, np.absolute(diff_dist - measured_distance))
-            sum_of_weigth += dist_weight
-            list_of_particles.append([dist_weight, p, diff_ang])
+            # accum weights
+            sum_dist_w += dist_w
+            sum_angle_w += angle_w
 
-        # To pick the new particles [lower_bound, upper_bound, particle]
-        possible_new_particles = []
-        tot_sum_weight = 0.0
+            list_of_particles.append([dist_w*0.95, angle_w*0.05, p])
 
+        list_of_particles = np.array(list_of_particles)
+
+        # normalize weights
+        list_of_particles[:,0] = np.divide(list_of_particles[:,0], sum_dist_w)
+        list_of_particles[:,1] = np.divide(list_of_particles[:,1], sum_angle_w)
         # Because distance is only 0.5 of the weight
         scale = 2
+
+        accum = 0.0
         for p in list_of_particles:
             # setting the dist part of particle weight for all particles
-            dist_weight = np.divide(np.divide(p[0], sum_of_weigth), scale)
-            angle_weight = np.divide(np.divide(p[2], sum_of_angle_diff), scale)
-            p[1].setWeight(dist_weight + angle_weight)
-            l_weigth = tot_sum_weight
-            tot_sum_weight += dist_weight + angle_weight
-            possible_new_particles.append([l_weigth, tot_sum_weight, p[1]])
+            tmp_w = p[0] + p[1]
+            p[2].setWeight(tmp_w)
+            accum += tmp_w
+            p[0] = accum
+
+            #p[2].setWeight(np.divide(np.divide(p[0], sum_of_weigth), scale))
         # *********** || ***********
 
-        count = 0
+
+        lower = 0
         num_of_particles = len(particles)
+        weight_sum = 0.0
         particles = []
-        while count in range(0, num_of_particles):
-            particles.append(return_when_in_range(possible_new_particles, np.random.uniform(0.0, 1.0), 500, 2, len(possible_new_particles)))
-            count += 1
+        for count in range(0,num_of_particles):
+            p = when_in_range(list_of_particles,
+                              lower,
+                              num_of_particles,
+                              np.random.uniform(0.0, 1.0))
+            weight_sum += p.getWeight()
+            particles.append(p)
+         #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
+
+        #particle.add_uncertainty(particles, 0.5, 0.5)
+
+        for p in particles:
+            tmp = p.getWeight()/weight_sum
+            #print tmp
+            p.setWeight(tmp)
+
 
         # Draw detected pattern
         cam.draw_object(colour)
@@ -383,7 +446,7 @@ while True:
 
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-
+    print est_pose.getX(), est_pose.getY(), est_pose.getTheta()
     # Draw map
     draw_world(est_pose, particles, world)
 
