@@ -118,7 +118,6 @@ def angle_between(v1, v2):
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
     mark_dist = dist_vector(part2Mark)
-<<<<<<< HEAD
     #dist_weight = 1.0/abs(obs_dist-mark_dist) GAMMEL VÆGT
     dist_weight = np.exp(-(np.divide(np.power(obs_dist-mark_dist,2), np.multiply(2, 18000))))
 
@@ -126,7 +125,6 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     angle_to_mark = angle_between(orientation, part2Mark)
     #angle_weight = 1.0/(angle_to_mark - obs_angle) GAMMEL VÆGT
     dist_weight = np.exp(-(np.divide(np.power(obs_angle-angle_to_mark,2), np.multiply(2, 18000))))
-=======
     dist_diff = abs(obs_dist-mark_dist)
     if dist_diff == 0.0:
         dist_weight = 999999999.0
@@ -140,7 +138,6 @@ def weight(p, obs_angle, obs_dist, mark_nr):
         angle_weight = 999999999.0
     else:
         angle_weight = 1.0/angle_diff
->>>>>>> a2c23b856963bb5036b26c7f64b27a987793d9ed
 
     return dist_weight, angle_weight
 
