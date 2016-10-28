@@ -118,11 +118,26 @@ def angle_between(v1, v2):
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
     mark_dist = dist_vector(part2Mark)
-    dist_weight = 1.0/abs(obs_dist-mark_dist)
+    #dist_weight = 1.0/abs(obs_dist-mark_dist) GAMMEL VÆGT
+    dist_weight = np.exp(-(np.divide(np.power(obs_dist-mark_dist,2), np.multiply(2, 18000))))
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
-    angle_weight = 1.0/(angle_to_mark - obs_angle)
+    #angle_weight = 1.0/(angle_to_mark - obs_angle) GAMMEL VÆGT
+    dist_weight = np.exp(-(np.divide(np.power(obs_angle-angle_to_mark,2), np.multiply(2, 18000))))
+    dist_diff = abs(obs_dist-mark_dist)
+    if dist_diff == 0.0:
+        dist_weight = 999999999.0
+    else:
+        dist_weight = 1.0/abs(obs_dist-mark_dist)
+
+    orientation = direction(p.getTheta())
+    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_diff = angle_to_mark - obs_angle
+    if angle_diff == 0:
+        angle_weight = 999999999.0
+    else:
+        angle_weight = 1.0/angle_diff
 
     return dist_weight, angle_weight
 
@@ -173,7 +188,7 @@ def when_in_range(w_particles, lower, upper, value):
 
     while True:
         #print "running when in range"
-        ind = (upper-lower)/2
+        ind = int(float(upper-lower)/2)
         if lower-upper <= 1:
             return w_particles[lower][2]
 
@@ -185,7 +200,7 @@ def when_in_range(w_particles, lower, upper, value):
 
         elif w_particles[lower+ind][0] < value:
             if w_particles[lower+ind+1][0] >= value:
-                return w_particles[lower+ind][2]
+                return w_particles[lower+ind+1][2]
             else:
                 lower += ind
 
@@ -308,7 +323,7 @@ cam = camera.Camera(0, 'macbookpro')
 while True:
 
     # Move the robot according to user input (for testing)
-    action = cv2.waitKey(10)
+    action = cv2.waitKey(4)
 
     if action == ord('w'): # Forward
         velocity += 4.0;
@@ -378,7 +393,7 @@ while True:
             sum_dist_w += dist_w
             sum_angle_w += angle_w
 
-            list_of_particles.append([dist_w*0.95, angle_w*0.05, p])
+            list_of_particles.append([dist_w, angle_w*0.05, p])
 
         list_of_particles = np.array(list_of_particles)
 
@@ -391,7 +406,7 @@ while True:
         accum = 0.0
         for p in list_of_particles:
             # setting the dist part of particle weight for all particles
-            tmp_w = p[0] + p[1]
+            tmp_w = p[0] # + p[1]
             p[2].setWeight(tmp_w)
 	    p[1] = accum
             accum += tmp_w
@@ -405,25 +420,27 @@ while True:
         num_of_particles = len(particles)
         weight_sum = 0.0
         particles = []
-        for count in range(0,num_of_particles):
-            #p = when_in_range(list_of_particles,
-            #                  lower,
-            #                  num_of_particles,
-            #                  np.random.uniform(0.0, 1.0))
+        for count in range(0,int(num_particles*0.9)):
+            rando = np.random.uniform(0.0, 1.0)
+            p = when_in_range(list_of_particles,
+                              lower,
+                              num_of_particles,
+                              rando)
+
+            #print rando
             #weight_sum += p.getWeight()
-	    indx = 500
-	    n_start = 2
-            dicte = {'i': indx,
-		     'n': n_start}
-	    p = in_range(list_of_particles, np.random.uniform(0.0, 1.0), dicte, num_of_particles)
+            particles.append(p)
+        #particle.add_uncertainty(particles, 1.0, 0.5)
+        #return_when_in_range(possible_new_particles, , 500, 2, len(possible_new_particles)))
+        for c in range(0,int(num_particles*0.1)):
+            p = particle.Particle(2000.0*np.random.ranf() - 1000, 2000.0*np.random.ranf() - 1000, 2.0*np.pi*np.random.ranf() - np.pi, 1.0/num_particles)
             particles.append(p)
 
-        #particle.add_uncertainty(particles, 0.5, 0.5)
 
-        for p in particles:
-            tmp = p.getWeight()/weight_sum
-            #print tmp
-            p.setWeight(tmp)
+        # for p in particles:
+        #     tmp = p.getWeight()/weight_sum
+        #     #print tmp
+        #     p.setWeight(tmp)
 
 
         # Draw detected pattern
@@ -436,6 +453,8 @@ while True:
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
     print est_pose.getX(), est_pose.getY(), est_pose.getTheta()
+
+
     # Draw map
     draw_world(est_pose, particles, world)
 

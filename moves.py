@@ -25,6 +25,14 @@ SLEEP_SCALE_NI = 0.043
 OFF_SET        = 0.64
 
 
+GEAR = {1: [80, 100],
+	2: [80, 100],
+	3: [80, 100],
+	4: [80, 100],
+	5: [80, 100],
+	6: [200, 225]}
+
+
 def pause():
     """ Ensures the robot does nothing prior to next action
     :return: nothing
@@ -156,6 +164,22 @@ INNIT_SPEED_R = 100
 # ---------------------------------------#
 # Toolbox for scalable movement ends here
 # ---------------------------------------#
+
+
+def lige_test_gear(frindo, tid, gear):
+    x = 1
+    while x < gear:
+        y = GEAR[x]
+        frindo.go_diff(y[0], y[1], 1, 1)
+        x += 1
+        sleep(0.5)
+    frindo.go_diff(GEAR[gear][0], GEAR[gear][1], 1, 1)
+    sleep(abs(tid - (float(x) * 0.5)))
+    force_break()	
+
+
+
+
 
 def scale(cm, frindo, BATTERY):
     parameters = select_scale_params(cm, BATTERY)
