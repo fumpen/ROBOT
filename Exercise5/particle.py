@@ -72,9 +72,10 @@ def move_particle(particle, delta_x, delta_y, delta_theta):
 def add_uncertainty(particles_list, sigma, sigma_theta):
     """Add some noise to each particle in the list. Sigma and sigma_theta is the noise variances for position and angle noise."""
     for particle in particles_list:
-        particle.x += rn.randn(0.0, sigma)
-        particle.y += rn.randn(0.0, sigma)
+        particle.x += rn.randn(0.0, sigma) #np.random.uniform(0.0, sigma)
+        particle.y += rn.randn(0.0, sigma) # (particle.getY()+ np.random.uniform(0.0, sigma))
         particle.theta = np.mod(particle.theta + rn.randn(particle.theta, sigma_theta), 2.0 * np.pi)
+        #(np.mod(particle.getTheta() + np.random.uniform(particle.theta, sigma_theta), 2.0 * np.pi))
 
 
 def add_uncertainty_von_mises(particles_list, sigma, theta_kappa):
