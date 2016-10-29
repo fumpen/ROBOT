@@ -37,9 +37,11 @@ class Camera(object):
 
         if (robottype == 'frindo'):
             self.imageSize = (640, 480)
-            self.intrinsic_matrix = np.asarray([ 7.1305391967046853e+02, 0., 3.1172820723774367e+02, 0.,
-                   7.0564929862291285e+02, 2.5634470978315028e+02, 0., 0., 1. ], dtype = np.float64)
+	
+	    self.intrinsic_matrix = np.asarray([ 7.1305391967046853e+02, 0., 3.1172820723774367e+02, 0., 5.32564929862291285e+02, 2.5634470978315028e+02, 0., 0., 1. ], dtype = np.float64)
+
             self.intrinsic_matrix.shape = (3,3)
+
             self.distortion_coeffs = np.asarray([ 1.1911006165076067e-01, -1.0003366233413549e+00,
                    1.9287903277399834e-02, -2.3728201444308114e-03, -2.8137265581326476e-01 ], dtype = np.float64)
         elif (robottype == 'scribbler'):

@@ -166,6 +166,33 @@ def ret_landmark_coordinates(color, horizontal_or_vertical):
     elif x == 'Green' and horizontal_or_vertical == 'horizontal':
         return landmarks[1]
 
+
+def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
+    if list_of_weigthed_particles[dicte['i']][1] <= random_number < list_of_weigthed_particles[dicte['i']][0]:
+        return list_of_weigthed_particles[dicte['i']][2]
+
+    elif list_of_weigthed_particles[dicte['i']][0] < random_number:
+	a = np.power(2.0, dicte['n'])
+	b = np.divide(1.0, a)
+	c = b * listLength
+	x = int(round(c))
+	dicte['i'] += x
+	dicte['n'] += 1
+
+        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
+
+    elif list_of_weigthed_particles[dicte['i']][1] > random_number:
+	print 'lower'
+	dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
+	dicte['n'] += 1
+
+	return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
+
+    else:
+        print '---return when in range--- fucked up.... ( -__- )'
+        raise
+
+
 def when_in_range(w_particles, lower, upper, value):
     lower = lower
     upper = upper
