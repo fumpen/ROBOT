@@ -69,20 +69,18 @@ particles = p.innit_particles()
 
 while True:
     if LANDMARK[0] and LANDMARK[1]:
-        pass
+        break
         # go to center
     elif LANDMARK[0] or LANDMARK[1]:
         x = find_landmark(particles)
-        if x[0][2] >= 0.0:
-            turn_dir = 'right'
-        else:
+        if np.degrees(x[0][1][2]) >= 0.0:
             turn_dir = 'left'
-        m.turn_baby_turn(x[0][2], turn_dir, frindo)
-        if x[0][2] > 20.0:
-            m.lige_gear(frindo, (x[0][1] - 20.0))
+        else:
+            turn_dir = 'right'
+        m.turn_baby_turn(np.degrees(x[0][1][2]), turn_dir, frindo)
+        if x[0][1][1] > 20.0:
+            m.lige_gear(frindo, (x[0][1][1] - 20.0))
         m.turn_baby_turn(90.0, 'right', frindo)
-        m.lige_gear(frindo, 30.0)
-        m.turn_baby_turn(90.0, 'left', frindo)
         m.lige_gear(frindo, 30.0)
         m.turn_baby_turn(90.0, 'left', frindo)
         m.lige_gear(frindo, 30.0)
