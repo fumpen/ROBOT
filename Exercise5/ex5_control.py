@@ -31,7 +31,7 @@ cam = camera.Camera(0, 'frindo')
 
 
 LANDMARK = {0: 0,
-            1: 0}
+            1: 1}
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [0, 300]}
 
@@ -83,13 +83,13 @@ while True:
         if x[0][1][1] > 20.0:
             m.lige_gear(frindo, (x[0][1][1] - 20.0))
             sleep(0.5)
-        m.turn_baby_turn(90.0, 'right', frindo)
+        m.turn_baby_turn(80.0, 'right', frindo)
         sleep(0.5)
         m.lige_gear(frindo, 80.0)
         sleep(0.5)
-        m.turn_baby_turn(90.0, 'left', frindo)
+        m.turn_baby_turn(80.0, 'left', frindo)
         sleep(0.5)
-        m.lige_gear(frindo, 80.0)
+        m.lige_gear(frindo, 60.0)
 
         previously_turned = 0.0
         while previously_turned <= 360:

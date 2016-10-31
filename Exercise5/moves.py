@@ -272,7 +272,7 @@ def lige_test(frindo, tid, venstre, hoejre):
 
 def choose_gear(dist):
     if dist < 14.93:
-        return 1 , 0.0
+        return 1, 0.0
     elif 14.93 <= dist < 28.43:
         return 2, 14.93
     elif 28.43 <= dist < 46.1:
