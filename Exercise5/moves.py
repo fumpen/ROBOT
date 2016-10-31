@@ -24,6 +24,8 @@ SLEEP_SCALE    = 0.057
 SLEEP_SCALE_NI = 0.043
 OFF_SET        = 0.64
 
+TURN_SPEED = {1: 53.57,
+              2: 111.57}
 
 GEAR = {1: [80, 100],
         2: [100, 120],
@@ -213,7 +215,7 @@ def turn_test(degrees, direction, frindo):
     turn_break(direction, frindo)
     frindo.stop()
 
-
+"""
 def scale(cm, frindo, BATTERY):
     parameters = select_scale_params(cm, BATTERY)
 
@@ -257,7 +259,7 @@ def scale_test(cm, frindo, BATTERY):
     frindo.go_diff(speed_l, speed_r, 1, 1)
     sleep(parameters[6])
     force_break()
-
+"""
 
 def lige_test(frindo, tid, venstre, hoejre):
     speed_l = INNIT_SPEED_L
@@ -303,10 +305,25 @@ def dist_at_time(current_gear, time):
         else:
             dist += GEAR_SPEED[x] * 0.5
             y -= 0.5
-    # dist += GEAR(current_gear) * y
+    dist += GEAR_SPEED[current_gear] * y
     return dist
 
 def ret_gear(original_dist, theta_time, observed_dist):
     origin_gear = choose_gear(original_dist)
     dist_theta_time = ret_gear(origin_gear, theta_time)
     return dist_theta_time - observed_dist
+
+
+
+def ret_degrees(original_degrees, time):
+    degrees_turned = 0.0
+    if original_degrees <= 22.5 and 0.42 <= time:
+        degrees_turned += TURN_SPEED[1] * time
+    elif 22.5 < original_degrees <= 360.0 and 0.42 < time < 3.46:
+        degrees_turned += TURN_SPEED[1] * 0.42
+        degrees_turned += TURN_SPEED[2] * (time - 0.42)
+    else:
+        print "ERROR IN RET_DEGREES"
+        raise
+    return degrees_turned
+
