@@ -124,14 +124,14 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 300)
+    dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
-    angle_weight = diff_weight(angle_diff, 150)
+    angle_weight = diff_weight(angle_diff, 50)
 
 
     if math.isnan(dist_weight):
@@ -373,18 +373,19 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 
-cam = camera.Camera(0, 'macbookpro')
-#cam = camera.Camera(0)
+#cam = camera.Camera(0, 'macbookpro')
+cam = camera.Camera(0, 'frindo')
 
 while True:
 
     # Move the robot according to user input (for testing)
-    action = cv2.waitKey(1)
+    action = cv2.waitKey(4)
+
 
     if action == ord('w'): # Forward
-        velocity += 0.4;
+        velocity += 4.0;
     elif action == ord('x'): # Backwards
-        velocity -= 0.4;
+        velocity -= 4.0;
         angular_velocity = 0.0;
     elif action == ord('s'): # Stop
         velocity = 0.0;
@@ -459,7 +460,7 @@ while True:
         #nunum_of_particles = len(particles)
         weight_sum = 0.0
         particles = []
-        for count in range(0,int(num_particles*0.9)):
+        for count in range(0,int(num_particles*0.95)):
             rando = np.random.uniform(0.0, 1.0) #np.random.normal(0.0, 1.0, 1)
 
             # dicto = {'i': 500,
@@ -482,7 +483,7 @@ while True:
 
 
         # 10% new random particles added
-        for c in range(0,int(math.ceil(num_particles*0.1))):
+        for c in range(0,int(math.ceil(num_particles*0.05))):
             p = particle.Particle(500.0*np.random.ranf() - 100, 500.0*np.random.ranf() - 100, 2.0*np.pi*np.random.ranf()-np.pi, 0.0)
 
             particles.append(p)
