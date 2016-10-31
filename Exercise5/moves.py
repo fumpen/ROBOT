@@ -26,20 +26,28 @@ OFF_SET        = 0.64
 
 
 GEAR = {1: [80, 100],
-	2: [100, 120],
-	3: [120, 148],
-	4: [140, 168],
-	5: [160, 190],
-	6: [180, 208],
-	7: [200, 230]}
+        2: [100, 120],
+        3: [120, 148],
+        4: [140, 168],
+        5: [160, 190],
+        6: [180, 208],
+        7: [200, 230]}
+
+GEAR_SPEED = {1: 16.74,
+              2: 22.3,
+              3: 26.99,
+              4: 35.35,
+              5: 35.83,
+              6: 38.67,
+              7: 39.89}
 
 BREAK = {1: [100, 110],
-	2: [100, 120],
-	3: [120, 140],
-	4: [140, 160],
-	5: [160, 190],
-	6: [180, 208],
-	7: [200, 230]}
+         2: [100, 120],
+         3: [120, 140],
+         4: [140, 160],
+         5: [160, 190],
+         6: [180, 208],
+         7: [200, 230]}
 
 def pause():
     """ Ensures the robot does nothing prior to next action
@@ -186,7 +194,24 @@ def lige_test_gear(frindo, tid, gear):
     force_break()	
 
 
+def turn_break(direction, frindo):
+    if direction == 'right':
+        frindo.go_diff(GEAR[1][0] + 18, GEAR[1][1] + 13, 0, 1)
+        sleep(0.03)
+    else:
+        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 30, 1, 0)
+        sleep(0.03)
 
+
+def turn_test(degrees, direction, frindo):
+    if direction == 'right':
+        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
+        sleep(degrees)
+    else:
+        frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
+        sleep(degrees)
+    turn_break(direction, frindo)
+    frindo.stop()
 
 
 def scale(cm, frindo, BATTERY):
@@ -249,3 +274,39 @@ def lige_test(frindo, tid, venstre, hoejre):
 
     sleep(tid - 1.5)
     force_break()
+
+
+def choose_gear(dist):
+    if dist < 14.93:
+        return 1
+    elif 14.93 <= dist < 28.43:
+        return 2
+    elif 28.43 <= dist < 46.1:
+        return 3
+    elif 46.1 <= dist < 64.02:
+        return 4
+    elif 64.02 <= dist < 83.35:
+        return 5
+    elif 83.35 <= dist < 103.3:
+        return 6
+    elif 103.3 <= dist:
+        return 7
+
+def dist_at_time(current_gear, time):
+    dist = 0.0
+    x = 0
+    y = time
+    while x < current_gear:
+        x += 1
+        if y <= 0.5:
+            dist += GEAR_SPEED[x] * y
+        else:
+            dist += GEAR_SPEED[x] * 0.5
+            y -= 0.5
+    # dist += GEAR(current_gear) * y
+    return dist
+
+def ret_gear(original_dist, theta_time, observed_dist):
+    origin_gear = choose_gear(original_dist)
+    dist_theta_time = ret_gear(origin_gear, theta_time)
+    return dist_theta_time - observed_dist

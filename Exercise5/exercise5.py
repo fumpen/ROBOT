@@ -193,27 +193,40 @@ def ret_landmark(color, horizontal_or_vertical):
         return 1
 
 
+def where_to_go(particle, goal):
+    """ Takes a particle (which must be our best bet for our actual position)
+    and the place we want to be (goal = [x, y])
+
+    returns a list of the length the robot needs to drive, the degrees it
+    needs to turn and the direction it needs to turn"""
+    ang = vector_angle([particle.getX(), particle.getY()], goal)
+    if ang <= 180:
+        turn_dir = 'right'
+        turn_deg = ang
+    else:
+        turn_dir = 'left'
+        turn_deg = 180 - ang
+    length = np.sqrt(
+        np.power((particle.getX() - goal[0]), 2) + np.power(
+            (particle.getY() - goal[1]), 2))
+    return [length, turn_dir, turn_deg]
+
+
 def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
     if list_of_weigthed_particles[dicte['i']][1] <= random_number < list_of_weigthed_particles[dicte['i']][0]:
         return list_of_weigthed_particles[dicte['i']][2]
-
     elif list_of_weigthed_particles[dicte['i']][0] < random_number:
-	a = np.power(2.0, dicte['n'])
-	b = np.divide(1.0, a)
-	c = b * listLength
-	x = int(round(c))
-	dicte['i'] += x
-	dicte['n'] += 1
-
+        a = np.power(2.0, dicte['n'])
+        b = np.divide(1.0, a)
+        c = b * listLength
+        x = int(round(c))
+        dicte['i'] += x
+        dicte['n'] += 1
         return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
-
     elif list_of_weigthed_particles[dicte['i']][1] > random_number:
-	print 'lower'
-	dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
-	dicte['n'] += 1
-
-	return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
-
+        dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
+        dicte['n'] += 1
+        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
     else:
         print '---return when in range--- fucked up.... ( -__- )'
         raise
