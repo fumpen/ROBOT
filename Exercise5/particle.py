@@ -38,7 +38,7 @@ class Particle(object):
 def estimate_pose(particles_list):
     """Estimate the pose from particles by computing the average position and orientation over all particles.
     This is not done using the particle weights, but just the sample distribution."""
-    x_sum = 0.0; y_sum = 0.0; cos_sum = 0.0; sin_sum = 0.0
+    x_sum = 0.0; y_sum = 0.0; cos_sum = 0.0; sin_sum = 0.0;
 
     for particle in particles_list:
         x_sum += particle.getX()
@@ -47,15 +47,15 @@ def estimate_pose(particles_list):
         sin_sum += np.sin(particle.getTheta())
 
     flen = len(particles_list)
-    if flen !=0:
+    if flen != 0:
         x = x_sum / flen
         y = y_sum / flen
+
         theta = np.arctan2(sin_sum/flen, cos_sum/flen)
     else:
         x = x_sum
         y = y_sum
         theta = 0.0
-
     return Particle(x, y, theta)
 
 def move_particle(particle, delta_x, delta_y, delta_theta):
@@ -74,7 +74,15 @@ def add_uncertainty(particles_list, sigma, sigma_theta):
     for particle in particles_list:
         particle.x += rn.randn(0.0, sigma) #np.random.uniform(0.0, sigma)
         particle.y += rn.randn(0.0, sigma) # (particle.getY()+ np.random.uniform(0.0, sigma))
-        particle.theta = np.mod(particle.theta + rn.randn(particle.theta, sigma_theta), 2.0 * np.pi)
+        #print particle.theta
+        new_theta = np.degrees(particle.theta) + np.random.uniform(-sigma_theta, sigma_theta)
+        if new_theta < 0.0:
+            particle.theta = np.radians(new_theta + 360.0)
+        elif new_theta >= 360.0:
+            particle.theta = np.radians(new_theta - 360.0)
+        else:
+            particle.theta = np.radians(new_theta)
+        #print particle.theta
         #(np.mod(particle.getTheta() + np.random.uniform(particle.theta, sigma_theta), 2.0 * np.pi))
 
 
