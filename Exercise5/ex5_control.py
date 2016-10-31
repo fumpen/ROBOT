@@ -48,8 +48,8 @@ def find_landmark(particles, previously_moved=0.0):
     """
     :param particles: list of particles
     :param previously_moved: degrees (to mitegate turning more that 360
-    :return: RET = [objectType, measured_distance, measured_angle,
-                        integer-rep-of-landmark]
+    :return: RET = [est_pose, [objectType, measured_distance, measured_angle,
+                        integer-rep-of-landmark]]
              degrees_moved: degrees turned to find a landmark
     """
     degrees_moved = previously_moved
@@ -70,8 +70,9 @@ particles = p.innit_particles()
 
 while True:
     if LANDMARK[0] and LANDMARK[1]:
-        break
-        # go to center
+        dest = p.where_to_go(p.estimate_position(particles), [0, 150])
+        m.turn_baby_turn(dest[2], dest[1], frindo)
+        m.lige_gear(frindo, dest[0])
     elif LANDMARK[0] or LANDMARK[1]:
         x = find_landmark(particles)
         if np.degrees(x[0][1][2]) >= 0.0:
@@ -92,12 +93,13 @@ while True:
         m.lige_gear(frindo, 60.0)
 
         previously_turned = 0.0
-        while previously_turned <= 360:
+        while (previously_turned <= 360) or (LANDMARK[0] and LANDMARK[1]):
             x = find_landmark(particles)
             previously_turned += x[1]
 
     else:
         previously_turned = 0.0
-        while previously_turned <= 360:
+        while (previously_turned <= 360) or (LANDMARK[0] and LANDMARK[1]):
             x = find_landmark(particles)
             previously_turned += x[1]
+
