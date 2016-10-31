@@ -151,12 +151,12 @@ def forwardv2(frindo, cm, BATTERY):
 
         frindo.go_diff(66,83,1,1)
         secToSleep = cm * SLEEP_SCALE_NI
-    
+
     x_1 = datetime.datetime.now()
     x_t = datetime.timedelta(seconds=secToSleep)
     x_2 = x_1 + x_t
-    
-    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300: 
+
+    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300:
       x_1 = datetime.datetime.now()
 
     frindo.stop()
@@ -168,9 +168,9 @@ def forwardv2(frindo, cm, BATTERY):
 # ------------------------------------------#
 # Toolbox for scalable movement starts here
 # ------------------------------------------#
-def force_break(frindo):
-    frindo.go_diff(INNIT_SPEED_L, INNIT_SPEED_R, 0, 0)
-    sleep(0.2)
+def force_break(frindo, gear):
+    frindo.go_diff(BREAK[gear][0], BREAK[gear][1], 0, 0)
+    sleep(0.1)
     frindo.stop()
 
 def select_scale_params(cm, BATTERY):
@@ -296,7 +296,7 @@ def lige_gear(frindo, dist):
         sleep(0.5)
     frindo.go_diff(GEAR[g][0], GEAR[g][1], 1, 1)
     sleep(abs(np.divide((dist - d), GEAR_SPEED[g])))
-    force_break(frindo)
+    force_break(frindo, g)
 
 
 def dist_at_time(current_gear, time):
