@@ -1,3 +1,4 @@
+import numpy as np
 import datetime
 import robot
 from time import sleep
@@ -205,15 +206,6 @@ def turn_break(direction, frindo):
         sleep(0.03)
 
 
-def turn_test(degrees, direction, frindo):
-    if direction == 'right':
-        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
-        sleep(degrees)
-    else:
-        frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
-        sleep(degrees)
-    turn_break(direction, frindo)
-    frindo.stop()
 
 """
 def scale(cm, frindo, BATTERY):
@@ -327,3 +319,34 @@ def ret_degrees(original_degrees, time):
         raise
     return degrees_turned
 
+
+def turn_test(degrees, direction, frindo):
+    if direction == 'right':
+        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
+        sleep(degrees)
+    else:
+        frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
+        sleep(degrees)
+    turn_break(direction, frindo)
+    frindo.stop()
+
+def turn_baby_turn(degrees, direction, frindo):
+    if degrees <= 22.5:
+        s_timer = np.divide(degrees, TURN_SPEED[1])
+        if direction == 'right':
+            frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
+        else:
+            frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
+        sleep(s_timer)
+    elif 22.5 < degrees <= 360.0:
+        s_timer = s_timer = np.divide(22.5, TURN_SPEED[1])
+        s_timer += np.divide((degrees - 22.5), TURN_SPEED[1])
+        if direction == 'right':
+            frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
+        else:
+            frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
+        sleep(s_timer)
+    else:
+        print "ERROR IN RET_DEGREES"
+        raise
+    turn_break(direction, frindo)
