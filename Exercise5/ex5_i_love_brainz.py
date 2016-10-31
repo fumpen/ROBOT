@@ -299,8 +299,6 @@ def update_particles(particles, cam, velocity, angular_velocity):
             print "Landmark is vertical"
         else:
             print "Unknown landmark type"
-            continue
-
         # *********** set weights ***********
 
         obs_landmark = ret_landmark(colourProb, objectType)
