@@ -350,7 +350,8 @@ def turn_baby_turn(degrees, direction, frindo):
             frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
         else:
             frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
-        sleep(s_timer)
+        if 0 < s_timer:
+            sleep(s_timer)
     elif 22.5 < degrees <= 360.0:
         s_timer = np.divide(22.5, TURN_SPEED[1])
         s_timer += np.divide((degrees - 22.5), TURN_SPEED[2])
@@ -358,7 +359,8 @@ def turn_baby_turn(degrees, direction, frindo):
             frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
         else:
             frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
-        sleep(s_timer)
+        if 0 < s_timer:
+            sleep(s_timer)
     else:
         print "ERROR IN RET_DEGREES"
         raise
