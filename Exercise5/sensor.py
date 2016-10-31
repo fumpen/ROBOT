@@ -17,15 +17,12 @@ def allSensorBoundary(frindo):
         continue
     return 0
 
-<<<<<<< HEAD
-=======
 def allSensor(frindo):
     return (rightSensor(frindo) < 350 and
             frontSensor(frindo) < 350 and
             leftSensor(frindo) < 350)
 
 
->>>>>>> 7870ac77d37b39928fc8f3998011584099dc4cb6
 def rightSensorBoundary(frindo):
     while rightSensor(frindo) < 300:
         continue
@@ -63,21 +60,11 @@ def obstacle_ident(frindo):
                 return 0
 
 
-<<<<<<< HEAD
-def forward_stop(frindo):
-=======
 def forward_stop(frindo, timer):
->>>>>>> 7870ac77d37b39928fc8f3998011584099dc4cb6
     """The robot drives straight forward until being within 10 cm of an
     opstackle, then stopping in place
     :return: nothing
     """
-<<<<<<< HEAD
-    if moves.BATTERY:
-
-        frindo.go_diff(102,123,1,1)
-        allSensorBoundary(frindo)
-=======
 
     if moves.BATTERY:
 
@@ -85,7 +72,6 @@ def forward_stop(frindo, timer):
         start = time.time()
         while not allSensor(frindo) and (time.time() - start) < timer:
             continue
->>>>>>> 7870ac77d37b39928fc8f3998011584099dc4cb6
         print "Found Object"
 
     else:

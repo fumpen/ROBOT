@@ -69,6 +69,8 @@ def find_landmark(particles, previously_moved=0.0):
             break
         else:
             ret = None
+
+    print [ret[0].getX(), ret[0].getY()]
     return [ret, degrees_moved]
 
 
@@ -76,7 +78,8 @@ particles = p.innit_particles()
 
 while True:
     print 'Landmarks ' + str(LANDMARK[0]) + ' | ' + str(LANDMARK[1])
-    if LANDMARK[0] and LANDMARK[1]:
+    if LANDMARK[0] == LANDMARK[1] == 1:
+	print "Found Both landmarks"
         dest = p.where_to_go(p.estimate_position(particles), [0, 150])
         m.turn_baby_turn(dest[2], dest[1], frindo)
         sleep(0.5)
@@ -84,7 +87,8 @@ while True:
         m.lige_gear(frindo, dest[0])
         p.update_particles(particles, cam, dest[0], 0.0)
         break
-    elif LANDMARK[0] or LANDMARK[1]:
+    elif LANDMARK[0] + LANDMARK[1] == 1:
+	print "Found one landmark!! In elif"
         x = find_landmark(particles)
         if np.degrees(x[0][1][2]) >= 0.0:
             turn_dir = 'left'
@@ -114,13 +118,20 @@ while True:
         m.lige_gear(frindo, 60.0)
         p.update_particles(particles, cam, 60.0, 0.0)
         previously_turned = 0.0
-        while (previously_turned <= 360) or (LANDMARK[0] == LANDMARK[1] != 0):
-            x = find_landmark(particles)
+        while (previously_turned <= 360):
+            if (LANDMARK[0] == LANDMARK[1] != 1):
+		x = find_landmark(particles)
+	    else:
+		break
             previously_turned += x[1]
 
     else:
         previously_turned = 0.0
-        while (previously_turned <= 360) or (LANDMARK[0] == LANDMARK[1] != 0):
-            x = find_landmark(particles)
+	print "Sitting in Else inside while loop"
+        while (previously_turned <= 360):
+            if (LANDMARK[0] + LANDMARK[1] != 2):
+	        x = find_landmark(particles)
+	    else:
+		break
             previously_turned += x[1]
 
