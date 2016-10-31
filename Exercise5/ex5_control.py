@@ -31,7 +31,7 @@ cam = camera.Camera(0, 'frindo')
 
 
 LANDMARK = {0: 0,
-            1: 1}
+            1: 0}
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [0, 300]}
 
