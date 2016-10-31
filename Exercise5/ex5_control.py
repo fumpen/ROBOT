@@ -86,6 +86,15 @@ while True:
         update_turn(particles, dest[1], dest[2])
         m.lige_gear(frindo, dest[0])
         p.update_particles(particles, cam, dest[0], 0.0)
+
+        for t in range(1, 3):
+            q = find_landmark(particles)
+            dest = p.where_to_go(q[0][0], [0, 150])
+            m.turn_baby_turn(dest[2], dest[1], frindo)
+            sleep(0.5)
+            update_turn(particles, dest[1], dest[2])
+            m.lige_gear(frindo, dest[0])
+            p.update_particles(particles, cam, dest[0], 0.0)
         break
     elif LANDMARK[0] + LANDMARK[1] == 1:
 	print "Found one landmark!! In elif"
