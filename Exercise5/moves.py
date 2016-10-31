@@ -151,12 +151,12 @@ def forwardv2(frindo, cm, BATTERY):
 
         frindo.go_diff(66,83,1,1)
         secToSleep = cm * SLEEP_SCALE_NI
-    
+
     x_1 = datetime.datetime.now()
     x_t = datetime.timedelta(seconds=secToSleep)
     x_2 = x_1 + x_t
-    
-    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300: 
+
+    while x_1 < x_2 and sensor.frontSensor(frindo) < 300 and sensor.rightSensor(frindo) < 300 and sensor.leftSensor(frindo) < 300:
       x_1 = datetime.datetime.now()
 
     frindo.stop()
