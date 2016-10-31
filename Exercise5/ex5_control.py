@@ -31,7 +31,7 @@ cam = camera.Camera(0, 'frindo')
 
 
 LANDMARK = {0: 0,
-            1: 1}
+            1: 0}
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [0, 300]}
 
@@ -75,12 +75,15 @@ def find_landmark(particles, previously_moved=0.0):
 particles = p.innit_particles()
 
 while True:
+    print 'Landmarks ' + str(LANDMARK[0]) + ' | ' + str(LANDMARK[1])
     if LANDMARK[0] and LANDMARK[1]:
         dest = p.where_to_go(p.estimate_position(particles), [0, 150])
         m.turn_baby_turn(dest[2], dest[1], frindo)
+        sleep(0.5)
         update_turn(particles, dest[1], dest[2])
         m.lige_gear(frindo, dest[0])
         p.update_particles(particles, cam, dest[0], 0.0)
+        break
     elif LANDMARK[0] or LANDMARK[1]:
         x = find_landmark(particles)
         if np.degrees(x[0][1][2]) >= 0.0:
