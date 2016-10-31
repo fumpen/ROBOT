@@ -1,7 +1,10 @@
 import ex5_i_love_brainz as p
-import numpy as np
 import moves as m
 import robot
+import camera
+import numpy as np
+import math
+
 # just for quriosity..
 """
 x = p.innit_particles(1000)
@@ -21,8 +24,9 @@ for b in z:
              'n': 2}
     q.append(p.in_range(z, np.random.uniform(0.0, 1.0), dicto, z_len))
 """
-
+# setup config
 frindo = robot.Robot()
+cam = camera.Camera(0, 'frindo')
 
 LANDMARK_1 = 0
 LANDMARK_2 = 0

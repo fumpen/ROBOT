@@ -119,14 +119,14 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 300)
+    dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
-    angle_weight = diff_weight(angle_diff, 150)
+    angle_weight = diff_weight(angle_diff, 50)
 
 
     if math.isnan(dist_weight):
@@ -266,7 +266,6 @@ def innit_particles(num_particles = 1000):
 def update_particles(particles, cam, velocity, angular_velocity):
 
     num_particles = len(particles)
-
     for p in particles:
         # calculates new orientation
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
@@ -288,7 +287,6 @@ def update_particles(particles, cam, velocity, angular_velocity):
 
         observed_obj = [objectType, measured_distance, measured_angle,
                         ret_landmark(colour, objectType)]
-
 
         print "Object type = ", objectType
         print "Measured distance = ", measured_distance
@@ -336,7 +334,7 @@ def update_particles(particles, cam, velocity, angular_velocity):
         # nunum_of_particles = len(particles)
         weight_sum = 0.0
         particles = []
-        for count in range(0, int(num_particles * 0.9)):
+        for count in range(0, int(num_particles * 0.95)):
             rando = np.random.uniform(0.0,
                                       1.0)  # np.random.normal(0.0, 1.0, 1)
 
@@ -360,7 +358,7 @@ def update_particles(particles, cam, velocity, angular_velocity):
         particle.add_uncertainty(particles, 12, 15)
 
         # 10% new random particles added
-        for c in range(0, int(math.ceil(num_particles * 0.1))):
+        for c in range(0, int(math.ceil(num_particles * 0.05))):
             p = particle.Particle(500.0 * np.random.ranf() - 100,
                                   500.0 * np.random.ranf() - 100,
                                   2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
@@ -370,11 +368,10 @@ def update_particles(particles, cam, velocity, angular_velocity):
         # Draw detected pattern
         cam.draw_object(colour)
     else:
-        # No observation - reset weights to uniform distribution
         observed_obj = [None, None, None, None]
+        # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0 / num_particles)
-            # particle.add_uncertainty(particles, 20, 0.0005)
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
