@@ -374,3 +374,6 @@ def update_particles(particles, cam, velocity, angular_velocity):
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
     return [est_pose, observed_obj]
+
+def estimate_position(particles):
+    return particle.estimate_pose(particles)

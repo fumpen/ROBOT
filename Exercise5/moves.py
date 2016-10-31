@@ -170,7 +170,7 @@ def forwardv2(frindo, cm, BATTERY):
 # ------------------------------------------#
 def force_break(frindo, gear):
     frindo.go_diff(BREAK[gear][0], BREAK[gear][1], 0, 0)
-    sleep(0.1)
+    sleep(0.05)
     frindo.stop()
 
 def select_scale_params(cm, BATTERY):
