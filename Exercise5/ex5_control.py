@@ -114,13 +114,13 @@ while True:
         m.lige_gear(frindo, 60.0)
         p.update_particles(particles, cam, 60.0, 0.0)
         previously_turned = 0.0
-        while (previously_turned <= 360) or (LANDMARK[0] and LANDMARK[1]):
+        while (previously_turned <= 360) or (LANDMARK[0] == LANDMARK[1] != 0):
             x = find_landmark(particles)
             previously_turned += x[1]
 
     else:
         previously_turned = 0.0
-        while (previously_turned <= 360) or (LANDMARK[0] and LANDMARK[1]):
+        while (previously_turned <= 360) or (LANDMARK[0] == LANDMARK[1] != 0):
             x = find_landmark(particles)
             previously_turned += x[1]
 
