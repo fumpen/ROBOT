@@ -249,6 +249,65 @@ def when_in_range(w_particles, lower, upper, value):
             else:
                 upper -= ind
 
+# For graphic
+def jet(x):
+    """Colour map for drawing particles. This function determines the colour of
+    a particle from its weight."""
+    r = (x >= 3.0/8.0 and x < 5.0/8.0) * (4.0 * x - 3.0/2.0) + (x >= 5.0/8.0 and x < 7.0/8.0) + (x >= 7.0/8.0) * (-4.0 * x + 9.0/2.0)
+    g = (x >= 1.0/8.0 and x < 3.0/8.0) * (4.0 * x - 1.0/2.0) + (x >= 3.0/8.0 and x < 5.0/8.0) + (x >= 5.0/8.0 and x < 7.0/8.0) * (-4.0 * x + 7.0/2.0)
+    b = (x < 1.0/8.0) * (4.0 * x + 1.0/2.0) + (x >= 1.0/8.0 and x < 3.0/8.0) + (x >= 3.0/8.0 and x < 5.0/8.0) * (-4.0 * x + 5.0/2.0)
+
+    return (255.0*r, 255.0*g, 255.0*b)
+
+def draw_world(est_pose, particles, world):
+    """Visualization.
+    This functions draws robots position in the world."""
+
+    offset = 100;
+
+    world[:] = CWHITE # Clear background to white
+
+    # Find largest weight
+    max_weight = 0
+    for particle in particles:
+        max_weight = max(max_weight, particle.getWeight())
+
+    # Draw particles
+    for particle in particles:
+        x = int(particle.getX()) + offset
+        y = int(particle.getY()) + offset
+        colour = jet(particle.getWeight() / max_weight)
+        cv2.circle(world, (x,y), 2, colour, 2)
+        b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset,
+                                     int(particle.getY() - 15.0*np.sin(particle.getTheta()))+offset)
+        cv2.line(world, (x,y), b, colour, 2)
+
+    # Draw landmarks
+    lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
+    lm1 = (landmarks[1][0]+offset, landmarks[1][1]+offset)
+    cv2.circle(world, lm0, 5, CRED, 2)
+    cv2.circle(world, lm1, 5, CGREEN, 2)
+
+    # Draw estimated robot pose
+    a = (int(est_pose.getX())+offset, int(est_pose.getY())+offset)
+    b = (int(est_pose.getX() + 15.0*np.cos(est_pose.getTheta()))+offset,
+                                 int(est_pose.getY() - 15.0*np.sin(est_pose.getTheta()))+offset)
+    cv2.circle(world, a, 5, CMAGENTA, 2)
+    cv2.line(world, a, b, CMAGENTA, 2)
+
+
+### Main program ###
+
+# Open windows
+WIN_RF1 = "Robot view";
+cv2.namedWindow(WIN_RF1);
+cv2.moveWindow(WIN_RF1, 50       , 50);
+
+WIN_World = "World view";
+cv2.namedWindow(WIN_World);
+cv2.moveWindow(WIN_World, 500       , 50);
+
+# --
 
 def innit_particles(num_particles = 1000):
     # Initialize particles
@@ -263,7 +322,18 @@ def innit_particles(num_particles = 1000):
         particles.append(p)
     return particles
 
-def update_particles(particles, cam, velocity, angular_velocity):
+
+def draw_w(est_pose, particles, world, colour):
+    draw_world(est_pose, particles, world)
+
+    # Show frame
+    cv2.imshow(WIN_RF1, colour);
+
+    # Show world
+    cv2.imshow(WIN_World, world);
+
+
+def update_particles(particles, cam, velocity, angular_velocity, world):
 
     num_particles = len(particles)
     for p in particles:
@@ -373,6 +443,8 @@ def update_particles(particles, cam, velocity, angular_velocity):
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
+
+    draw_w(est_pose, particles, world, colour)
     return [est_pose, observed_obj]
 
 def estimate_position(particles):

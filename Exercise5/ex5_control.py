@@ -28,6 +28,7 @@ for b in z:
 # setup config
 frindo = robot.Robot()
 cam = camera.Camera(0, 'frindo')
+world = np.zeros((500, 500, 3), dtype=np.uint8)
 
 
 LANDMARK = {0: 0,
@@ -46,9 +47,9 @@ def update_landmark(num_landmark):
 
 def update_turn(particles, dir, deg):
     if dir == 'left':
-        return p.update_particles(particles, cam, 0.0, deg)
+        return p.update_particles(particles, cam, 0.0, deg, world)
     else:
-        return p.update_particles(particles, cam, 0.0, ((-1.0) * deg))
+        return p.update_particles(particles, cam, 0.0, ((-1.0) * deg), world)
 
 def find_landmark(particles, previously_moved=0.0):
     """
@@ -85,7 +86,7 @@ while True:
         sleep(0.5)
         update_turn(particles, dest[1], dest[2])
         m.lige_gear(frindo, dest[0])
-        p.update_particles(particles, cam, dest[0], 0.0)
+        p.update_particles(particles, cam, dest[0], 0.0, world)
 
         for t in range(1, 3):
             q = find_landmark(particles)
@@ -94,7 +95,7 @@ while True:
             sleep(0.5)
             update_turn(particles, dest[1], dest[2])
             m.lige_gear(frindo, dest[0])
-            p.update_particles(particles, cam, dest[0], 0.0)
+            p.update_particles(particles, cam, dest[0], 0.0, world)
         break
     elif LANDMARK[0] + LANDMARK[1] == 1:
 	print "Found one landmark!! In elif"
@@ -109,7 +110,7 @@ while True:
 
         if x[0][1][1] > 20.0:
             m.lige_gear(frindo, (x[0][1][1] - 20.0))
-            p.update_particles(particles, cam, (x[0][1][1] - 20.0), 0.0)
+            p.update_particles(particles, cam, (x[0][1][1] - 20.0), 0.0, world)
             sleep(0.5)
 
         m.turn_baby_turn(80.0, 'right', frindo)
@@ -117,7 +118,7 @@ while True:
         sleep(0.5)
 
         m.lige_gear(frindo, 80.0)
-        p.update_particles(particles, cam, 80.0, 0.0)
+        p.update_particles(particles, cam, 80.0, 0.0, world)
         sleep(0.5)
 
         m.turn_baby_turn(80.0, 'left', frindo)
@@ -125,7 +126,7 @@ while True:
         sleep(0.5)
 
         m.lige_gear(frindo, 60.0)
-        p.update_particles(particles, cam, 60.0, 0.0)
+        p.update_particles(particles, cam, 60.0, 0.0, world)
         previously_turned = 0.0
         while (previously_turned <= 360):
             if (LANDMARK[0] == LANDMARK[1] != 1):
