@@ -196,19 +196,19 @@ def lige_test_gear(frindo, tid, gear):
 
 def turn_break(direction, frindo):
     if direction == 'right':
-        frindo.go_diff(GEAR[1][0], GEAR[1][1], 0, 1)
-        sleep(0.05)
+        frindo.go_diff(GEAR[1][0] + 18, GEAR[1][1] + 13, 0, 1)
+        sleep(0.03)
     else:
-        frindo.go_diff(GEAR[1][0], GEAR[1][1], 1, 0)
-        sleep(0.05)
+        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 30, 1, 0)
+        sleep(0.03)
 
 
 def turn_test(degrees, direction, frindo):
     if direction == 'right':
-        frindo.go_diff(GEAR[1][0], GEAR[1][1], 1, 0)
+        frindo.go_diff(GEAR[1][0] + 20, GEAR[1][1] + 15, 1, 0)
         sleep(degrees)
     else:
-        frindo.go_diff(GEAR[1][0], GEAR[1][1], 0, 1)
+        frindo.go_diff(GEAR[1][0] + 10, GEAR[1][1] + 10, 0, 1)
         sleep(degrees)
     turn_break(direction, frindo)
     frindo.stop()
