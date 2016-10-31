@@ -4,6 +4,7 @@ import robot
 import camera
 import numpy as np
 import math
+from time import sleep
 
 # just for quriosity..
 """
@@ -52,7 +53,7 @@ def find_landmark(particles, previously_moved=0.0):
              degrees_moved: degrees turned to find a landmark
     """
     degrees_moved = previously_moved
-    move_pr_turn = 45.0
+    move_pr_turn = 25.0
     while degrees_moved <= 360:
         m.turn_baby_turn(move_pr_turn, 'right', frindo)
         degrees_moved += move_pr_turn
@@ -78,12 +79,17 @@ while True:
         else:
             turn_dir = 'right'
         m.turn_baby_turn(np.degrees(x[0][1][2]), turn_dir, frindo)
+        sleep(0.5)
         if x[0][1][1] > 20.0:
             m.lige_gear(frindo, (x[0][1][1] - 20.0))
+            sleep(0.5)
         m.turn_baby_turn(90.0, 'right', frindo)
-        m.lige_gear(frindo, 30.0)
+        sleep(0.5)
+        m.lige_gear(frindo, 80.0)
+        sleep(0.5)
         m.turn_baby_turn(90.0, 'left', frindo)
-        m.lige_gear(frindo, 30.0)
+        sleep(0.5)
+        m.lige_gear(frindo, 80.0)
 
         previously_turned = 0.0
         while previously_turned <= 360:
