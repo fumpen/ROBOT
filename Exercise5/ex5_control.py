@@ -69,7 +69,7 @@ particles = p.innit_particles()
 
 while True:
     if LANDMARK[0] and LANDMARK[1]:
-        pass
+        break
         # go to center
     elif LANDMARK[0] or LANDMARK[1]:
         x = find_landmark(particles)
