@@ -159,26 +159,21 @@ def where_to_go(particle, goal):
             (particle.getY() - goal[1]), 2))
     return [length, turn_dir, turn_deg]
 
-def in_range(list_of_weigthed_particles, random_number, indexing, n, listLength):
-    print indexing
-    print n
-    print random_number
-
-    if list_of_weigthed_particles[indexing][0
-    ] <= random_number < list_of_weigthed_particles[indexing][1]:
-        return list_of_weigthed_particles[indexing][2]
-    elif list_of_weigthed_particles[indexing][1] < random_number:
-        new_index = int(
-            round(indexing + (np.divide(1, np.power(2, n)) * listLength)))
-        new_n = n + 1
-        return in_range(list_of_weigthed_particles,
-                        random_number, new_index, new_n, listLength)
-    elif list_of_weigthed_particles[indexing][0] > random_number:
-        new_index = int(
-            round(indexing - (np.divide(1, np.power(2, n)) * listLength)))
-        new_n = n + 1
-        return in_range(list_of_weigthed_particles,
-                        random_number, new_index, new_n, listLength)
+def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
+    if list_of_weigthed_particles[dicte['i']][0] <= random_number < list_of_weigthed_particles[dicte['i']][1]:
+        return list_of_weigthed_particles[dicte['i']][2]
+    elif list_of_weigthed_particles[dicte['i']][1] < random_number:
+        a = np.power(2.0, dicte['n'])
+        b = np.divide(1.0, a)
+        c = b * listLength
+        x = int(round(c))
+        dicte['i'] += x
+        dicte['n'] += 1
+        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
+    elif list_of_weigthed_particles[dicte['i']][0] > random_number:
+        dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
+        dicte['n'] += 1
+        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
     else:
         print '---return when in range--- fucked up.... ( -__- )'
         raise
@@ -238,7 +233,7 @@ def where_i_am(particles, goal, velocity, angular_velocity):
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
-
+    num_particles = len(particles)
 
     # Detect objects
     objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
@@ -254,7 +249,7 @@ def where_i_am(particles, goal, velocity, angular_velocity):
             print "Landmark is vertical"
         else:
             print "Unknown landmark type"
-            continue
+            pass
 
         # *********** set weights ***********
 
