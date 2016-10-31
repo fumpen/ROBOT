@@ -124,7 +124,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 200)
+    dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
@@ -373,13 +373,14 @@ draw_world(est_pose, particles, world)
 print "Opening and initializing camera"
 
 
-cam = camera.Camera(0, 'macbookpro')
-#cam = camera.Camera(0)
+#cam = camera.Camera(0, 'macbookpro')
+cam = camera.Camera(0, 'frindo')
 
 while True:
 
     # Move the robot according to user input (for testing)
     action = cv2.waitKey(4)
+
 
     if action == ord('w'): # Forward
         velocity += 4.0;
