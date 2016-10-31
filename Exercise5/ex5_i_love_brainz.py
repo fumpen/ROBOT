@@ -286,7 +286,7 @@ def update_particles(particles, cam, velocity, angular_velocity):
     if objectType != 'none':
 
         observed_obj = [objectType, measured_distance, measured_angle,
-                        ret_landmark(colour, objectType)]
+                        ret_landmark(colourProb, objectType)]
 
         print "Object type = ", objectType
         print "Measured distance = ", measured_distance

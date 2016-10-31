@@ -28,31 +28,72 @@ for b in z:
 frindo = robot.Robot()
 cam = camera.Camera(0, 'frindo')
 
-LANDMARK_1 = 0
-LANDMARK_2 = 0
 
+LANDMARK = {0: 0,
+            1: 0}
+LANDMARK_COORDINATES = {0: [0, 0],
+                        1: [0, 300]}
+
+
+def update_landmark(num_landmark):
+    if num_landmark == 1:
+        LANDMARK[1] = 1
+    elif num_landmark == 0:
+        LANDMARK[0] = 1
+    else:
+        raise
 
 def find_landmark(particles, previously_moved=0.0):
+    """
+    :param particles: list of particles
+    :param previously_moved: degrees (to mitegate turning more that 360
+    :return: RET = [objectType, measured_distance, measured_angle,
+                        integer-rep-of-landmark]
+             degrees_moved: degrees turned to find a landmark
+    """
     degrees_moved = previously_moved
     move_pr_turn = 45.0
     while degrees_moved <= 360:
         m.turn_baby_turn(move_pr_turn, 'right', frindo)
         degrees_moved += move_pr_turn
-        ret = p.update_particles(particles, 0, ((-1.0) * move_pr_turn))
-        if ret[1][3]:
+        ret = p.update_particles(particles, cam, 0, ((-1.0) * move_pr_turn))
+        if ret[1][3] is not None:
+            update_landmark(ret[1][3])
             break
         else:
             ret = None
     return [ret, degrees_moved]
 
+
 particles = p.innit_particles()
 
-print find_landmark(particles)
-"""
 while True:
-    if LANDMARK_1 and LANDMARK_2:
+    if LANDMARK[0] and LANDMARK[1]:
+        pass
         # go to center
-    elif LANDMARK_1 or LANDMARK_2:
+    elif LANDMARK[0] or LANDMARK[1]:
+        x = find_landmark(particles)
+        if x[0][2] >= 0.0:
+            turn_dir = 'right'
+        else:
+            turn_dir = 'left'
+        m.turn_baby_turn(x[0][2], turn_dir, frindo)
+        if x[0][2] > 20.0:
+            m.lige_gear(frindo, (x[0][1] - 20.0))
+        m.turn_baby_turn(90.0, 'right', frindo)
+        m.lige_gear(frindo, 30.0)
+        m.turn_baby_turn(90.0, 'left', frindo)
+        m.lige_gear(frindo, 30.0)
+        m.turn_baby_turn(90.0, 'left', frindo)
+        m.lige_gear(frindo, 30.0)
+
+        previously_turned = 0.0
+        while previously_turned <= 360:
+            x = find_landmark(particles)
+            previously_turned += x[1]
+
     else:
-        # find a landmark
-"""
+        previously_turned = 0.0
+        while previously_turned <= 360:
+            x = find_landmark(particles)
+            previously_turned += x[1]

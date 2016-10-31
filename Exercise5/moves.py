@@ -194,7 +194,7 @@ def lige_test_gear(frindo, tid, gear):
         sleep(0.5)
     frindo.go_diff(GEAR[gear][0], GEAR[gear][1], 1, 1)
     sleep(abs(tid - (float(x) * 0.5)))
-    force_break()	
+    force_break()
 
 
 def turn_break(direction, frindo):
@@ -251,7 +251,7 @@ def scale_test(cm, frindo, BATTERY):
     frindo.go_diff(speed_l, speed_r, 1, 1)
     sleep(parameters[6])
     force_break()
-"""
+
 
 def lige_test(frindo, tid, venstre, hoejre):
     speed_l = INNIT_SPEED_L
@@ -268,23 +268,36 @@ def lige_test(frindo, tid, venstre, hoejre):
 
     sleep(tid - 1.5)
     force_break()
-
+"""
 
 def choose_gear(dist):
     if dist < 14.93:
-        return 1
+        return 1 , 0.0
     elif 14.93 <= dist < 28.43:
-        return 2
+        return 2, 14.93
     elif 28.43 <= dist < 46.1:
-        return 3
+        return 3, 28.43
     elif 46.1 <= dist < 64.02:
-        return 4
+        return 4, 46.1
     elif 64.02 <= dist < 83.35:
-        return 5
+        return 5, 64.02
     elif 83.35 <= dist < 103.3:
-        return 6
+        return 6, 83.35
     elif 103.3 <= dist:
-        return 7
+        return 7, 103.3
+
+def lige_gear(frindo, dist):
+    g, d = choose_gear(dist)
+    x = 1
+    while x < g:
+        y = GEAR[x]
+        frindo.go_diff(y[0], y[1], 1, 1)
+        x += 1
+        sleep(0.5)
+    frindo.go_diff(GEAR[g][0], GEAR[g][1], 1, 1)
+    sleep(abs(np.divide((dist - d), GEAR_SPEED[g])))
+    force_break(frindo)
+
 
 def dist_at_time(current_gear, time):
     dist = 0.0
