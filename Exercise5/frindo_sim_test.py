@@ -6,7 +6,7 @@ import math
 import ex5_control as con
 import robot
 
-frindo = robot.Robot()
+
 
 # Some colors constants
 CRED = (0, 0, 255)
@@ -267,6 +267,7 @@ def jet(x):
 
     return (255.0*r, 255.0*g, 255.0*b)
 
+
 def draw_world(est_pose, particles, world):
     """Visualization.
     This functions draws robots position in the world."""
@@ -316,7 +317,6 @@ cv2.namedWindow(WIN_World);
 cv2.moveWindow(WIN_World, 500       , 50);
 
 
-
 # Initialize particles
 num_particles = 1000
 particles = []
@@ -324,7 +324,7 @@ for i in range(num_particles):
     p = particle.Particle(500.0*np.random.ranf() - 100, 500.0*np.random.ranf() - 100, np.degrees(2.0*np.pi*np.random.ranf()), 1.0/num_particles)
     particles.append(p)
 
-est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+est_pose = particle.estimate_pose(particles) #The estimate of the robots current pose
 
 # Driving parameters
 velocity = 0.0
@@ -343,6 +343,8 @@ print "Opening and initializing camera"
 
 #cam = camera.Camera(0, 'macbookpro')
 cam = camera.Camera(0, 'frindo')
+
+frindo = robot.Robot()
 former_turn = 0.0
 while True:
 
