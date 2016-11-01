@@ -75,23 +75,23 @@ while True:
         dest = p.where_to_go(p.estimate_position(particles), [0, 150])
         m.turn_baby_turn(dest[2], dest[1], frindo)
         x = update_turn(particles, dest[1], dest[2])
-        particles = x[3]
+        particles = x[2]
         sleep(0.5)
         m.lige_gear(frindo, dest[0])
         x = p.update_particles(particles, cam, dest[0], 0.0, world, WIN_RF1, WIN_World)
-        particles = x[3]
+        particles = x[2]
         for t in range(1, 3):
             q = find_landmark(particles)
-            particles = q[0][3]
+            particles = q[0][2]
             if q[0][0]:
                 dest = p.where_to_go(q[0][0], [0, 150])
                 m.turn_baby_turn(dest[2], dest[1], frindo)
                 x = update_turn(particles, dest[1], dest[2])
-                particles = x[3]
+                particles = x[2]
                 sleep(0.5)
                 m.lige_gear(frindo, dest[0])
                 x = p.update_particles(particles, cam, dest[0], 0.0, world, WIN_RF1, WIN_World)
-                particles = x[3]
+                particles = x[2]
         break
     elif LANDMARK[0] + LANDMARK[1] == 1:
         print "Found one landmark!! In elif"
@@ -102,38 +102,38 @@ while True:
             turn_dir = 'right'
         m.turn_baby_turn(np.degrees(x[0][1][2]), turn_dir, frindo)
         x = update_turn(particles, turn_dir, np.degrees(x[0][1][2]))
-        particles = x[3]
+        particles = x[2]
         sleep(0.5)
 
         if x[0][1][1] > 20.0:
             m.lige_gear(frindo, (x[0][1][1] - 20.0))
             x = p.update_particles(particles, cam, (x[0][1][1] - 20.0), 0.0, world, WIN_RF1, WIN_World)
-            particles = x[3]
+            particles = x[2]
             sleep(0.5)
 
         m.turn_baby_turn(80.0, 'right', frindo)
         x = update_turn(particles, 'right', 80.0)
-        particles = x[3]
+        particles = x[2]
         sleep(0.5)
 
         m.lige_gear(frindo, 80.0)
         x = p.update_particles(particles, cam, 80.0, 0.0, world, WIN_RF1, WIN_World)
-        particles = x[3]
+        particles = x[2]
         sleep(0.5)
 
         m.turn_baby_turn(80.0, 'left', frindo)
         x = update_turn(particles, 'left', 80.0)
-        particles = x[3]
+        particles = x[2]
         sleep(0.5)
 
         m.lige_gear(frindo, 60.0)
         x = p.update_particles(particles, cam, 60.0, 0.0, world, WIN_RF1, WIN_World)
-        particles = x[3]
+        particles = x[2]
         previously_turned = 0.0
         while previously_turned <= 360:
             if LANDMARK[0] == LANDMARK[1] != 1:
                 x = find_landmark(particles)
-                particles = x[0][3]
+                particles = x[0][2]
             else:
                 break
             previously_turned += x[1]
@@ -144,7 +144,7 @@ while True:
         while previously_turned <= 360:
             if LANDMARK[0] + LANDMARK[1] != 2:
                 x = find_landmark(particles)
-                particles = x[0][3]
+                particles = x[0][2]
             else:
                 break
             previously_turned += x[1]
