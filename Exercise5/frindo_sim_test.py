@@ -3,7 +3,7 @@ import particle
 import camera
 import numpy as np
 import math
-import ex5_control as con
+import mock_control as con
 import robot
 
 # Some colors constants
@@ -74,7 +74,7 @@ def calc_x_y(velocity, angle):
         raise
 
 def particle_landmark_vector(mark, particle):
-    (mark_x, mark_y) = LANDMARK_COORDINATES[mark]
+    [mark_x, mark_y] = LANDMARK_COORDINATES[mark]
     x = mark_x - particle.getX()
     y = -1.0 * (mark_y - particle.getY())
     return [x, y]
