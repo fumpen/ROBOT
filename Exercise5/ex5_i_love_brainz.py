@@ -272,14 +272,6 @@ def innit_particles(num_particles=1000):
     return particles
 
 
-def draw_w(est_pose, particles, world, colour, WIN_RF1, WIN_World):
-    draw_world(est_pose, particles, world)
-    # Show frame
-    cv2.imshow(WIN_RF1, colour);
-    # Show world
-    cv2.imshow(WIN_World, world);
-
-
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
 
@@ -346,7 +338,11 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         particles)  # The estimate of the robots current pose
 
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
-    draw_w(est_pose, particles, world, colour, WIN_RF1, WIN_World)
+    draw_world(est_pose, particles, world)
+    # Show frame
+    cv2.imshow(WIN_RF1, colour);
+    # Show world
+    cv2.imshow(WIN_World, world);
     return [est_pose, observed_obj]
 
 
