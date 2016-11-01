@@ -346,6 +346,8 @@ frindo = robot.Robot()
 former_turn = 0.0
 while True:
 
+    cv2.waitKey(4)
+
     updated_values = con.control_frindo(LANDMARK, former_turn, est_pose, frindo)
 
     former_turn += updated_values[2]
