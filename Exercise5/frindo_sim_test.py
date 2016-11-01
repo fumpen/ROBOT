@@ -309,11 +309,11 @@ def draw_world(est_pose, particles, world):
 # Open windows
 WIN_RF1 = "Robot view";
 cv2.namedWindow(WIN_RF1);
-cv2.moveWindow(WIN_RF1, 50, 50);
+cv2.moveWindow(WIN_RF1, 50       , 50);
 
 WIN_World = "World view";
 cv2.namedWindow(WIN_World);
-cv2.moveWindow(WIN_World, 500, 50);
+cv2.moveWindow(WIN_World, 500       , 50);
 
 
 
@@ -402,7 +402,6 @@ while True:
         # Draw detected pattern
         cam.draw_object(colour)
     else:
-        observed_obj = [None, None, None, None]
         # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0 / num_particles)
@@ -414,10 +413,10 @@ while True:
 
     draw_world(est_pose, particles, world)
 
-    cv2.imshow(WIN_RF1, colour)
+    cv2.imshow(WIN_RF1, colour);
 
     # Show world
-    cv2.imshow(WIN_World, world)
+    cv2.imshow(WIN_World, world);
 
 
 # Close all windows
