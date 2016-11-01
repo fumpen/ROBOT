@@ -343,7 +343,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     cv2.imshow(WIN_RF1, colour);
     # Show world
     cv2.imshow(WIN_World, world);
-    return [est_pose, observed_obj]
+    return [est_pose, observed_obj, particles]
 
 
 # Lazily avoiding to import particle in control for no reason what-so-ever...
