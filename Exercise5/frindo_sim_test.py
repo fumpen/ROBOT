@@ -6,8 +6,6 @@ import math
 import ex5_control as con
 import robot
 
-
-
 # Some colors constants
 CRED = (0, 0, 255)
 CGREEN = (0, 255, 0)
@@ -327,8 +325,8 @@ for i in range(num_particles):
 est_pose = particle.estimate_pose(particles) #The estimate of the robots current pose
 
 # Driving parameters
-velocity = 0.0
-angular_velocity = 0.0
+velocity = 0.0;
+angular_velocity = 0.0;
 
 # Initialize the robot (XXX: You do this)
 
@@ -359,7 +357,7 @@ while True:
         # calculates new orientation
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         if velocity > 0:
-            [x, y] = move_vector(p, velocity)
+            [x,y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
@@ -368,11 +366,19 @@ while True:
     colour, distorted = cam.get_colour()
 
     # Detect objects
-    objectType, measured_distance, measured_angle, colourProb = cam.get_object(
-        colour)
+    objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
 
     if objectType != 'none':
         obs_landmark = ret_landmark(colourProb, objectType)
+        print obs_landmark
+        sum_of_angle_diff = 0.0
+        list_of_particles = weight_particles(particles, np.degrees(measured_angle), measured_distance, obs_landmark)
+        print "normalized weights"
+        scale = 2
+        accum = 0.0
+        lower = 0
+        upper = 0
+        weight_sum = 0.0
 
         list_of_particles = weight_particles(particles,
                                              np.degrees(measured_angle),
@@ -380,8 +386,7 @@ while True:
 
         particles = []
         for count in range(0, int(num_particles * 0.95)):
-            rando = np.random.uniform(0.0,
-                                      1.0)
+            rando = np.random.uniform(0.0, 1.0)
 
             p = when_in_range(list_of_particles,
                               0,
