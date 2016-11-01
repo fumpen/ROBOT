@@ -59,8 +59,8 @@ def find_landmark(particles, previously_moved=0.0):
             break
         else:
             ret = None
-
-    print [ret[0].getX(), ret[0].getY()]
+    if ret is not None:
+        print [ret[0].getX(), ret[0].getY()]
     return [ret, degrees_moved]
 
 
