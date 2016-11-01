@@ -418,8 +418,7 @@ while True:
     est_pose = particle.estimate_pose(particles)
 
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
-    raw_input()
-
+    
     draw_world(est_pose, particles, world)
 
     cv2.imshow(WIN_RF1, colour);
