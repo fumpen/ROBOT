@@ -114,7 +114,7 @@ def angle_between(v1, v2):
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
-    return 1/(2*np.pi*varians) * np.exp(-np.divide(diff**2, 2* varians))
+    return (1/(math.sqrt(2*np.pi*varians))) * np.exp(-np.divide(diff**2, 2* varians))
 
 # function finds weight for distance and angle for given particle to observed landmark
 # turning right will cause for positive angle, and reversed
@@ -357,25 +357,27 @@ while True:
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
-        curr_angle = add_to_angular(p.getTheta(), angular_velocity)
-        if velocity > 0:
+        if angular_velocity != 0:
+            curr_angle = add_to_angular(p.getTheta(), angular_velocity)
+        if velocity != 0:
             [x,y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
-        else:
-            particle.move_particle(p, 0.0, 0.0, curr_angle)
 
-    # Fetch next frame
+    if velocity != 0:
+        particle.add_uncertainty(particles, 12, 15)
+    if velocity == 0 and angular_velocity != 0:
+        particle.add_uncertainty(particles, 0, 15)
+
+    # Fetch next frame    
     colour, distorted = cam.get_colour()
 
     # Detect objects
     objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
-
     if objectType != 'none':
         obs_landmark = ret_landmark(colourProb, objectType)
         print obs_landmark
         sum_of_angle_diff = 0.0
         list_of_particles = weight_particles(particles, np.degrees(measured_angle), measured_distance, obs_landmark)
-        print "normalized weights"
         scale = 2
         accum = 0.0
         lower = 0
@@ -400,8 +402,8 @@ while True:
 
         particle.add_uncertainty(particles, 12, 15)
 
-        # 10% new random particles added
-        for c in range(0, int(math.ceil(num_particles * 0.05))):
+        # New random particles added
+        for c in range(0, int(math.ceil(num_particles * 0.01))):
             p = particle.Particle(500.0 * np.random.ranf() - 100,
                                   500.0 * np.random.ranf() - 100,
                                   2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
@@ -414,6 +416,8 @@ while True:
         # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0 / num_particles)
+
+    particle.add_uncertainty(particles, 12, 15)
 
     est_pose = particle.estimate_pose(particles)
 

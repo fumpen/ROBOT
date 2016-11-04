@@ -114,7 +114,7 @@ def angle_between(v1, v2):
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
-    return 1/(2*np.pi*varians) * np.exp(-np.divide(diff**2, 2* varians))
+    return (1/(math.sqrt(2*np.pi*varians))) * (np.exp(-np.divide(diff**2, 2* varians)))
 
 # function finds weight for distance and angle for given particle to observed landmark
 # turning right will cause for positive angle, and reversed
@@ -124,14 +124,14 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 100)
+    dist_weight = diff_weight(dist_diff, 0.5)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
-    angle_weight = diff_weight(angle_diff, 50)
+    angle_weight = diff_weight(angle_diff,1)
 
 
     if math.isnan(dist_weight):
@@ -153,7 +153,7 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
         sum_dist_w += dist_w  #tmp
         sum_angle_w += angle_w
 
-        list_of_particles.append([dist_w*0.65, angle_w*0.35, p])
+        list_of_particles.append([dist_w*0.60, angle_w*0.40, p])
 
     list_of_particles = np.array(list_of_particles)
     #print "dist", sum_dist_w, "angle_w", sum_angle_w
@@ -316,7 +316,7 @@ cv2.moveWindow(WIN_World, 500       , 50);
 
 
 # Initialize particles
-num_particles = 1000
+num_particles = 500
 particles = []
 for i in range(num_particles):
     # Random starting points. (x,y) \in [-1000, 1000]^2, theta \in [-pi, pi].
@@ -479,7 +479,7 @@ while True:
         print "resampled"
 
 
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 10, 15)
 
 
         # 10% new random particles added
@@ -501,7 +501,6 @@ while True:
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
     print "est position"
     print est_pose.getX(), est_pose.getY(), est_pose.getTheta()
-    raw_input()
 
     # Draw map
     draw_world(est_pose, particles, world)
