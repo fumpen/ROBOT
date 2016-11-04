@@ -276,7 +276,7 @@ def innit_particles(num_particles=1000):
     for i in range(num_particles):
         p = particle.Particle(500.0 * np.random.ranf() - 100,
                               500.0 * np.random.ranf() - 100,
-                              2.0 * np.pi * np.random.ranf() - np.pi,
+                              np.radians(90), #2.0 * np.pi * np.random.ranf() - np.pi,
                               1.0 / num_particles)
         particles.append(p)
     return particles
@@ -334,7 +334,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
                                   1.0 / num_particles))
         print 'list_of_particles: ' + str(list_of_particles)
         print 'particles: ' + str(particles)
-        
+
         particle.add_uncertainty(particles, 12, 15)
 
         # new random particles added
