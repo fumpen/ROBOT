@@ -38,8 +38,9 @@ class FrindosInnerWorld:
         self.particles = particles
 
     def update_l_flag(self, key):
-        if self.l_flag[key] == 0:
-            self.l_flag[key] = 1
+        if key:
+            if self.l_flag[key] == 0:
+                self.l_flag[key] = 1
 
     def update_l_coordinates(self, coordinates):
         self.l_coordinates = coordinates
