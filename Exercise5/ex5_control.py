@@ -24,23 +24,77 @@ LANDMARK = {0: 0,
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [300, 0]}
 
+
+class FrindosInnerWorld:
+    l_flag = dict
+    l_coordinates = dict
+    est_coordinate = tuple
+    particles = list
+
+    def __init__(self, l_flag, l_coordinates, est_coordinate, particles):
+        self.l_flag = l_flag
+        self.l_coordinates = l_coordinates
+        self.est_coordinate = est_coordinate
+        self.particles = particles
+
+    def update_l_flag(self, key):
+        if self.l_flag[key] == 0:
+            self.l_flag[key] = 1
+
+    def update_l_coordinates(self, coordinates):
+        self.l_coordinates = coordinates
+
+    def update_est_coordinate(self, est_coordinate):
+        self.est_coordinate = est_coordinate
+
+    def update_particles(self, particle):
+        self.particles = particle
+
+    def getFlag(self):
+        return self.l_flag
+
+    def getLCoordinates(self):
+        return self.l_coordinates
+
+    def getEstCoordinates(self):
+        return self.est_coordinate
+
+    def getParticles(self):
+        return self.particles
+
+particles = p.innit_particles()
+innit_est_pose = p.estimate_position(particles)
+p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
+
+
 def update_landmark(num_landmark):
     if num_landmark == 1:
         LANDMARK[1] = 1
     elif num_landmark == 0:
         LANDMARK[0] = 1
-    else:
-        raise
 
-def update_turn(particles, dir, deg):
+
+def turn(dir, deg, inner_state):
+    m.turn_baby_turn(deg, dir, frindo)
     if dir == 'left':
-        return p.update_particles(particles, cam, 0.0, deg, world, WIN_RF1, WIN_World)
+        x = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+                               world, WIN_RF1, WIN_World)
     else:
-        return p.update_particles(particles, cam, 0.0, ((-1.0) * deg), world, WIN_RF1, WIN_World)
+        x = p.update_particles(inner_state.getParticles(), cam, 0.0,
+                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
+    inner_state.update_particles(x['particles'])
+    inner_state.update_l_flag(x['obs_obj'][3])
+    return x
 
+def go_forward(length, inner_state):
+    m.lige_gear(frindo, length)
+    x = p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+                           WIN_RF1, WIN_World)
+    inner_state.update_particles(x['particles'])
+    inner_state.update_l_flag(x['obs_obj'][3])
+    return x
 
-
-def find_landmark(particles, previously_moved=0.0):
+def find_landmark(inner_frindo, previously_moved=0.0):
     """
     :param particles: list of particles
     :param previously_moved: degrees (to mitegate turning more that 360
@@ -51,88 +105,67 @@ def find_landmark(particles, previously_moved=0.0):
     degrees_moved = previously_moved
     move_pr_turn = 25.0
     while degrees_moved <= 360:
-        m.turn_baby_turn(move_pr_turn, 'right', frindo)
         degrees_moved += move_pr_turn
-        ret = update_turn(particles, 'right', move_pr_turn)
+        ret = turn('right', move_pr_turn, inner_frindo)
         if ret[1][3] is not None:
-            update_landmark(ret[1][3])
             break
         else:
             ret = None
-    if ret is not None:
-        print [ret[0].getX(), ret[0].getY()]
     return [ret, degrees_moved]
 
-
-particles = p.innit_particles()
-innit_est_pose = p.estimate_position(particles)
-p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
-
+inner_frindo = FrindosInnerWorld(LANDMARK, LANDMARK_COORDINATES,
+                                 innit_est_pose, particles)
 while True:
-    print 'Landmarks ' + str(LANDMARK[0]) + ' | ' + str(LANDMARK[1])
-    if LANDMARK[0] == LANDMARK[1] == 1:
+    curr_l_flag = inner_frindo.getFlag()
+    if curr_l_flag[0] == curr_l_flag[1] == 1:
         print "Found Both landmarks"
         dest = p.where_to_go(p.estimate_position(particles), [0, 150])
-        m.turn_baby_turn(dest[2], dest[1], frindo)
-        x = update_turn(particles, dest[1], dest[2])
-        particles = x[2]
+        turn(dest[1], dest[2], inner_frindo)
         sleep(0.5)
-        m.lige_gear(frindo, dest[0])
-        x = p.update_particles(particles, cam, dest[0], 0.0, world, WIN_RF1, WIN_World)
-        particles = x[2]
+
+        go_forward(dest[0], inner_frindo)
         for t in range(1, 3):
-            q = find_landmark(particles)
-            particles = q[0][2]
+            q = find_landmark(inner_frindo)
             if q[0][0]:
                 dest = p.where_to_go(q[0][0], [0, 150])
-                m.turn_baby_turn(dest[2], dest[1], frindo)
-                x = update_turn(particles, dest[1], dest[2])
-                particles = x[2]
+                turn(dest[1], dest[2], inner_frindo)
                 sleep(0.5)
-                m.lige_gear(frindo, dest[0])
-                x = p.update_particles(particles, cam, dest[0], 0.0, world, WIN_RF1, WIN_World)
-                particles = x[2]
+                go_forward(dest[0], inner_frindo)
         break
-    elif LANDMARK[0] + LANDMARK[1] == 1:
+    elif curr_l_flag[0] + curr_l_flag[1] == 1:
         print "Found one landmark!! In elif"
-        x = find_landmark(particles)
+        find_landmark(inner_frindo)
         if np.degrees(x[0][1][2]) >= 0.0:
             turn_dir = 'left'
         else:
             turn_dir = 'right'
-        m.turn_baby_turn(np.degrees(x[0][1][2]), turn_dir, frindo)
-        x = update_turn(particles, turn_dir, np.degrees(x[0][1][2]))
+        turn(turn_dir, np.degrees(x[0][1][2]), inner_frindo)
         particles = x[2]
         sleep(0.5)
 
         if x[0][1][1] > 20.0:
-            m.lige_gear(frindo, (x[0][1][1] - 20.0))
-            x = p.update_particles(particles, cam, (x[0][1][1] - 20.0), 0.0, world, WIN_RF1, WIN_World)
+            x = go_forward(x[0][1][1] - 20.0, inner_frindo)
             particles = x[2]
             sleep(0.5)
 
-        m.turn_baby_turn(80.0, 'right', frindo)
-        x = update_turn(particles, 'right', 80.0)
+        turn('right', 80.0, inner_frindo)
         particles = x[2]
         sleep(0.5)
 
-        m.lige_gear(frindo, 80.0)
-        x = p.update_particles(particles, cam, 80.0, 0.0, world, WIN_RF1, WIN_World)
+        go_forward(80.0, inner_frindo)
         particles = x[2]
         sleep(0.5)
 
-        m.turn_baby_turn(80.0, 'left', frindo)
-        x = update_turn(particles, 'left', 80.0)
+        turn('left', 80.0, inner_frindo)
         particles = x[2]
         sleep(0.5)
 
-        m.lige_gear(frindo, 60.0)
-        x = p.update_particles(particles, cam, 60.0, 0.0, world, WIN_RF1, WIN_World)
+        go_forward(60.0, inner_frindo)
         particles = x[2]
         previously_turned = 0.0
         while previously_turned <= 360:
             if LANDMARK[0] == LANDMARK[1] != 1:
-                x = find_landmark(particles)
+                x = find_landmark(inner_frindo)
                 particles = x[0][2]
             else:
                 break
@@ -143,61 +176,8 @@ while True:
         print "Sitting in Else inside while loop"
         while previously_turned <= 360:
             if LANDMARK[0] + LANDMARK[1] != 2:
-                x = find_landmark(particles)
+                x = find_landmark(inner_frindo)
                 particles = x[0][2]
             else:
                 break
             previously_turned += x[1]
-
-
-def vector_angle(v1, v2):
-    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
-    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
-    dot = v1[0] * v2[0] + v1[1] * v2[1]
-    return np.arccos(np.divide(dot, (l1 * l2)))
-
-
-def where_to_go(particle, goal):
-    """ Takes a particle (which must be our best bet for our actual position)
-    and the place we want to be (goal = [x, y])
-
-    returns a list of the length the robot needs to drive, the degrees it
-    needs to turn and the direction it needs to turn"""
-    ang = vector_angle(particle, goal)
-    if ang <= 180:
-        turn_dir = 'right'
-        turn_deg = ang
-    else:
-        turn_dir = 'left'
-        turn_deg = 180 - ang
-    length = np.sqrt(
-        np.power((particle[0] - goal[0]), 2) + np.power(
-            (particle[0] - goal[1]), 2))
-    return [length, turn_dir, turn_deg]
-
-
-def control_frindo(l, d_t, est_pos, frindo):
-    if l[0] == l[1] == 1:
-        print "i'm in control -> case: 2 landmarks"
-        x = where_to_go(est_pos, [150, 0])
-        dist_drive = x[0]
-        former_turn = d_t
-        if x[1] == 'right':
-            deg_turn = x[2]
-        elif x[1] == 'left':
-            deg_turn = -1.0 * x[2]
-        m.turn_baby_turn(x[2], x[1], frindo)
-        m.lige_gear(frindo, x[0])
-
-    elif l[0] + l[1] == 1 and d_t > 360:
-        print "i'm in control -> case: 1 landmarks"
-        raise
-
-    else:
-        print "i'm in control -> case: 0 landmarks"
-        dist_drive = 0.0
-        deg_turn = -10.0
-        former_turn = d_t + 10.0
-        m.turn_baby_turn(deg_turn, 'left', frindo)
-
-    return [dist_drive, deg_turn, former_turn]

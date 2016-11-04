@@ -75,7 +75,8 @@ def angle_between(v1, v2):
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
-    return 1/(2*np.pi*varians) * np.exp(-np.divide(diff**2, 2* varians))
+    return 1/np.sqrt((2*np.pi*varians)) *\
+           np.exp(-np.divide(diff**2, 2 * varians))
 
 # This function finds weight for distance and angle for given particle to
 # observed landmark. Turning right will cause for positive angle, and reversed
@@ -275,6 +276,7 @@ def innit_particles(num_particles=1000):
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
 
+    cv2.waitKey(4)
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
@@ -282,8 +284,11 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         if velocity > 0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
-        else:
-            particle.move_particle(p, 0.0, 0.0, curr_angle)
+
+    if velocity != 0.0:
+        particle.add_uncertainty(particles, 12, 15)
+    if velocity == 0.0 and angular_velocity != 0.0:
+        particle.add_uncertainty(particles, 0, 15)
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -293,11 +298,10 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         colour)
 
     if objectType != 'none':
-
-        observed_obj = [objectType, measured_distance, measured_angle,
-                        ret_landmark(colourProb, objectType)]
-
         obs_landmark = ret_landmark(colourProb, objectType)
+        observed_obj = [objectType, measured_distance, measured_angle,
+                        obs_landmark]
+
 
         list_of_particles = weight_particles(particles,
                                              np.degrees(measured_angle),
@@ -305,20 +309,16 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particles = []
         for count in range(0, int(num_particles * 0.95)):
-            rando = np.random.uniform(0.0,
-                                      1.0)
+            rando = np.random.uniform(0.0, 1.0)
 
-            p = when_in_range(list_of_particles,
-                              0,
-                              num_particles,
-                              rando)
+            p = when_in_range(list_of_particles, 0, num_particles, rando)
             particles.append(
                 particle.Particle(p.getX(), p.getY(), p.getTheta(),
                                   1.0 / num_particles))
 
         particle.add_uncertainty(particles, 12, 15)
 
-        # 10% new random particles added
+        # new random particles added
         for c in range(0, int(math.ceil(num_particles * 0.05))):
             p = particle.Particle(500.0 * np.random.ranf() - 100,
                                   500.0 * np.random.ranf() - 100,
@@ -340,10 +340,12 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
     draw_world(est_pose, particles, world)
     # Show frame
-    cv2.imshow(WIN_RF1, colour);
+    cv2.imshow(WIN_RF1, colour)
     # Show world
-    cv2.imshow(WIN_World, world);
-    return [est_pose, observed_obj, particles]
+    cv2.imshow(WIN_World, world)
+    return {'est_pos': est_pose,
+            'obs_obj': observed_obj,
+            'particles': particles}
 
 
 # Lazily avoiding to import particle in control for no reason what-so-ever...
