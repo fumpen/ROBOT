@@ -275,6 +275,7 @@ def innit_particles(num_particles=1000):
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
 
+    cv2.waitKey(4)
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
@@ -293,11 +294,10 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         colour)
 
     if objectType != 'none':
-
-        observed_obj = [objectType, measured_distance, measured_angle,
-                        ret_landmark(colourProb, objectType)]
-
         obs_landmark = ret_landmark(colourProb, objectType)
+        observed_obj = [objectType, measured_distance, measured_angle,
+                        obs_landmark]
+
 
         list_of_particles = weight_particles(particles,
                                              np.degrees(measured_angle),
@@ -305,20 +305,16 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particles = []
         for count in range(0, int(num_particles * 0.95)):
-            rando = np.random.uniform(0.0,
-                                      1.0)
+            rando = np.random.uniform(0.0, 1.0)
 
-            p = when_in_range(list_of_particles,
-                              0,
-                              num_particles,
-                              rando)
+            p = when_in_range(list_of_particles, 0, num_particles, rando)
             particles.append(
                 particle.Particle(p.getX(), p.getY(), p.getTheta(),
                                   1.0 / num_particles))
 
         particle.add_uncertainty(particles, 12, 15)
 
-        # 10% new random particles added
+        # new random particles added
         for c in range(0, int(math.ceil(num_particles * 0.05))):
             p = particle.Particle(500.0 * np.random.ranf() - 100,
                                   500.0 * np.random.ranf() - 100,
@@ -340,10 +336,12 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
     draw_world(est_pose, particles, world)
     # Show frame
-    cv2.imshow(WIN_RF1, colour);
+    cv2.imshow(WIN_RF1, colour)
     # Show world
-    cv2.imshow(WIN_World, world);
-    return [est_pose, observed_obj, particles]
+    cv2.imshow(WIN_World, world)
+    return {'est_pos': est_pose,
+            'obs_obj': observed_obj,
+            'particles': particles}
 
 
 # Lazily avoiding to import particle in control for no reason what-so-ever...
