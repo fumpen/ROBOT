@@ -359,24 +359,25 @@ while True:
         # calculates new orientation
         if angular_velocity != 0:
             curr_angle = add_to_angular(p.getTheta(), angular_velocity)
-        if velocity > 0:
+        if velocity != 0:
             [x,y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
 
-    particle.add_uncertainty(particles, 12, 15)
+    if velocity != 0:
+        particle.add_uncertainty(particles, 12, 15)
+    if velocity == 0 and angular_velocity != 0:
+        particle.add_uncertainty(particles, 0, 15)
 
-    # Fetch next frame
+    # Fetch next frame    
     colour, distorted = cam.get_colour()
 
     # Detect objects
     objectType, measured_distance, measured_angle, colourProb = cam.get_object(colour)
-
     if objectType != 'none':
         obs_landmark = ret_landmark(colourProb, objectType)
         print obs_landmark
         sum_of_angle_diff = 0.0
         list_of_particles = weight_particles(particles, np.degrees(measured_angle), measured_distance, obs_landmark)
-        print "normalized weights"
         scale = 2
         accum = 0.0
         lower = 0
@@ -414,8 +415,9 @@ while True:
     else:
         # No observation - reset weights to uniform distribution
         for p in particles:
-	    particle.add_uncertainty(particles, 12, 15)
             p.setWeight(1.0 / num_particles)
+
+    particle.add_uncertainty(particles, 12, 15)
 
     est_pose = particle.estimate_pose(particles)
 
