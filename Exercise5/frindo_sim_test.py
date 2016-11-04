@@ -114,7 +114,7 @@ def angle_between(v1, v2):
     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
-    return 1/(2*np.pi*varians) * np.exp(-np.divide(diff**2, 2* varians))
+    return (1/(math.sqrt(2*np.pi*varians))) * np.exp(-np.divide(diff**2, 2* varians))
 
 # function finds weight for distance and angle for given particle to observed landmark
 # turning right will cause for positive angle, and reversed
