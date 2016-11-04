@@ -31,7 +31,7 @@ def add_to_angular(present, delta):
 
 def add_to_angular_v2(present, delta):
     # Ensures that the orientation of the particle stays in range 0-360
-    new_angle = np.degrees(present) + delta
+    new_angle = present + delta
     if new_angle >= 180.0:
         new_angle = new_angle - 360.0
     elif new_angle < -180.0:
