@@ -63,7 +63,7 @@ class FrindosInnerWorld:
     def getParticles(self):
         return self.particles
 
-particles = p.innit_particles(100)
+particles = p.innit_particles(1)
 innit_est_pose = p.estimate_position(particles)
 p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
 
@@ -106,7 +106,7 @@ def find_landmark(inner_frindo, previously_moved=0.0):
              degrees_moved: degrees turned to find a landmark
     """
     degrees_moved = previously_moved
-    move_pr_turn = 100.0
+    move_pr_turn = 25.0
     while degrees_moved <= 360:
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
