@@ -142,23 +142,20 @@ while True:
             turn_dir = 'left'
         else:
             turn_dir = 'right'
-        turn(turn_dir, abs(np.degrees(x[0]['obs_obj'][2])), inner_frindo)
+        x = turn(turn_dir, abs(np.degrees(x[0]['obs_obj'][2])), inner_frindo)
         sleep(0.5)
 
-        if x[0][1][1] > 20.0:
-            x = go_forward(x[0][1][1] - 20.0, inner_frindo)
+        if x['obs_obj'][1] > 20.0:
+            go_forward(x[0][1][1] - 20.0, inner_frindo)
             sleep(0.5)
 
         turn('right', 80.0, inner_frindo)
-        particles = x[2]
         sleep(0.5)
 
         go_forward(80.0, inner_frindo)
-        particles = x[2]
         sleep(0.5)
 
         turn('left', 80.0, inner_frindo)
-        particles = x[2]
         sleep(0.5)
 
         go_forward(60.0, inner_frindo)
