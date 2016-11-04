@@ -37,7 +37,7 @@ def add_to_angular_v2(present, delta):
     elif new_angle < -180.0:
         new_angle = new_angle + 360.0
     return np.radians(new_angle)
-    
+
 
 def vector_angle(v1, v2):
     l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
@@ -294,7 +294,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         curr_angle = add_to_angular_v2(np.degrees(p.getTheta()), angular_velocity)
         print 'theta_rad: ' + str(p.getTheta())
         print 'theta_deg: ' + str(np.degrees(p.getTheta()))
-        print 'cur_ang_deg: ' + str(np.degree(curr_angle))
+        print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
         if velocity > 0.0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
