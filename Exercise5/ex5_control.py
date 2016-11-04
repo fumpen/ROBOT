@@ -63,7 +63,7 @@ class FrindosInnerWorld:
     def getParticles(self):
         return self.particles
 
-particles = p.innit_particles(1)
+particles = p.innit_particles(10)
 innit_est_pose = p.estimate_position(particles)
 p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
 
