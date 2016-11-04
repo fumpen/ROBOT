@@ -417,8 +417,6 @@ while True:
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-    particle.add_uncertainty(particles, 12, 15)
-
     est_pose = particle.estimate_pose(particles)
 
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
