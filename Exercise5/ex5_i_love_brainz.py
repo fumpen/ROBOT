@@ -281,13 +281,17 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
+
         curr_angle = add_to_angular(np.degrees(p.getTheta()), angular_velocity)
+        print 'theta_rad: ' + str(p.getTheta())
+        print 'theta_deg: ' + str(np.degrees(p.getTheta()))
+        print 'cur_ang_deg: ' + str(curr_angle)
         if velocity > 0.0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, np.radians(curr_angle))
         else:
             particle.move_particle(p, 0.0, 0.0, np.radians(curr_angle))
-
+            print 'cur_ang_rad: ' + str(np.radians(curr_angle))
     if velocity != 0.0:
         particle.add_uncertainty(particles, 12, 15)
     if velocity == 0.0 and angular_velocity != 0.0:
@@ -322,12 +326,12 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         particle.add_uncertainty(particles, 12, 15)
 
         # new random particles added
-        for c in range(0, int(math.ceil(num_particles * 0.05))):
-            p = particle.Particle(500.0 * np.random.ranf() - 100,
-                                  500.0 * np.random.ranf() - 100,
-                                  2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
+        #for c in range(0, int(math.ceil(num_particles * 0.05))):
+        #    p = particle.Particle(500.0 * np.random.ranf() - 100,
+        #                          500.0 * np.random.ranf() - 100,
+        #                          2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
 
-            particles.append(p)
+        #    particles.append(p)
 
         # Draw detected pattern
         cam.draw_object(colour)
