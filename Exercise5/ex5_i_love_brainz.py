@@ -281,6 +281,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
+        print 'old_ang: ' + str(p.getTheta())
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
         print 'cur_ang: ' + str(curr_angle)
         if velocity > 0:
