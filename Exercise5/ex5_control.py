@@ -77,6 +77,8 @@ def update_landmark(num_landmark):
 
 def turn(dir, deg, inner_state):
     m.turn_baby_turn(deg, dir, frindo)
+    print '##############'
+    print 'turn:'  + str(deg)
     if dir == 'left':
         x = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
                                world, WIN_RF1, WIN_World)

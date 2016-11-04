@@ -276,11 +276,13 @@ def innit_particles(num_particles=1000):
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
 
+    print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
         curr_angle = add_to_angular(p.getTheta(), angular_velocity)
+        print 'cur_ang: ' + str(curr_angle)
         if velocity > 0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
