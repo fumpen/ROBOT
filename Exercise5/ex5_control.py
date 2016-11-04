@@ -177,7 +177,7 @@ while True:
         print "Sitting in Else inside while loop"
         while previously_turned <= 360:
             if LANDMARK[0] + LANDMARK[1] != 2:
-                find_landmark(inner_frindo)
+                x = find_landmark(inner_frindo)
             else:
                 break
             previously_turned += x[1]
