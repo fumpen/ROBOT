@@ -323,6 +323,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
                                              np.degrees(measured_angle),
                                              measured_distance, obs_landmark)
 
+
         particles = []
         for count in range(0, int(num_particles * 0.95)):
             rando = np.random.uniform(0.0, 1.0)
@@ -331,7 +332,9 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             particles.append(
                 particle.Particle(p.getX(), p.getY(), p.getTheta(),
                                   1.0 / num_particles))
-
+        print 'list_of_particles: ' + str(list_of_particles)
+        print 'particles: ' + str(particles)
+        
         particle.add_uncertainty(particles, 12, 15)
 
         # new random particles added
