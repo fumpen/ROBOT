@@ -107,7 +107,7 @@ def find_landmark(inner_frindo, previously_moved=0.0):
     while degrees_moved <= 360:
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
-        if ret[1][3] is not None:
+        if ret['obs_obj'][3] is not None:
             break
         else:
             ret = None
