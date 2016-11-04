@@ -137,18 +137,16 @@ while True:
         break
     elif curr_l_flag[0] + curr_l_flag[1] == 1:
         print "Found one landmark!! In elif"
-        find_landmark(inner_frindo)
-        if np.degrees(x[0][1][2]) >= 0.0:
+        x = find_landmark(inner_frindo)
+        if np.degrees(x[0]['obs_obj'][2]) >= 0.0:
             turn_dir = 'left'
         else:
             turn_dir = 'right'
-        turn(turn_dir, np.degrees(x[0][1][2]), inner_frindo)
-        particles = x[2]
+        turn(turn_dir, abs(np.degrees(x[0]['obs_obj'][2])), inner_frindo)
         sleep(0.5)
 
         if x[0][1][1] > 20.0:
             x = go_forward(x[0][1][1] - 20.0, inner_frindo)
-            particles = x[2]
             sleep(0.5)
 
         turn('right', 80.0, inner_frindo)
@@ -167,9 +165,9 @@ while True:
         particles = x[2]
         previously_turned = 0.0
         while previously_turned <= 360:
-            if LANDMARK[0] == LANDMARK[1] != 1:
+            curr_l_flag = inner_frindo.getFlag()
+            if curr_l_flag[0] == curr_l_flag[1] != 1:
                 x = find_landmark(inner_frindo)
-                particles = x[0][2]
             else:
                 break
             previously_turned += x[1]
