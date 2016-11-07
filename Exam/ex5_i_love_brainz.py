@@ -289,7 +289,6 @@ def innit_particles(num_particles=1000):
 
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
-    raw_input()
     print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
