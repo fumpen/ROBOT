@@ -341,7 +341,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
                                              measured_distance, obs_landmark)
 
 
-        particles = resample_particles(list_of_particles)#[]
+        particles = resample_particles(list_of_particles[:,[0,2]])#[]
 
         # for count in range(0, num_particles):
         #     rando = np.random.uniform(0.0,1.0)
@@ -365,8 +365,9 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             p.setWeight(1.0 / num_particles)
 
         particle.add_uncertainty(particles, 10, 10)
-    est_pose = particle.estimate_pose(
-        particles)  # The estimate of the robots current pose
+
+    # The estimate of the robots current pose
+    est_pose = particle.estimate_pose(particles)
 
     print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
     draw_world(est_pose, particles, world)
@@ -374,6 +375,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     cv2.imshow(WIN_RF1, colour)
     # Show world
     cv2.imshow(WIN_World, world)
+    print est_pose
     return {'est_pos': est_pose,
             'obs_obj': observed_obj,
             'particles': particles}

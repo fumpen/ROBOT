@@ -1,4 +1,5 @@
 import ex5_i_love_brainz as p
+import particle
 import moves as m
 import robot
 import camera
@@ -30,13 +31,13 @@ LANDMARK_COORDINATES = {0: [0, 0],
 			2: [0, 300],
 			3: [300, 300]}
 
-INIT_POS = (0,0,np.radians(0))
+INIT_POS = p.Particle(0,0,np.radians(0))
 
 class FrindosInnerWorld:
 
     l_flag = dict
     l_coordinates = dict
-    est_coordinate = tuple
+    est_coordinate = Particle()
     particles = list
     next_l = int
 
@@ -47,10 +48,11 @@ class FrindosInnerWorld:
         self.particles = particles
         self.next_l = next_l
 
-    def update_l_flag(self, key):
+    def update_l_flag(self, key, mark):
         if key:
-            if self.l_flag[key] == 0:
-                self.l_flag[key] = 1
+            self.l_flag[mark] = 1
+        else:
+            self.l_flag[mark] = 0
 
     def update_next_l(self):
         self.next_l += 1
@@ -93,13 +95,14 @@ def turn(dir, deg, inner_state):
     print '##############'
     print 'turn:'  + str(deg)
     if dir == 'left':
-        x = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
                                world, WIN_RF1, WIN_World)
     else:
-        x = p.update_particles(inner_state.getParticles(), cam, 0.0,
+        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
                                ((-1.0) * deg), world, WIN_RF1, WIN_World)
-    inner_state.update_particles(x['particles'])
-    inner_state.update_l_flag(x['obs_obj'][3])
+    inner_state.update_particles(obs_prop['particles'])
+    inner_state.update_l_flag(obs_prop['obs_obj'][3])
+    inner_state.update_est_coordinate(obs_prop['est_pos'])
     return x
 
 def go_forward(length, inner_state):
@@ -124,12 +127,14 @@ def find_landmark(inner_frindo, previously_moved=0.0):
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
         if ret['obs_obj'][3] is not None:
-            break
+            continue
         else:
             ret = None
     return [ret, degrees_moved]
 
-
+def reset_marks_seen():
+    for i in range(0,4):
+        inner_frindo.update_l_flag(False, i)
 
 # Initialize particles and update
 inner_frindo = FrindosInnerWorld()
@@ -146,10 +151,33 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
+    # TODO : IF WE CAN SEE FROM OUR CURRENT POSITION, THE WISHED LANDMARK, drive to it.
     if inner_frindo.getFlag[inner_frindo.getNextLandmark] == 1:
         # TODO: DRIVE TO LANDMARK!
+        #     :
+        x = 0
     else:
+        # re-establish location
+        reset_marks_seen()
+        # Search for landmarks
+        find_landmark(inner_frindo)
+        flags = np.array(inner_frindo.getFlag())
+        while flags[inner_frindo.getNextLandmark()] != 1:
+            inner_frindo.getEstCoordinates()
+
+        continue
+
+
         # TODO: FIGURE A ROUTE FROM OBSERVED
+        #     : FIRST ESTABLISH POSITION (ACCEPT WE KNOW NOTHING)
+        #     : Start by resetting landmarks seen
+        #     : find at least 1 landmark, drive to if necessary
+        #     : find second and or third landmark, figure a route to next landmark
+        #     : adjust if obstacles occur,
+        #     : however reframe from moving toward previously visitted landmark.
+
+
+        x = 0
     if curr_l_flag[0] == curr_l_flag[1] == 1:
         print "Found Both landmarks"
         dest = p.where_to_go(p.estimate_position(inner_frindo.getParticles()), [0, 150])
@@ -204,9 +232,7 @@ while True:
         # Or in the case that we do not know where we are.
         previously_turned = 0.0
         print "Sitting in Else inside while loop"
-        while previously_turned <= 360:
-            obs_prop = find_landmark(inner_frindo)
-            previously_turned += x[1]
+        find_landmark(inner_frindo)
 
         # TODO : ENSURE THAT WE FIND A LANDMARK BEFORE LEAVING THIS CASE
         #        E.G. DRIVE 20 CM AWAY, AND REDO PROCEDURE

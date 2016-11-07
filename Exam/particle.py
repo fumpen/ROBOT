@@ -39,7 +39,7 @@ class Particle(object):
 
     def __repr__(self):
         return '[x=%.6s y=%.6s theta=%.6s]' % (str(self.x), str(self.y),
-                                               str(self.getThetaDegree()))
+                                               str(self.getDegree()))
 
 
 def estimate_pose(particles_list):
