@@ -20,9 +20,14 @@ cv2.namedWindow(WIN_World)
 cv2.moveWindow(WIN_World, 500, 50)
 
 LANDMARK = {0: 0,
-            1: 0}
+            1: 0,
+	    2: 0,
+	    3: 0}
+
 LANDMARK_COORDINATES = {0: [0, 0],
-                        1: [300, 0]}
+                        1: [300, 0],
+			2: [0, 300],
+			3: [300, 300]}
 
 
 class FrindosInnerWorld:
