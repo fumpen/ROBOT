@@ -4,6 +4,10 @@ import robot
 from time import sleep
 import sensor as s
 
+THETA_TIME = 0.0
+
+THETA_CHANGE_GEAR = 0.0
+
 TURN_SPEED = {1: 53.57,
               2: 111.57}
 
@@ -87,6 +91,43 @@ def lige_gear(frindo, dist):
     frindo.go_diff(GEAR[g][0], GEAR[g][1], 1, 1)
     sleep(abs(np.divide((dist - d), GEAR_SPEED[g])))
     force_break(frindo, g)
+
+
+def lige_gear_sensor(frindo, dist):
+    g, d = choose_gear(dist)
+    x = 1
+    while x < g:
+        y = GEAR[x]
+        frindo.go_diff(y[0], y[1], 1, 1)
+        x += 1
+        y = 0
+        while y < THETA_CHANGE_GEAR:
+            if not s.allSensor_gear(frindo, x):
+                break
+            y += 1
+        if y != THETA_CHANGE_GEAR:
+            break
+    if x == g:
+        frindo.go_diff(GEAR[g][0], GEAR[g][1], 1, 1)
+        y = 0
+        time_left = abs(np.divide(
+            np.divide((dist - d), GEAR_SPEED[g]), THETA_TIME))
+        while y < time_left:
+            if not s.allSensor_gear(frindo, g):
+                break
+            y += 1
+        force_break(frindo, g)
+        if y == time_left:
+            return dist
+        else:
+            time = x * THETA_CHANGE_GEAR * THETA_TIME
+            time += y * THETA_TIME
+            return dist_at_time(x, time)
+    else:
+        force_break(frindo, x)
+        time = x * THETA_CHANGE_GEAR * THETA_TIME
+        time += y * THETA_TIME
+        return dist_at_time(x, time)
 
 
 def dist_at_time(current_gear, time):

@@ -68,13 +68,6 @@ innit_est_pose = p.estimate_position(particles)
 p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
 
 
-def update_landmark(num_landmark):
-    if num_landmark == 1:
-        LANDMARK[1] = 1
-    elif num_landmark == 0:
-        LANDMARK[0] = 1
-
-
 def turn(dir, deg, inner_state):
     m.turn_baby_turn(deg, dir, frindo)
     print '##############'

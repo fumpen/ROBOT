@@ -341,15 +341,6 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particle.add_uncertainty(particles, 12, 15)
 
-        # new random particles added
-        #for c in range(0, int(math.ceil(num_particles * 0.05))):
-        #    p = particle.Particle(500.0 * np.random.ranf() - 100,
-        #                          500.0 * np.random.ranf() - 100,
-        #                          2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
-
-        #    particles.append(p)
-
-        # Draw detected pattern
         cam.draw_object(colour)
     else:
         observed_obj = [None, None, None, None]
@@ -358,9 +349,6 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             p.setWeight(1.0 / num_particles)
 
         particle.add_uncertainty(particles, 12, 15)
-
-    # est_pose = particle.estimate_pose(particles)  # The estimate of the robots current pose
-    # return [est_pose, observed_obj]
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
