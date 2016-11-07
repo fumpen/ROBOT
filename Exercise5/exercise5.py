@@ -495,7 +495,7 @@ while True:
         print "resampled"
 
 
-        particle.add_uncertainty(particles, 20, 15)
+        particle.add_uncertainty(particles, 15, 10)
 
 
         # 10% new random particles added
@@ -511,7 +511,7 @@ while True:
         # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0/num_particles)
-        particle.add_uncertainty(particles, 10, 5)
+        particle.add_uncertainty(particles, 5, 5)
 
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose

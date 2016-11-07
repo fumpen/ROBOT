@@ -312,9 +312,9 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             particle.move_particle(p, 0.0, 0.0, curr_angle)
             print 'cur_ang_rad: ' + str(curr_angle)
     if velocity != 0.0:
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 12, 10)
     if velocity == 0.0 and angular_velocity != 0.0:
-        particle.add_uncertainty(particles, 0, 15)
+        particle.add_uncertainty(particles, 0, 10)
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -336,7 +336,6 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particles = resample_particles(list_of_particles)#[]
 
-
         # for count in range(0, num_particles):
         #     rando = np.random.uniform(0.0,1.0)
         #     p = when_in_range(list_of_particles,
@@ -349,7 +348,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         print 'list_of_particles: ' + str(list_of_particles)
         print 'particles: ' + str(particles)
 
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 15, 10)
 
         cam.draw_object(colour)
     else:
@@ -358,7 +357,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-        particle.add_uncertainty(particles, 5, 10)
+        particle.add_uncertainty(particles, 10, 10)
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
