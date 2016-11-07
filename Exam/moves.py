@@ -11,7 +11,7 @@
 from time import sleep
 import sensor as s
 import numpy as np
-import datetime.datetime as dt
+from datetime import datetime as dt
 import robot
 
 
@@ -195,12 +195,12 @@ def lige_gear_sensor_alt(frindo, dist):
         else:
             print 'after reaching gear'
             tf = dt.now()
-            return dist_at_time(x, (ts - tf).total_seconds())
+            return dist_at_time(x, (tf - ts).total_seconds())
     else:
         print 'while gearing up'
         force_break(frindo, x)
         tf = dt.now()
-        return dist_at_time(x, (ts - tf).total_seconds())
+        return dist_at_time(x, (tf - ts).total_seconds())
 
 
 def dist_at_time(current_gear, time):
