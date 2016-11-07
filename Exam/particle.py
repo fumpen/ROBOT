@@ -22,6 +22,9 @@ class Particle(object):
     def getWeight(self):
         return self.weight
 
+    def getDegree(self):
+	return np.degrees(self.theta)
+
     def setX(self, val):
         self.x = val
 
@@ -33,6 +36,10 @@ class Particle(object):
 
     def setWeight(self, val):
         self.weight = val
+
+    def __repr__(self):
+        return '[x=%.6s y=%.6s theta=%.6s]' % (str(self.x), str(self.y),
+                                               str(self.getThetaDegree()))
 
 
 def estimate_pose(particles_list):
