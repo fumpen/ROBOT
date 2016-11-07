@@ -265,7 +265,7 @@ def innit_particles(num_particles=1000):
     for i in range(num_particles):
         p = particle.Particle(500.0 * np.random.ranf() - 100,
                               500.0 * np.random.ranf() - 100,
-                              np.radians(90), #2.0 * np.pi * np.random.ranf() - np.pi,
+                              2.0 * np.pi * np.random.ranf() - np.pi,
                               1.0 / num_particles)
         particles.append(p)
     return particles
