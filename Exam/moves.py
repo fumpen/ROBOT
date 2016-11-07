@@ -11,7 +11,7 @@
 from time import sleep
 import sensor as s
 import numpy as np
-import datetime
+import datetime.datetime as dt
 import robot
 
 
@@ -141,6 +141,7 @@ def lige_gear_sensor(frindo, dist):
         y = 0
         time_left = abs(np.divide(
             np.divide((dist - d), GEAR_SPEED[g]), THETA_TIME))
+        print 'time left: ' + str(time_left)
         while y < time_left:
             if not s.allSensor_gear(frindo, g):
                 break
@@ -160,6 +161,46 @@ def lige_gear_sensor(frindo, dist):
         time = x * THETA_CHANGE_GEAR * THETA_TIME
         time += y * THETA_TIME
         return dist_at_time(x, time)
+
+
+def lige_gear_sensor_alt(frindo, dist):
+    g, d = choose_gear(dist)
+    x = 1
+    ts = dt.now()
+    while x < g:
+        y = GEAR[x]
+        frindo.go_diff(y[0], y[1], 1, 1)
+        x += 1
+        y = 0
+        while y < THETA_CHANGE_GEAR:
+            if not s.allSensor_gear(frindo, x):
+                break
+            y += 1
+        if y != THETA_CHANGE_GEAR:
+            break
+    if x == g:
+        frindo.go_diff(GEAR[g][0], GEAR[g][1], 1, 1)
+        y = 0
+        time_left = abs(np.divide(
+            np.divide((dist - d), GEAR_SPEED[g]), THETA_TIME))
+        print 'time left: ' + str(time_left)
+        while y < time_left:
+            if not s.allSensor_gear(frindo, g):
+                break
+            y += 1
+        force_break(frindo, g)
+        if y == time_left:
+            print 'finished as planned'
+            return dist
+        else:
+            print 'after reaching gear'
+            tf = dt.now()
+            return dist_at_time(x, (ts - tf).total_seconds())
+    else:
+        print 'while gearing up'
+        force_break(frindo, x)
+        tf = dt.now()
+        return dist_at_time(x, (ts - tf).total_seconds())
 
 
 def dist_at_time(current_gear, time):
