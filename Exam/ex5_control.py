@@ -170,6 +170,14 @@ while True:
         print drive_manual
         turn(drive_manual[1], drive_manual[2], inner_frindo)
         go_forward(drive_manual[0], inner_frindo)
+        p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
+                                  WIN_RF1, WIN_World)
+        p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
+                                  WIN_RF1, WIN_World)
+        p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
+                                  WIN_RF1, WIN_World)
+        if raw_input() == 'w':
+            break
 
     else:
         print "reached hard reset"

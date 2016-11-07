@@ -46,6 +46,12 @@ def particle_landmark_vector(mark, particle):
     y = -1.0 * (mark_y - particle.getY())
     return [x, y]
 
+def particle_landmark_vector_v2(mark, vector):
+    #(mark_x, mark_y) = landmarks[mark]
+    x = mark[0] - vector[0]
+    y = -1.0 * (mark[1] - vector[1])
+    return [x, y]
+
 def direction(angle):
     x = np.cos(angle)
     y = np.sin(angle)
@@ -157,7 +163,13 @@ def where_to_go(pose, goal):
 
     returns a list of the length the robot needs to drive, the degrees it
     needs to turn and the direction it needs to turn"""
-    ang = vector_angle([pose[0], pose[1]], goal)
+
+    ang = vector_angle(particle_landmark_vector_v2(goal, [pose[0],pose[1]]),
+                       direction(pose[2]))
+
+    if math.isnan(ang):
+        print "pose information :", pose
+        print "goal information :", goal
     if ang <= 180:
         turn_dir = 'right'
         turn_deg = ang
@@ -165,15 +177,16 @@ def where_to_go(pose, goal):
         turn_dir = 'left'
         turn_deg = 180 - ang
     length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])
-    # np.sqrt(
+
+    # length = np.sqrt(
     #     np.power((particle.getX() - goal[0]), 2) + np.power(
     #         (particle.getY() - goal[1]), 2))
 
     print 'REPORT FROM: where_to_go'
-    print 'est_particle: ' + str([pose[0], pose[1]])
-    print 'goal: ' + str(goal)
-    print 'estimated course: dist=' + str(length) + 'dir=' + turn_dir +\
-          'turn degree=' + str(turn_deg)
+    print 'est_particle: ' , str([pose[0], pose[1]])
+    print 'goal: ' , str(goal)
+    print 'estimated course: dist=' , str(length) , 'dir=' , turn_dir,  \
+          'turn degree=' , str(turn_deg)
     return [length, turn_dir, turn_deg]
 
 
