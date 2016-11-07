@@ -17,7 +17,7 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in cm.
-landmarks = [(0, 0), (300, 0)]
+landmarks = [(0, 0), (300, 0), (0, 300), (300, 300)]
 
 
 def add_to_angular(present, delta):
@@ -37,13 +37,6 @@ def add_to_angular_v2(present, delta):
     elif new_angle < -180.0:
         new_angle = new_angle + 360.0
     return np.radians(new_angle)
-
-
-def vector_angle(v1, v2):
-    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
-    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
-    dot = v1[0] * v2[0] + v1[1] * v2[1]
-    return np.arccos(np.divide(dot, (l1 * l2)))
 
 
 def particle_landmark_vector(mark, particle):
@@ -69,19 +62,15 @@ def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
 
-def angle_between(v1, v2):
-    """ Returns the angle in radians between vectors 'v1' and 'v2'::
-
-            >>> angle_between((1, 0, 0), (0, 1, 0))
-            1.5707963267948966
-            >>> angle_between((1, 0, 0), (1, 0, 0))
-            0.0
-            >>> angle_between((1, 0, 0), (-1, 0, 0))
-            3.141592653589793
-    """
-    v1_u = v1
+# Returns angle between orientation of particle and particle to landmark vector
+# v1 : particle to landmark vector
+# v2 : particle orientation vector
+def vector_angle(v1, v2):
+    v1_u = unit_vector(v1)
     v2_u = unit_vector(v2)
-    return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+    tmp1 = np.degrees(np.arctan2(v1_u[1],v1_u[0]))
+    tmp2 = np.degrees(np.arctan2(v2_u[1],v2_u[0]))
+    return tmp2-tmp1
 
 def diff_weight(diff, varians):
     return 1/np.sqrt((2*np.pi*varians)) *\
@@ -98,7 +87,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
-    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_to_mark = vector_angle(part2Mark, orientation)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
@@ -143,20 +132,22 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
 
     return list_of_particles
 
-def ret_landmark(color, horizontal_or_vertical):
-    if color[1] >= color[0]:
-        x = 'Green'
+def ret_landmark(colorProb, direction):
+    if colorProb[1] >= colorProb[0]:
+        color = 'Green'
     else:
-        x = 'Red'
-    print x
-    if x == 'Red' and horizontal_or_vertical == 'horizontal':
-        return 0
-    elif x == 'Red' and horizontal_or_vertical == 'vertical':
-        return 0
-    elif x == 'Green' and horizontal_or_vertical == 'vertical':
-        return 1
-    elif x == 'Green' and horizontal_or_vertical == 'horizontal':
-        return 1
+        color = 'Red'
+
+    if color == 'Red' and direction == 'vertical':
+        landmark = 0
+    elif color == 'Green' and direction == 'horizontal':
+        landmark = 1
+    elif color == 'Green' and direction == 'vertical':
+        landmark = 2
+    elif color == 'Red' and direction == 'horizontal':
+        landmark = 3
+
+    return landmark
 
 
 def where_to_go(particle, goal):
@@ -223,6 +214,28 @@ def when_in_range(w_particles, lower, upper, value):
             else:
                 upper -= ind
 
+def resample_particles(w_particles):
+    N = len(w_particles[:,0])
+    new_particles = []
+    index = int(random.random() * N)
+    beta = 0.0
+
+    mw = w_particles[w_particles[:,0] == max(w_particles[:, 0])][0,0]
+    print mw
+    for i in range(N):
+        beta += random.random() * 2.0 * mw
+        while beta > w_particles[index,0]:
+            beta -= w_particles[index,0]
+            index = (index + 1) % N
+        p = w_particles[index,1]
+        new_particles.append(particle.Particle(p.getX(),
+                             p.getY(),
+                             p.getTheta(),
+                             1.0/N))
+
+    return np.array(new_particles)
+
+
 # For graphic
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of
@@ -259,8 +272,13 @@ def draw_world(est_pose, particles, world):
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
     lm1 = (landmarks[1][0]+offset, landmarks[1][1]+offset)
+    lm2 = (landmarks[2][0]+offset, landmarks[2][1]+offset)
+    lm3 = (landmarks[3][0]+offset, landmarks[3][1]+offset)
+
     cv2.circle(world, lm0, 5, CRED, 2)
     cv2.circle(world, lm1, 5, CGREEN, 2)
+    cv2.circle(world, lm2, 5, CGREEN, 2)
+    cv2.circle(world, lm3, 5, CRED, 2)
 
     # Draw estimated robot pose
     a = (int(est_pose.getX())+offset, int(est_pose.getY())+offset)
@@ -276,7 +294,7 @@ def innit_particles(num_particles=1000):
     for i in range(num_particles):
         p = particle.Particle(500.0 * np.random.ranf() - 100,
                               500.0 * np.random.ranf() - 100,
-                              np.radians(90), #2.0 * np.pi * np.random.ranf() - np.pi,
+                              2.0 * np.pi * np.random.ranf() - np.pi,
                               1.0 / num_particles)
         particles.append(p)
     return particles
@@ -284,7 +302,6 @@ def innit_particles(num_particles=1000):
 
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
-    raw_input()
     print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
@@ -292,19 +309,19 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         # calculates new orientation
 
         curr_angle = add_to_angular_v2(np.degrees(p.getTheta()), angular_velocity)
-        print 'theta_rad: ' + str(p.getTheta())
-        print 'theta_deg: ' + str(np.degrees(p.getTheta()))
-        print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
+        # print 'theta_rad: ' + str(p.getTheta())
+        # print 'theta_deg: ' + str(np.degrees(p.getTheta()))
+        # print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
         if velocity > 0.0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
-            print 'cur_ang_rad: ' + str(curr_angle)
+            #print 'cur_ang_rad: ' + str(curr_angle)
     if velocity != 0.0:
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 12, 10)
     if velocity == 0.0 and angular_velocity != 0.0:
-        particle.add_uncertainty(particles, 0, 15)
+        particle.add_uncertainty(particles, 0, 10)
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -324,22 +341,21 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
                                              measured_distance, obs_landmark)
 
 
-        particles = []
-        for count in range(0, num_particles):
-            rando = np.random.uniform(0.0,1.0)  # np.random.normal(0.0, 1.0, 1)
-            # dicto = {'i': 500,
-            #          'n': 2}
-            p = when_in_range(list_of_particles,
-                              0,
-                              num_particles,
-                              rando)
-            particles.append(
-                particle.Particle(p.getX(), p.getY(), p.getTheta(),
-                                  1.0 / num_particles))
+        particles = resample_particles(list_of_particles)#[]
+
+        # for count in range(0, num_particles):
+        #     rando = np.random.uniform(0.0,1.0)
+        #     p = when_in_range(list_of_particles,
+        #                       0,
+        #                       num_particles,
+        #                       rando)
+        #     particles.append(
+        #         particle.Particle(p.getX(), p.getY(), p.getTheta(),
+        #                           1.0 / num_particles))
         print 'list_of_particles: ' + str(list_of_particles)
         print 'particles: ' + str(particles)
 
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 15, 10)
 
         cam.draw_object(colour)
     else:
@@ -348,8 +364,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-        particle.add_uncertainty(particles, 12, 15)
-
+        particle.add_uncertainty(particles, 10, 10)
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
 
