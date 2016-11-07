@@ -123,8 +123,22 @@ def jet(x):
 # Calculates the probability of a particle
 #
 # ===========================================
+def dist_vector(vec):
+    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
+
 def diff_weight(diff, varians):
     return (1/(math.sqrt(2*np.pi*varians))) * (np.exp(-np.divide(diff**2, 2* varians)))
+
+def particle_landmark_vector(mark, particle):
+    (mark_x, mark_y) = LANDMARKS[mark]
+    x = mark_x - particle.getX()
+    y = -1.0 * (mark_y - particle.getY())
+    return [x, y]
+
+def direction(angle):
+    x = np.cos(angle)
+    y = np.sin(angle)
+    return [x, y]
 
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
