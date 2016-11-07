@@ -117,3 +117,6 @@ def turn_left_stop(frindo):
 
     frindo.stop()
     moves.pause()
+
+#sensor(distance) = 625.986165361*np.exp(-0.0671106700354*x)+95.7871517708
+#distance(sensor) = 266.039471077*np.exp(-0.0153167314249*x)+11.6882003001
