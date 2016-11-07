@@ -106,7 +106,7 @@ def turn(dir, deg, inner_state):
     return x
 
 def go_forward(length, inner_state):
-    m.lige_gear(frindo, length)
+    qwe = m.lige_gear_sensor(frindo, length)
     x = p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
                            WIN_RF1, WIN_World)
     inner_state.update_particles(x['particles'])
