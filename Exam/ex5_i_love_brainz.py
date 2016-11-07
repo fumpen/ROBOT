@@ -132,20 +132,22 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
 
     return list_of_particles
 
-def ret_landmark(color, horizontal_or_vertical):
-    if color[1] >= color[0]:
-        x = 'Green'
+def ret_landmark(colorProb, horizontal_or_vertical):
+    if colorProb[1] >= colorProb[0]:
+        color = 'Green'
     else:
-        x = 'Red'
+        color = 'Red'
 
-    if x == 'Red' and horizontal_or_vertical == 'horizontal':
-        return 0
-    elif x == 'Red' and horizontal_or_vertical == 'vertical':
-        return 0
-    elif x == 'Green' and horizontal_or_vertical == 'vertical':
-        return 1
-    elif x == 'Green' and horizontal_or_vertical == 'horizontal':
-        return 1
+    if color == 'Red' and horizontal_or_vertical == 'vertical':
+        landmark = 0
+    elif color == 'Green' and horizontal_or_vertical == 'horizontal':
+        landmark = 1
+    elif color == 'Green' and horizontal_or_vertical == 'vertical':
+        landmark = 2
+    elif color == 'Red' and horizontal_or_vertical == 'horizontal':
+        landmark = 3
+
+    return landmark
 
 
 def where_to_go(particle, goal):
