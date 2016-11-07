@@ -212,6 +212,28 @@ def when_in_range(w_particles, lower, upper, value):
             else:
                 upper -= ind
 
+def resample_particles(w_particles):
+    N = len(w_particles[:,0])
+    new_particles = []
+    index = int(random.random() * N)
+    beta = 0.0
+
+    mw = w_particles[w_particles[:,0] == max(w_particles[:, 0])][0,0]
+    print mw
+    for i in range(N):
+        beta += random.random() * 2.0 * mw
+        while beta > w_particles[index,0]:
+            beta -= w_particles[index,0]
+            index = (index + 1) % N
+        p = w_particles[index,1]
+        new_particles.append(particle.Particle(p.getX(),
+                             p.getY(),
+                             p.getTheta(),
+                             1.0/N))
+
+    return np.array(new_particles)
+
+
 # For graphic
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of
@@ -312,32 +334,23 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
                                              measured_distance, obs_landmark)
 
 
-        particles = []
-        for count in range(0, num_particles):
-            rando = np.random.uniform(0.0,1.0)  # np.random.normal(0.0, 1.0, 1)
-            # dicto = {'i': 500,
-            #          'n': 2}
-            p = when_in_range(list_of_particles,
-                              0,
-                              num_particles,
-                              rando)
-            particles.append(
-                particle.Particle(p.getX(), p.getY(), p.getTheta(),
-                                  1.0 / num_particles))
+        particles = resample_particles(list_of_particles)#[]
+
+
+        # for count in range(0, num_particles):
+        #     rando = np.random.uniform(0.0,1.0)
+        #     p = when_in_range(list_of_particles,
+        #                       0,
+        #                       num_particles,
+        #                       rando)
+        #     particles.append(
+        #         particle.Particle(p.getX(), p.getY(), p.getTheta(),
+        #                           1.0 / num_particles))
         print 'list_of_particles: ' + str(list_of_particles)
         print 'particles: ' + str(particles)
 
         particle.add_uncertainty(particles, 12, 15)
 
-        # new random particles added
-        #for c in range(0, int(math.ceil(num_particles * 0.05))):
-        #    p = particle.Particle(500.0 * np.random.ranf() - 100,
-        #                          500.0 * np.random.ranf() - 100,
-        #                          2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
-
-        #    particles.append(p)
-
-        # Draw detected pattern
         cam.draw_object(colour)
     else:
         observed_obj = [None, None, None, None]
@@ -345,10 +358,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-        particle.add_uncertainty(particles, 12, 15)
-
-    # est_pose = particle.estimate_pose(particles)  # The estimate of the robots current pose
-    # return [est_pose, observed_obj]
+        particle.add_uncertainty(particles, 5, 10)
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
