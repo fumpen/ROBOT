@@ -153,7 +153,7 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
         sum_dist_w += dist_w  #tmp
         sum_angle_w += angle_w
 
-        list_of_particles.append([dist_w*0.60, angle_w*0.40, p])
+        list_of_particles.append([dist_w*0.65, angle_w*0.35, p])
 
     list_of_particles = np.array(list_of_particles)
     #print "dist", sum_dist_w, "angle_w", sum_angle_w
@@ -316,7 +316,7 @@ cv2.moveWindow(WIN_World, 500       , 50);
 
 
 # Initialize particles
-num_particles = 500
+num_particles = 1000
 particles = []
 for i in range(num_particles):
     # Random starting points. (x,y) \in [-1000, 1000]^2, theta \in [-pi, pi].
@@ -344,11 +344,11 @@ world = np.zeros((500,500,3), dtype=np.uint8)
 
 #print landmarks[0]
 
-# particles =  [particle.Particle(0,50, np.radians(75.0), 1.0/num_particles),
-#               particle.Particle(0,100, np.radians(90.0), 1.0/num_particles),
-#               particle.Particle(0,150, np.radians(105.0), 1.0/num_particles),
-#               particle.Particle(0,200, np.radians(270.0), 1.0/num_particles),
-#               particle.Particle(0,250, np.radians(90.0), 1.0/num_particles)]
+# particles =  [particle.Particle(0,50, np.radians(90.0), 1.0/num_particles),
+#               particle.Particle(0,100, np.radians(-90.0), 1.0/num_particles),
+#               particle.Particle(0,150, np.radians(45.0), 1.0/num_particles),
+#               particle.Particle(0,200, np.radians(-45.0), 1.0/num_particles),
+#               particle.Particle(0,250, np.radians(0.0), 1.0/num_particles)]
 #obs = (250, 0)
 
 #pete = weight_particles(particles, obs[1], obs[0], 0)
@@ -460,7 +460,7 @@ while True:
         #nunum_of_particles = len(particles)
         weight_sum = 0.0
         particles = []
-        for count in range(0,int(num_particles*0.95)):
+        for count in range(0,num_particles):
             rando = np.random.uniform(0.0, 1.0) #np.random.normal(0.0, 1.0, 1)
 
             # dicto = {'i': 500,
@@ -479,14 +479,14 @@ while True:
         print "resampled"
 
 
-        particle.add_uncertainty(particles, 10, 15)
+        particle.add_uncertainty(particles, 20, 15)
 
 
         # 10% new random particles added
-        for c in range(0,int(math.ceil(num_particles*0.05))):
-            p = particle.Particle(500.0*np.random.ranf() - 100, 500.0*np.random.ranf() - 100, 2.0*np.pi*np.random.ranf()-np.pi, 0.0)
+        # for c in range(0,int(math.ceil(num_particles*0.05))):
+        #     p = particle.Particle(500.0*np.random.ranf() - 100, 500.0*np.random.ranf() - 100, 2.0*np.pi*np.random.ranf()-np.pi, 0.0)
 
-            particles.append(p)
+        #     particles.append(p)
 
 
         # Draw detected pattern
@@ -495,7 +495,7 @@ while True:
         # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0/num_particles)
-        #particle.add_uncertainty(particles, 20, 0.0005)
+        particle.add_uncertainty(particles, 5, 5)
 
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose

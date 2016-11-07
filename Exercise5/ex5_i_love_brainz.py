@@ -40,11 +40,15 @@ def add_to_angular_v2(present, delta):
 
 
 def vector_angle(v1, v2):
-    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
-    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
-    dot = v1[0] * v2[0] + v1[1] * v2[1]
-    return np.arccos(np.divide(dot, (l1 * l2)))
-
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    tmp1 = np.degrees(np.arctan2(v1_u[1],v1_u[0]))#np.degrees(np.arctan((v1_u[1])/(v1_u[0])))
+    tmp2 = np.degrees(np.arctan2(v2_u[1],v2_u[0]))#np.degrees(np.arctan(v2_u[1]/v2_u[0]))
+    return tmp2-tmp1 #, tmp1-tmp2
+    # l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
+    # l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
+    # dot = v1[0] * v2[0] + v1[1] * v2[1]
+    # return np.arccos(np.divide(dot, (l1 * l2)))
 
 def particle_landmark_vector(mark, particle):
     (mark_x, mark_y) = landmarks[mark]
@@ -60,7 +64,6 @@ def direction(angle):
 def move_vector(p, velocity):
     unit_v = direction(p.getTheta())
     return [unit_v[0]*velocity, -unit_v[1]*velocity]
-
 
 def dist_vector(vec):
     return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
@@ -87,7 +90,7 @@ def diff_weight(diff, varians):
     return 1/np.sqrt((2*np.pi*varians)) *\
            np.exp(-np.divide(diff**2, 2 * varians))
 
-# This function finds weight for distance and angle for given particle to
+# This function finds weight for distance and angle for given particle to`
 # observed landmark. Turning right will cause for positive angle, and reversed
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
@@ -98,7 +101,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
-    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_to_mark = vector_angle(orientation, part2Mark)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
@@ -339,7 +342,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         print 'list_of_particles: ' + str(list_of_particles)
         print 'particles: ' + str(particles)
 
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 5, 2)
 
         # new random particles added
         #for c in range(0, int(math.ceil(num_particles * 0.05))):
@@ -357,7 +360,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-        particle.add_uncertainty(particles, 12, 15)
+        particle.add_uncertainty(particles, 5, 2)
 
     # est_pose = particle.estimate_pose(particles)  # The estimate of the robots current pose
     # return [est_pose, observed_obj]

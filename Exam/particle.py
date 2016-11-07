@@ -82,13 +82,13 @@ def add_uncertainty(particles_list, sigma, sigma_theta):
         particle.x += rn.randn(0.0, sigma) #np.random.uniform(0.0, sigma)
         particle.y += rn.randn(0.0, sigma) # (particle.getY()+ np.random.uniform(0.0, sigma))
         #print particle.theta
-        new_theta = np.mod(particle.theta + rn.randn(particle.theta, np.radians(sigma_theta)), 2.0 * np.pi) #np.degrees(particle.theta) + np.random.uniform(-sigma_theta, sigma_theta)
-        if np.degrees(new_theta) < -180.0:
-            particle.theta = new_theta + np.radians(360.0) #np.radians(new_theta + 360.0)
-        elif np.degrees(new_theta) >= 180.0:
-            particle.theta = new_theta + np.radians(360.0) #np.radians(new_theta - 360.0)
+        new_theta = np.degrees(particle.theta) + np.random.uniform(-sigma_theta, sigma_theta)
+        if new_theta < -180.0:
+            particle.theta = np.radians(new_theta + 360.0)
+        elif new_theta >= 180.0:
+            particle.theta = np.radians(new_theta - 360.0)
         else:
-            particle.theta = new_theta #np.radians(new_theta)
+            particle.theta = np.radians(new_theta)
         #print particle.theta
         #(np.mod(particle.getTheta() + np.random.uniform(particle.theta, sigma_theta), 2.0 * np.pi))
 

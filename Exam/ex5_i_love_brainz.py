@@ -39,11 +39,6 @@ def add_to_angular_v2(present, delta):
     return np.radians(new_angle)
 
 
-def vector_angle(v1, v2):
-    l1 = np.sqrt(np.power(v1[0], 2) + np.power(v1[1], 2))
-    l2 = np.sqrt(np.power(v2[0], 2) + np.power(v2[1], 2))
-    dot = v1[0] * v2[0] + v1[1] * v2[1]
-    return np.arccos(np.divide(dot, (l1 * l2)))
 
 
 def particle_landmark_vector(mark, particle):
@@ -69,19 +64,29 @@ def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
 
-def angle_between(v1, v2):
-    """ Returns the angle in radians between vectors 'v1' and 'v2'::
-
-            >>> angle_between((1, 0, 0), (0, 1, 0))
-            1.5707963267948966
-            >>> angle_between((1, 0, 0), (1, 0, 0))
-            0.0
-            >>> angle_between((1, 0, 0), (-1, 0, 0))
-            3.141592653589793
-    """
-    v1_u = v1
+# Returns angle between orientation of particle and particle to landmark vector
+# v1 : particle to landmark vector
+# v2 : particle orientation vector
+def vector_angle(v1, v2):
+    v1_u = unit_vector(v1)
     v2_u = unit_vector(v2)
-    return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+    tmp1 = np.degrees(np.arctan2(v1_u[1],v1_u[0]))
+    tmp2 = np.degrees(np.arctan2(v2_u[1],v2_u[0]))
+    return tmp2-tmp1
+
+# def angle_between(v1, v2):
+#     """ Returns the angle in radians between vectors 'v1' and 'v2'::
+
+#             >>> angle_between((1, 0, 0), (0, 1, 0))
+#             1.5707963267948966
+#             >>> angle_between((1, 0, 0), (1, 0, 0))
+#             0.0
+#             >>> angle_between((1, 0, 0), (-1, 0, 0))
+#             3.141592653589793
+#     """
+#     v1_u = v1
+#     v2_u = unit_vector(v2)
+#     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
     return 1/np.sqrt((2*np.pi*varians)) *\
@@ -98,7 +103,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_weight = diff_weight(dist_diff, 100)
 
     orientation = direction(p.getTheta())
-    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_to_mark = vector_angle(part2Mark, orientation)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
@@ -148,7 +153,7 @@ def ret_landmark(color, horizontal_or_vertical):
         x = 'Green'
     else:
         x = 'Red'
-    
+
     if x == 'Red' and horizontal_or_vertical == 'horizontal':
         return 0
     elif x == 'Red' and horizontal_or_vertical == 'vertical':
@@ -284,7 +289,6 @@ def innit_particles(num_particles=1000):
 
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
-    raw_input()
     print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
