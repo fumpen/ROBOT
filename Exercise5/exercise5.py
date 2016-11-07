@@ -3,7 +3,7 @@ import particle
 import camera
 import numpy as np
 import math
-
+import random
 
 
 # TODO: The coordinate system is such that the y-axis points downwards due to the visualization in draw_world.
@@ -124,14 +124,14 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 0.5)
+    dist_weight = diff_weight(dist_diff, 20)
 
     orientation = direction(p.getTheta())
     angle_to_mark = angle_between(orientation, part2Mark)
     angle_diff = abs(angle_to_mark - obs_angle)
     if angle_diff <= 0.00001:
         angle_digg = 0.0001
-    angle_weight = diff_weight(angle_diff,1)
+    angle_weight = diff_weight(angle_diff,10)
 
 
     if math.isnan(dist_weight):
@@ -156,16 +156,11 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
         list_of_particles.append([dist_w*0.65, angle_w*0.35, p])
 
     list_of_particles = np.array(list_of_particles)
-    #print "dist", sum_dist_w, "angle_w", sum_angle_w
 
     # normalize weights checks if weight sum have
     if math.isnan(sum_dist_w) or math.isnan(sum_angle_w):
         print "found nan value", sum_dist_w, sum_angle_w
 
-    # list_of_particles[:,0] = np.divide(list_of_particles[:,0], sum_dist_w)
-    # list_of_particles[:,1] = np.divide(list_of_particles[:,1], sum_angle_w)
-
-    #lower = 0.0
     accum = 0.0
     for p in list_of_particles:
         p[0] /= sum_dist_w
@@ -254,6 +249,26 @@ def when_in_range(w_particles, lower, upper, value):
             else:
                 upper -= ind
 
+def resample_particles(w_particles):
+    N = len(w_particles[:,0])
+    new_particles = []
+    index = int(random.random() * N)
+    beta = 0.0
+
+    mw = w_particles[w_particles[:,0] == max(w_particles[:, 0])][0,0]
+    print mw
+    for i in range(N):
+        beta += random.random() * 2.0 * mw
+        while beta > w_particles[index,0]:
+            beta -= w_particles[index,0]
+            index = (index + 1) % N
+        p = w_particles[index,1]
+        new_particles.append(particle.Particle(p.getX(),
+                             p.getY(),
+                             p.getTheta(),
+                             1.0/N))
+
+    return np.array(new_particles)
 
 
 def jet(x):
@@ -437,7 +452,7 @@ while True:
         sum_of_angle_diff = 0.0
 
         # Computes weights and normalizes for each particle
-        list_of_particles = weight_particles(particles, np.degrees(measured_angle), measured_distance, obs_landmark)
+        list_of_particles = np.array(weight_particles(particles, np.degrees(measured_angle), measured_distance, obs_landmark))
 
         # for p in list_of_particles:
         #     print p[1]
@@ -449,7 +464,7 @@ while True:
         # print len(list_of_particles)
         # print list_of_particles[num_particles-1,1]
         scale = 2
-
+        #list_of_particles = np.array(list_of_particles)
         accum = 0.0
         # updates resampled particle weights
         #for p in list_of_particles:
@@ -459,27 +474,28 @@ while True:
         upper = 0
         #nunum_of_particles = len(particles)
         weight_sum = 0.0
-        particles = []
-        for count in range(0,num_particles):
-            rando = np.random.uniform(0.0, 1.0) #np.random.normal(0.0, 1.0, 1)
+        particles = resample_particles(list_of_particles[:,[0,2]])
 
-            # dicto = {'i': 500,
-            #          'n': 2}
-            p = when_in_range(list_of_particles,
-                              0,
-                              num_particles,
-                              rando)
-# rando,
-#                               {'i': num_particles/2, 'n': 2},
-#                          num_particles)
+        #         for count in range(0,num_particles):
+        #             rando = np.random.uniform(0.0, 1.0) #np.random.normal(0.0, 1.0, 1)
+
+        #             # dicto = {'i': 500,
+        #             #          'n': 2}
+        #             p = when_in_range(list_of_particles,
+        #                               0,
+        #                               num_particles,
+        #                               rando)
+        # # rando,
+        # #                               {'i': num_particles/2, 'n': 2},
+        # #                          num_particles)
 
 
-            #weight_sum += p.getWeight()
-            particles.append(particle.Particle(p.getX(), p.getY(), p.getTheta(), 1.0/num_particles))
+        #             #weight_sum += p.getWeight()
+        #             particles.append(particle.Particle(p.getX(), p.getY(), p.getTheta(), 1.0/num_particles))
         print "resampled"
 
 
-        particle.add_uncertainty(particles, 20, 15)
+        particle.add_uncertainty(particles, 15, 10)
 
 
         # 10% new random particles added

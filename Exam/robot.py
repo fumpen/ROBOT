@@ -27,26 +27,36 @@ class Robot(object):
 
         print("Running ...")
         
+
+    # === ROBOT ARDUINO CONTACT =================
+    # send_command:
+    #
+    #     Sends a command to the Arduino robot
+    #     controller.
+    #
+    # stop:
+    #
+    #     Send a stop command to stop moters.
+    #
+    #
+    # go_diff:
+    #
+    #     Start left and right motor with speed
+    #     in [0; 255] and direction
+    #     (0 = reverse, 1 = forward).
+    #
+    # ===========================================
         
     def send_command(self, cmd):
-        """Sends a command to the Arduino robot controller"""
         self.serialRead.write(cmd.encode('ascii'))
         str_val=self.serialRead.readline()
         return str_val
-
-
-    # === ROBOT MOVEMENT ========================
-    # ===========================================
-        
          
     def stop(self):
-        """Send a stop command to stop motors"""
         cmd='s\n'
         return self.send_command(cmd)
         
     def go_diff(self, speedLeft, speedRight, dirLeft, dirRight):
-        """Start left motor with speed speedLeft (in [0;255]) and direction dirLeft (0=reverse, 1=forward)
-           and right motor with speed speedRight (in [0;255]) and direction dirRight (0=reverse, 1=forward)"""
         cmd = 'd' + str(speedLeft) + ',' + str(speedRight) + ',' + str(dirLeft) + ',' + str(dirRight) + '\n'
         return self.send_command(cmd)
     

@@ -7,27 +7,7 @@ import math
 from time import sleep
 import cv2
 
-# setup config
-frindo = robot.Robot()
-cam = camera.Camera(0, 'frindo')
-world = np.zeros((500, 500, 3), dtype=np.uint8)
-WIN_RF1 = "Robot view"
-cv2.namedWindow(WIN_RF1)
-cv2.moveWindow(WIN_RF1, 50, 50)
 
-WIN_World = "World view"
-cv2.namedWindow(WIN_World)
-cv2.moveWindow(WIN_World, 500, 50)
-
-LANDMARK = {0: 0,
-            1: 0,
-	    2: 0,
-	    3: 0}
-
-LANDMARK_COORDINATES = {0: [0, 0],
-                        1: [300, 0],
-			2: [0, 300],
-			3: [300, 300]}
 
 
 class FrindosInnerWorld:
@@ -68,11 +48,6 @@ class FrindosInnerWorld:
     def getParticles(self):
         return self.particles
 
-particles = p.
-innit_particles(1000)
-innit_est_pose = p.estimate_position(particles)
-p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
-
 
 def update_landmark(num_landmark):
     if num_landmark == 1:
@@ -81,6 +56,8 @@ def update_landmark(num_landmark):
         LANDMARK[0] = 1
 
 
+# Handles turning the robot along with updating robot knowledge,
+# in form of orientation change and
 def turn(dir, deg, inner_state):
     m.turn_baby_turn(deg, dir, frindo)
     print '##############'
@@ -122,10 +99,41 @@ def find_landmark(inner_frindo, previously_moved=0.0):
             ret = None
     return [ret, degrees_moved]
 
+# Configuration setup
+frindo = robot.Robot()
+cam = camera.Camera(0, 'frindo')
+world = np.zeros((500, 500, 3), dtype=np.uint8)
+WIN_RF1 = "Robot view"
+cv2.namedWindow(WIN_RF1)
+cv2.moveWindow(WIN_RF1, 50, 50)
+
+WIN_World = "World view"
+cv2.namedWindow(WIN_World)
+cv2.moveWindow(WIN_World, 500, 50)
+
+LANDMARK = {0: 0,
+            1: 0,
+	    2: 0,
+	    3: 0}
+
+LANDMARK_COORDINATES = {0: [0, 0],
+                        1: [300, 0],
+			2: [0, 300],
+			3: [300, 300]}
+
+# Initialize particles and update
+particles = p.innit_particles(1000)
+innit_est_pose = p.estimate_position(particles)
+# ONLY FOR TESTING TO VIEW ROBOT POSITION
+p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
+
+# Initializes Frindo Inner World class
 inner_frindo = FrindosInnerWorld(LANDMARK, LANDMARK_COORDINATES,
                                  innit_est_pose, particles)
+return 0
 while True:
     curr_l_flag = inner_frindo.getFlag()
+    # TODO : implement for multiple landmarks, not only 2.
     if curr_l_flag[0] == curr_l_flag[1] == 1:
         print "Found Both landmarks"
         dest = p.where_to_go(p.estimate_position(particles), [0, 150])
@@ -176,11 +184,16 @@ while True:
             previously_turned += x[1]
 
     else:
+        # Initial program case, which would only be called if no landmarks have been seen.
+        # Or in the case that we do not know where we are.
         previously_turned = 0.0
         print "Sitting in Else inside while loop"
         while previously_turned <= 360:
-            if LANDMARK[0] + LANDMARK[1] != 2:
-                x = find_landmark(inner_frindo)
-            else:
-                break
+            obs_prop = find_landmark(inner_frindo)
             previously_turned += x[1]
+
+            # if (LANDMARK[0] != 1 and
+            #     LANDMARK[1] != 1):
+
+            # else:
+            #     break
