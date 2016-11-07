@@ -307,15 +307,15 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         # calculates new orientation
 
         curr_angle = add_to_angular_v2(np.degrees(p.getTheta()), angular_velocity)
-        print 'theta_rad: ' + str(p.getTheta())
-        print 'theta_deg: ' + str(np.degrees(p.getTheta()))
-        print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
+        # print 'theta_rad: ' + str(p.getTheta())
+        # print 'theta_deg: ' + str(np.degrees(p.getTheta()))
+        # print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
         if velocity > 0.0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
-            print 'cur_ang_rad: ' + str(curr_angle)
+            #print 'cur_ang_rad: ' + str(curr_angle)
     if velocity != 0.0:
         particle.add_uncertainty(particles, 12, 10)
     if velocity == 0.0 and angular_velocity != 0.0:
