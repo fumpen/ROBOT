@@ -56,6 +56,8 @@ def update_landmark(num_landmark):
         LANDMARK[0] = 1
 
 
+# Handles turning the robot along with updating robot knowledge,
+# in form of orientation change and
 def turn(dir, deg, inner_state):
     m.turn_baby_turn(deg, dir, frindo)
     print '##############'
@@ -128,6 +130,7 @@ p.update_particles(particles, cam, 0.0, 0.0, world, WIN_RF1, WIN_World)
 # Initializes Frindo Inner World class
 inner_frindo = FrindosInnerWorld(LANDMARK, LANDMARK_COORDINATES,
                                  innit_est_pose, particles)
+return 0
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
@@ -181,6 +184,8 @@ while True:
             previously_turned += x[1]
 
     else:
+        # Initial program case, which would only be called if no landmarks have been seen.
+        # Or in the case that we do not know where we are.
         previously_turned = 0.0
         print "Sitting in Else inside while loop"
         while previously_turned <= 360:
