@@ -141,11 +141,11 @@ def ret_landmark(color, horizontal_or_vertical):
     if x == 'Red' and horizontal_or_vertical == 'horizontal':
         return 0
     elif x == 'Red' and horizontal_or_vertical == 'vertical':
-        return 0
+        return 2
     elif x == 'Green' and horizontal_or_vertical == 'vertical':
         return 1
     elif x == 'Green' and horizontal_or_vertical == 'horizontal':
-        return 1
+        return 3
 
 
 def where_to_go(particle, goal):
