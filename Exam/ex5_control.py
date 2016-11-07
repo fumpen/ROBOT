@@ -147,6 +147,13 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 # Initializes Frindo Inner World class
 #return 0
 
+def go_go_go (frindo, inner_state, goal):
+    dest = p.where_to_go(inner_state.getEstCoordinates(), goal)
+    turn(frindo, dest[1], dest[2])
+    while (inner_state.getEstCoordinates()[0] not in range(goal[0]-30, goal[0]+30)) \
+        and (inner_state.getEstCoordinates()[1] not in range(goal[1]-30, goal[1]+30)):
+        ret = go_forward(dest[0], inner_state)
+        if ret != dest[0]:
 
 while True:
     curr_l_flag = inner_frindo.getFlag()
