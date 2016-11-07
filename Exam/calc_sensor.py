@@ -11,7 +11,7 @@ for x in range(0, 1000):
     qwe = datetime.datetime.now()
     q += (qwe - asd).total_seconds()
 
-print q
+print q/1000.0
 
 q = 0.0
 for x in range(0, 1000):
@@ -20,4 +20,4 @@ for x in range(0, 1000):
     qwe = datetime.datetime.now()
     q += (qwe - asd).total_seconds()
 
-print q
+print q/1000.0
