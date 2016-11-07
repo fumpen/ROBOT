@@ -33,9 +33,9 @@ import robot
 #    
 # ===========================================
 
-THETA_TIME = 0.0
+THETA_TIME = 0.000866
 
-THETA_CHANGE_GEAR = 0.0
+THETA_CHANGE_GEAR = 57
 
 TURN_SPEED = {1: 53.57,
               2: 111.57}
