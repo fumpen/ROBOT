@@ -501,7 +501,6 @@ while True:
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
     print "est position"
     print est_pose.getX(), est_pose.getY(), est_pose.getTheta()
-    raw_input()
 
     # Draw map
     draw_world(est_pose, particles, world)
