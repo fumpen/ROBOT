@@ -1,6 +1,13 @@
-# Frindo Robot Controller
+# ===========================================
+#
+# Filename: robot.py
+#
+# Description: 
+#
+# Contains the robot object.
+#
+# ===========================================
 
-#import time
 from time import sleep
 import serial
 
@@ -26,50 +33,15 @@ class Robot(object):
         self.serialRead.write(cmd.encode('ascii'))
         str_val=self.serialRead.readline()
         return str_val
+
+
+    # === ROBOT MOVEMENT ========================
+    # ===========================================
         
-    def go(self):
-        """Send a go command for continouos forward driving"""
-        cmd='g\n'
-        return self.send_command(cmd)
-        
-    def backward(self):
-        """Send a backward command for continouos reverse driving"""
-        cmd='v\n'
-        return self.send_command(cmd)
-        
+         
     def stop(self):
         """Send a stop command to stop motors"""
         cmd='s\n'
-        return self.send_command(cmd)
-
-    def left(self):
-        """Send a rotate left command for continouos rotating left"""
-        cmd='n\n'
-        return self.send_command(cmd)
-
-    def right(self):
-        """Send a rotate right command for continouos rotating right"""
-        cmd='m\n'
-        return self.send_command(cmd)
-        
-    def step_forward(self):
-        """Send a step forward command for driving forward for a predefined amount of time"""
-        cmd='f\n'
-        return self.send_command(cmd)
-
-    def step_backward(self):
-        """Send a step backward command for driving backward for a predefined amount of time"""
-        cmd='b\n'
-        return self.send_command(cmd)
-
-    def step_rotate_left(self):
-        """Send a step rotate left command for rotating left for a predefined amount of time"""
-        cmd='l\n'
-        return self.send_command(cmd)
-        
-    def step_rotate_right(self):
-        """Send a step rotate right command for rotating right for a predefined amount of time"""
-        cmd='r\n'
         return self.send_command(cmd)
         
     def go_diff(self, speedLeft, speedRight, dirLeft, dirRight):
@@ -78,9 +50,22 @@ class Robot(object):
         cmd = 'd' + str(speedLeft) + ',' + str(speedRight) + ',' + str(dirLeft) + ',' + str(dirRight) + '\n'
         return self.send_command(cmd)
     
+    # === ROBOT SENSOR ==========================
+    # read_ir_sensor:
+    #
+    #     Send a read command with sensorid and
+    #     and return sensor value. Return -1 if
+    #     error occurs.
+    #
+    #  read_*_ir_sensor:
+    # 
+    #     Read sensor and return the measured
+    #     voltage in range [0; 1023].
+    #     (From 0 to 5 volts)
+    #
+    # ===========================================
     
     def read_ir_sensor(self, sensorid):
-        """Send a read sensor command with sensorid and return sensor value. Will return -1, if error occurs."""
         cmd=str(sensorid) + '\n'
         str_val=self.send_command(cmd)
         if len(str_val) > 0:
@@ -89,39 +74,12 @@ class Robot(object):
             return -1
             
     def read_front_ir_sensor(self):
-        """Read the front IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
         return self.read_ir_sensor(0)
         
     def read_right_ir_sensor(self):
-        """Read the right IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
         return self.read_ir_sensor(1)
         
     def read_left_ir_sensor(self):
-        """Read the left IR sensor and return the measured voltage in the range [0;1023] (from 0 to 5 volts)"""
         return self.read_ir_sensor(2)
-        
-    def set_speed(self, speed):
-        """Speed must be a value in the range [0; 255]"""
-        cmd='z' + str(speed) + '\n'
-        return self.send_command(cmd)
-        
-    def set_turnspeed(self, speed):
-        """Speed must be a value in the range [0; 255]"""
-        cmd='x' + str(speed) + '\n'
-        return self.send_command(cmd)
-
-    def set_step_time(self, steptime):
-        """steptime is the amount of miliseconds used in the step_forward and step_backwards commands."""
-        cmd='t' + str(steptime) + '\n'
-        return self.send_command(cmd)
-        
-    def set_turn_time(self, turntime):
-        """turntime is the amount of miliseconds used in the step_rotate_left and step_rotate_right commands."""
-        cmd='y' + str(turntime) + '\n'
-        return self.send_command(cmd)
-
-    def set_stopwatch(self, startTime):
-        """turntime is the amount of miliseconds used in the step_rotate_left and step_rotate_right commands."""
-        cmd='c' + str(startTime) + '\n'
-        return self.send_command(cmd)
+         
 

@@ -1,8 +1,20 @@
+# ===========================================
+#
+# Filename: moves.py
+#
+# Description: 
+#
+# Robot movement functions.
+#
+# ===========================================
+
+from time import sleep
+import sensor as s
 import numpy as np
 import datetime
 import robot
-from time import sleep
-import sensor as s
+
+
 
 TURN_SPEED = {1: 53.57,
               2: 111.57}
