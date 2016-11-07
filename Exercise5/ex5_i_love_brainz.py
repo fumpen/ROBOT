@@ -332,22 +332,14 @@ def update_particles(particles, cam, velocity, angular_velocity):
         # nunum_of_particles = len(particles)
         weight_sum = 0.0
         particles = []
-        for count in range(0, int(num_particles * 0.95)):
-            rando = np.random.uniform(0.0,
-                                      1.0)  # np.random.normal(0.0, 1.0, 1)
-
+        for count in range(0, num_particles):
+            rando = np.random.uniform(0.0,1.0)  # np.random.normal(0.0, 1.0, 1)
             # dicto = {'i': 500,
             #          'n': 2}
             p = when_in_range(list_of_particles,
                               0,
                               num_particles,
                               rando)
-            # rando,
-            #                               {'i': num_particles/2, 'n': 2},
-            #                          num_particles)
-
-
-            # weight_sum += p.getWeight()
             particles.append(
                 particle.Particle(p.getX(), p.getY(), p.getTheta(),
                                   1.0 / num_particles))
@@ -356,12 +348,12 @@ def update_particles(particles, cam, velocity, angular_velocity):
         particle.add_uncertainty(particles, 12, 15)
 
         # 10% new random particles added
-        for c in range(0, int(math.ceil(num_particles * 0.05))):
-            p = particle.Particle(500.0 * np.random.ranf() - 100,
-                                  500.0 * np.random.ranf() - 100,
-                                  2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
+        # for c in range(0, int(math.ceil(num_particles * 0.05))):
+        #     p = particle.Particle(500.0 * np.random.ranf() - 100,
+        #                           500.0 * np.random.ranf() - 100,
+        #                           2.0 * np.pi * np.random.ranf() - np.pi, 0.0)
 
-            particles.append(p)
+        #     particles.append(p)
 
         # Draw detected pattern
         cam.draw_object(colour)
@@ -371,6 +363,7 @@ def update_particles(particles, cam, velocity, angular_velocity):
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-    est_pose = particle.estimate_pose(
-        particles)  # The estimate of the robots current pose
+        particle.add_uncertainty(particles, 12, 15)
+
+    est_pose = particle.estimate_pose(particles)  # The estimate of the robots current pose
     return [est_pose, observed_obj]
