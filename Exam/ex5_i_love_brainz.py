@@ -17,7 +17,7 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in cm.
-landmarks = [(0, 0), (300, 0)]
+landmarks = [(0, 0), (300, 0), (0, 300), (300, 300)]
 
 
 def add_to_angular(present, delta):
@@ -148,7 +148,7 @@ def ret_landmark(color, horizontal_or_vertical):
         x = 'Green'
     else:
         x = 'Red'
-    print x
+    
     if x == 'Red' and horizontal_or_vertical == 'horizontal':
         return 0
     elif x == 'Red' and horizontal_or_vertical == 'vertical':
