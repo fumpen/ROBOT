@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import random_numbers as rn
 import math
 
 class Particle(object):
@@ -123,3 +124,18 @@ def move_Allparticle(particles, turn, distance):
 
 
 
+def add_uncertainty(particles_list, sigma, sigma_theta):
+    """Add some noise to each particle in the list. Sigma and sigma_theta is the noise variances for position and angle noise."""
+    for particle in particles_list:
+        particle.x += rn.randn(0.0, sigma) #np.random.uniform(0.0, sigma)
+        particle.y += rn.randn(0.0, sigma) # (particle.getY()+ np.random.uniform(0.0, sigma))
+        #print particle.theta
+        new_theta = np.degrees(particle.theta) + np.random.uniform(-sigma_theta, sigma_theta)
+        if new_theta < -180.0:
+            particle.theta = np.radians(new_theta + 360.0)
+        elif new_theta >= 180.0:
+            particle.theta = np.radians(new_theta - 360.0)
+        else:
+            particle.theta = np.radians(new_theta)
+        #print particle.theta
+        #(np.mod(particle.getTheta() + np.random.uniform(particle.theta, sigma_theta), 2.0 * np.pi))

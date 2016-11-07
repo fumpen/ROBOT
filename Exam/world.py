@@ -123,25 +123,65 @@ def jet(x):
 # Calculates the probability of a particle
 #
 # ===========================================
-def measure_prob(particle, mark, data):
+def diff_weight(diff, varians):
+    return (1/(math.sqrt(2*np.pi*varians))) * (np.exp(-np.divide(diff**2, 2* varians)))
 
-    prob = 1.0
-    dist = math.sqrt((particle.getX() - LANDMARKS[mark][0]) ** 2 + (particle.getY() - LANDMARKS[mark][1]) ** 2)
-    prob *= random_numbers.Gaussian(dist, particle.getCamNoise(), data)
-    
-    return prob
+def weight(p, obs_angle, obs_dist, mark_nr):
+    part2Mark = particle_landmark_vector(mark_nr, p)
+    mark_dist = dist_vector(part2Mark)
+    dist_diff = abs(obs_dist - mark_dist)
+    if dist_diff <= 0.000001:
+        dist_diff = 0.00001
+    dist_weight = diff_weight(dist_diff, 0.5)
 
-# === FUNCTION ==============================
-# 
-# Description:
-#
-# Update the weight of all particles to the
-# new calculated probability.
-#
-# ===========================================
-def updatePart(particles, mark, dist):
+    orientation = direction(p.getTheta())
+    angle_to_mark = angle_between(orientation, part2Mark)
+    angle_diff = abs(angle_to_mark - obs_angle)
+    if angle_diff <= 0.00001:
+        angle_digg = 0.0001
+    angle_weight = diff_weight(angle_diff,1)
+
+
+    if math.isnan(dist_weight):
+        dist_weight = 0.0
+    if math.isnan(angle_weight):
+        angle_weight = 0.0
+    return dist_weight, angle_weight
+
+def weight_particles(particles, measured_angle, measured_distance, mark_nr):
+    # sum of the weight
+    sum_dist_w = 0.0
+    sum_angle_w = 0.0
+    list_of_particles = []
     for p in particles:
-        p.setWeight(measure_prob(p, mark, dist)) 
+        # pre-normalized measured weight
+        dist_w, angle_w = weight(p, measured_angle, measured_distance, mark_nr)
+
+        sum_dist_w += dist_w  #tmp
+        sum_angle_w += angle_w
+
+        list_of_particles.append([dist_w*0.60, angle_w*0.40, p])
+
+    list_of_particles = np.array(list_of_particles)
+    #print "dist", sum_dist_w, "angle_w", sum_angle_w
+
+    # normalize weights checks if weight sum have
+    if math.isnan(sum_dist_w) or math.isnan(sum_angle_w):
+        print "found nan value", sum_dist_w, sum_angle_w
+
+    # list_of_particles[:,0] = np.divide(list_of_particles[:,0], sum_dist_w)
+    # list_of_particles[:,1] = np.divide(list_of_particles[:,1], sum_angle_w)
+
+    #lower = 0.0
+    accum = 0.0
+    for p in list_of_particles:
+        p[0] /= sum_dist_w
+        p[1] /= sum_angle_w
+        p[2].setWeight(p[0])
+
+    return list_of_particles[:,2]
+
+
 
 
 # === FUNCTION ==============================
@@ -158,8 +198,8 @@ def resample(particles):
     beta = 0.0
     
     mw = 0
-    for particle in particles:
-        mw = max(mw, particle.getWeight())
+    for p in particles:
+        mw = max(mw, p.getWeight())
 
 
     for i in range(length):
@@ -169,8 +209,10 @@ def resample(particles):
             beta -= particles[index].getWeight()
             index = (index + 1) % length
 
-        p3.append(particles[index])
+        p = particles[index]
+	p3.append(particle.Particle(p.getX(), p.getY(), p.getTheta(), 1.0/length))
 
+    particle.add_uncertainty(p3, 10, 15)
         
     return p3
 
@@ -293,7 +335,6 @@ while True:
  
         print "Found mark!"
 
-	updatePart(particles, mark, measured_distance)
 	particles = resample(particles)
 	
 	
