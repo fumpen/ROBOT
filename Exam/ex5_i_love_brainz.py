@@ -270,8 +270,13 @@ def draw_world(est_pose, particles, world):
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
     lm1 = (landmarks[1][0]+offset, landmarks[1][1]+offset)
+    lm2 = (landmarks[2][0]+offset, landmarks[2][1]+offset)
+    lm3 = (landmarks[3][0]+offset, landmarks[3][1]+offset)
+
     cv2.circle(world, lm0, 5, CRED, 2)
     cv2.circle(world, lm1, 5, CGREEN, 2)
+    cv2.circle(world, lm2, 5, CGREEN, 2)
+    cv2.circle(world, lm3, 5, CRED, 2)
 
     # Draw estimated robot pose
     a = (int(est_pose.getX())+offset, int(est_pose.getY())+offset)
