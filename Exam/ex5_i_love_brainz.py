@@ -39,8 +39,6 @@ def add_to_angular_v2(present, delta):
     return np.radians(new_angle)
 
 
-
-
 def particle_landmark_vector(mark, particle):
     (mark_x, mark_y) = landmarks[mark]
     x = mark_x - particle.getX()
@@ -73,20 +71,6 @@ def vector_angle(v1, v2):
     tmp1 = np.degrees(np.arctan2(v1_u[1],v1_u[0]))
     tmp2 = np.degrees(np.arctan2(v2_u[1],v2_u[0]))
     return tmp2-tmp1
-
-# def angle_between(v1, v2):
-#     """ Returns the angle in radians between vectors 'v1' and 'v2'::
-
-#             >>> angle_between((1, 0, 0), (0, 1, 0))
-#             1.5707963267948966
-#             >>> angle_between((1, 0, 0), (1, 0, 0))
-#             0.0
-#             >>> angle_between((1, 0, 0), (-1, 0, 0))
-#             3.141592653589793
-#     """
-#     v1_u = v1
-#     v2_u = unit_vector(v2)
-#     return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
 
 def diff_weight(diff, varians):
     return 1/np.sqrt((2*np.pi*varians)) *\
