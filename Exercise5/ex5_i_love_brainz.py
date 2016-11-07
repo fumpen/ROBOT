@@ -325,10 +325,14 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
 
         particles = []
-        for count in range(0, int(num_particles * 0.95)):
-            rando = np.random.uniform(0.0, 1.0)
-
-            p = when_in_range(list_of_particles, 0, num_particles, rando)
+        for count in range(0, num_particles):
+            rando = np.random.uniform(0.0,1.0)  # np.random.normal(0.0, 1.0, 1)
+            # dicto = {'i': 500,
+            #          'n': 2}
+            p = when_in_range(list_of_particles,
+                              0,
+                              num_particles,
+                              rando)
             particles.append(
                 particle.Particle(p.getX(), p.getY(), p.getTheta(),
                                   1.0 / num_particles))
@@ -352,6 +356,11 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0 / num_particles)
+
+        particle.add_uncertainty(particles, 12, 15)
+
+    # est_pose = particle.estimate_pose(particles)  # The estimate of the robots current pose
+    # return [est_pose, observed_obj]
 
     est_pose = particle.estimate_pose(
         particles)  # The estimate of the robots current pose
