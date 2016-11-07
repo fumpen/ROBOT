@@ -1,10 +1,4 @@
-import math
 import numpy as np
-
-def Gaussian(mu, sigma, x):
-  
-    return math.exp(- (np.power((mu - x), 2)) / np.power(sigma, 2) / 2.0) / math.sqrt(2.0 * math.pi * np.power(sigma, 2))
-
 
 
 def randn(mu, sigma):
@@ -39,6 +33,8 @@ def rand_von_mises(mu, kappa):
 
     return theta
     
+    
+    
 if __name__=='__main__':
     # Tests
     
@@ -57,4 +53,5 @@ if __name__=='__main__':
         t[i] = rand_von_mises(1.0, 8)
         
     print "True mean 1.0 == Estimated mean ", np.mean(t)
+    
     
