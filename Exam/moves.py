@@ -15,6 +15,23 @@ import datetime
 import robot
 
 
+# === MOVEMENT CONSTANTS ====================
+#
+# TURN_SPEED:
+#
+# GEAR:
+#
+#     Speed constants [left, right] wheel.
+#     Robot gears range from [1; 7].
+#
+# GEAR_SPEED:
+#
+# BREAK:
+#
+#     Break constants [left, right] wheel.
+#     Robot breaks according to gear speed. 
+#    
+# ===========================================
 
 TURN_SPEED = {1: 53.57,
               2: 111.57}
