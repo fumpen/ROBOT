@@ -1,10 +1,10 @@
 SENSOR_GEAR = {1: 300,
-               2: 310,
-               3: 320,
-               4: 330,
-               5: 340,
-               6: 350,
-               7: 360}
+               2: 290,
+               3: 280,
+               4: 270,
+               5: 260,
+               6: 250,
+               7: 240}
 
 def frontSensor(frindo):
     return frindo.read_front_ir_sensor()
