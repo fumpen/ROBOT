@@ -147,12 +147,15 @@ def lige_gear_sensor(frindo, dist):
             y += 1
         force_break(frindo, g)
         if y == time_left:
+            print 'finished as planned'
             return dist
         else:
+            print 'after reaching gear'
             time = x * THETA_CHANGE_GEAR * THETA_TIME
             time += y * THETA_TIME
             return dist_at_time(x, time)
     else:
+        print 'while gearing up'
         force_break(frindo, x)
         time = x * THETA_CHANGE_GEAR * THETA_TIME
         time += y * THETA_TIME
@@ -160,6 +163,7 @@ def lige_gear_sensor(frindo, dist):
 
 
 def dist_at_time(current_gear, time):
+    print 'dist_at_time: ' + str(time)
     dist = 0.0
     x = 0
     y = time
