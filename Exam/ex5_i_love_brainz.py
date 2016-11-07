@@ -132,19 +132,19 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
 
     return list_of_particles
 
-def ret_landmark(colorProb, horizontal_or_vertical):
+def ret_landmark(colorProb, direction):
     if colorProb[1] >= colorProb[0]:
         color = 'Green'
     else:
         color = 'Red'
 
-    if color == 'Red' and horizontal_or_vertical == 'vertical':
+    if color == 'Red' and direction == 'vertical':
         landmark = 0
-    elif color == 'Green' and horizontal_or_vertical == 'horizontal':
+    elif color == 'Green' and direction == 'horizontal':
         landmark = 1
-    elif color == 'Green' and horizontal_or_vertical == 'vertical':
+    elif color == 'Green' and direction == 'vertical':
         landmark = 2
-    elif color == 'Red' and horizontal_or_vertical == 'horizontal':
+    elif color == 'Red' and direction == 'horizontal':
         landmark = 3
 
     return landmark
