@@ -146,9 +146,9 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
-    if inner_frindo.getFlag[inner_frindo.getNextLandmark] == 1:
+    #if inner_frindo.getFlag[inner_frindo.getNextLandmark] == 1:
         # TODO: DRIVE TO LANDMARK!
-    else:
+    #else:
         # TODO: FIGURE A ROUTE FROM OBSERVED
     if curr_l_flag[0] == curr_l_flag[1] == 1:
         print "Found Both landmarks"
