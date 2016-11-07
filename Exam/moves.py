@@ -2,7 +2,7 @@
 #
 # Filename: moves.py
 #
-# Description: 
+# Description:
 #
 # Robot movement functions.
 #
@@ -29,8 +29,8 @@ import robot
 # BREAK:
 #
 #     Break constants [left, right] wheel.
-#     Robot breaks according to gear speed. 
-#    
+#     Robot breaks according to gear speed.
+#
 # ===========================================
 
 THETA_TIME = 0.000866
