@@ -1,9 +1,10 @@
 import cv2
 import particle
 import camera
+import random
 import numpy as np
 import math
-import random
+
 
 # Some colors constants
 CRED = (0, 0, 255)
@@ -140,9 +141,9 @@ def ret_landmark(colorProb, direction):
 
     if color == 'Red' and direction == 'vertical':
         landmark = 0
-    elif color == 'Green' and direction == 'horizontal':
-        landmark = 1
     elif color == 'Green' and direction == 'vertical':
+        landmark = 1
+    elif color == 'Green' and direction == 'horizontal':
         landmark = 2
     elif color == 'Red' and direction == 'horizontal':
         landmark = 3
@@ -150,24 +151,26 @@ def ret_landmark(colorProb, direction):
     return landmark
 
 
-def where_to_go(particle, goal):
+def where_to_go(pose, goal):
     """ Takes a particle (which must be our best bet for our actual position)
     and the place we want to be (goal = [x, y])
 
     returns a list of the length the robot needs to drive, the degrees it
     needs to turn and the direction it needs to turn"""
-    ang = vector_angle([particle.getX(), particle.getY()], goal)
+    ang = vector_angle([pose[0], pose[1]], goal)
     if ang <= 180:
         turn_dir = 'right'
         turn_deg = ang
     else:
         turn_dir = 'left'
         turn_deg = 180 - ang
-    length = np.sqrt(
-        np.power((particle.getX() - goal[0]), 2) + np.power(
-            (particle.getY() - goal[1]), 2))
+    length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])
+    # np.sqrt(
+    #     np.power((particle.getX() - goal[0]), 2) + np.power(
+    #         (particle.getY() - goal[1]), 2))
+
     print 'REPORT FROM: where_to_go'
-    print 'est_particle: ' + str([particle.getX(), particle.getY()])
+    print 'est_particle: ' + str([pose[0], pose[1]])
     print 'goal: ' + str(goal)
     print 'estimated course: dist=' + str(length) + 'dir=' + turn_dir +\
           'turn degree=' + str(turn_deg)
@@ -302,7 +305,7 @@ def innit_particles(num_particles=1000):
 
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
-    print 'update: ' + str(angular_velocity)
+    #print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
     for p in particles:
@@ -352,8 +355,8 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         #     particles.append(
         #         particle.Particle(p.getX(), p.getY(), p.getTheta(),
         #                           1.0 / num_particles))
-        #print 'list_of_particles: ' + str(list_of_particles)
-        #print 'particles: ' + str(particles)
+        # print 'list_of_particles: ' + str(list_of_particles)
+        # print 'particles: ' + str(particles)
 
         particle.add_uncertainty(particles, 15, 10)
 
@@ -365,15 +368,17 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             p.setWeight(1.0 / num_particles)
 
         particle.add_uncertainty(particles, 10, 10)
-    est_pose = particle.estimate_pose(
-        particles)  # The estimate of the robots current pose
 
-    print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
+    # The estimate of the robots current pose
+    est_pose = particle.estimate_pose(particles)
+
+    #print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
     draw_world(est_pose, particles, world)
     # Show frame
     cv2.imshow(WIN_RF1, colour)
     # Show world
     cv2.imshow(WIN_World, world)
+    #print est_pose
     return {'est_pos': est_pose,
             'obs_obj': observed_obj,
             'particles': particles}
