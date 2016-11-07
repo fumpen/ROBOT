@@ -116,15 +116,8 @@ def jet(x):
 
 
 
-# === FUNCTION ==============================
-# 
-# Description:
-#
-# Calculates the probability of a particle
-#
-# ===========================================
 def dist_vector(vec):
-    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
+    return np.linalg.norm(vec)
 
 def diff_weight(diff, varians):
     return (1/(math.sqrt(2*np.pi*varians))) * (np.exp(-np.divide(diff**2, 2* varians)))
@@ -193,7 +186,7 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
         p[1] /= sum_angle_w
         p[2].setWeight(p[0])
 
-    return list_of_particles[:,2]
+    return list_of_particles
 
 
 
@@ -349,8 +342,7 @@ while True:
  
         print "Found mark!"
 
-	particles = resample(particles)
-	
+	list_of_particles = weight_particles(particles, measured_angle, measured_distance, mark)	
 	
         # Draw detected pattern
         cam.draw_object(colour)
