@@ -103,7 +103,7 @@ class FrindosInnerWorld:
         # Handles turning the robot along with updating robot knowledge,
 # in form of orientation change and
 def turn(dir, deg, inner_state):
-    print 'turn_deg: ' + str(deg)
+    print 'turn_deg (control.py turn(): ' + str(deg)
     m.turn_baby_turn(abs(deg), dir, frindo)
     # print '##############'
     # print 'turn:'  + str(deg)
