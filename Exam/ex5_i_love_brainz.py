@@ -182,7 +182,7 @@ def where_to_go(pose, goal):
     #         (particle.getY() - goal[1]), 2))
 
     print 'REPORT FROM: where_to_go'
-    print 'est_particle: ' , str([pose[0], pose[1]])
+    print 'est_particle: ' , str([pose[0], pose[1], pose[2]])
     print 'goal: ' , str(goal)
     print 'estimated course: dist= ' + str(length) + ', dir= ' + turn_dir,  \
           'turn degree=' + str(turn_deg)
