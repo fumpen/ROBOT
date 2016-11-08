@@ -35,7 +35,8 @@ import robot
 
 THETA_TIME = 0.000866
 
-THETA_CHANGE_GEAR = 57
+# THETA_CHANGE_GEAR = 57
+THETA_CHANGE_GEAR = 45
 
 TURN_SPEED = {1: 53.57,
               2: 111.57}
@@ -123,6 +124,7 @@ def lige_gear(frindo, dist):
 
 
 def lige_gear_sensor(frindo, dist):
+    print 'Lige_gear_distance: ' + str(dist)
     g, d = choose_gear(dist)
     x = 1
     ts = dt.now()
@@ -142,7 +144,6 @@ def lige_gear_sensor(frindo, dist):
         y = 0
         time_left = abs(np.divide(
             np.divide((dist - d), GEAR_SPEED[g]), THETA_TIME))
-        print 'time left: ' + str(time_left)
         while y < time_left:
             if not s.allSensor_gear(frindo, g):
                 break
