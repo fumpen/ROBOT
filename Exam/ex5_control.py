@@ -7,7 +7,7 @@ import numpy as np
 import math
 from time import sleep
 import cv2
-
+import sensor as s
 
 # Configuration setup
 frindo = robot.Robot()
@@ -81,11 +81,6 @@ class FrindosInnerWorld:
     def getNextLandmark(self):
         return self.next_l
 
-def update_landmark(num_landmark):
-    if num_landmark == 1:
-        LANDMARK[1] = 1
-    elif num_landmark == 0:
-        LANDMARK[0] = 1
 
 
 # Handles turning the robot along with updating robot knowledge,
@@ -95,11 +90,15 @@ def turn(dir, deg, inner_state):
     # print '##############'
     # print 'turn:'  + str(deg)
     if dir == 'left':
-        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+        p.update_particles(inner_state.getParticles(), cam, 0.0, (deg + 15),
+                           world, WIN_RF1, WIN_World)
+        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
                                world, WIN_RF1, WIN_World)
     else:
+        p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
+                           world, WIN_RF1, WIN_World)
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
-                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
+                               ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
@@ -109,14 +108,16 @@ def turn(dir, deg, inner_state):
 
 def go_forward(length, inner_state):
     qwe = m.lige_gear_sensor(frindo, length)
-    obs_prop = p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+    p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+                       WIN_RF1, WIN_World)
+    obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0 , 0.0, world,
                                   WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
-    return obs_prop
+    return qwe
 
 def find_landmark(inner_frindo, previously_moved=0.0):
     """
@@ -128,7 +129,7 @@ def find_landmark(inner_frindo, previously_moved=0.0):
     """
     degrees_moved = previously_moved
     move_pr_turn = 25.0
-    while degrees_moved <= 360:
+    while degrees_moved <= 180:
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
         if ret['obs_obj'][3] is not None:
@@ -153,7 +154,107 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 # Initializes Frindo Inner World class
 #return 0
 
+def go_go_go (frindo, inner_state, goal):
+    dest = p.where_to_go(inner_state.getEstCoordinates(), goal)
+    turn(frindo, dest[1], dest[2])
+    while (inner_state.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
+        and (inner_state.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
+        print 'go_go_go goal: ' + str(goal)
+        print 'ret (go_go_go if-statement):' + str(ret)
+        print 'dest[0] (go_go_go if-statement):' + str(dest[0])
+        ret = go_forward(dest[0], inner_state)
+        if ret != dest[0]:
+            right, left, forward = s.determine_way_around(frindo)
+            print 'right, left, forward (go_go_go):' + str(right) + ', ' + str(left) + ', ' + str(forward)
+            if right or forward:
+                if left:
+                    while forward or left:
+                        turn('left', 20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    while right:
+                        go_forward(20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    turn('right', 20, inner_state)
+                    go_forward(20, inner_state)
+                else:
+                    turn('left', 30, inner_state)
+                    go_forward(20, inner_state)
+            elif left:
+                if forward:
+                    while forward or left:
+                        turn('right', 20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    while right:
+                        go_forward(20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    turn('left', 20, inner_state)
+                    go_forward(20, inner_state)
+                else:
+                    turn('right', 30, inner_state)
+                    go_forward(20, inner_state)
 
+n_l_mark = inner_frindo.getNextLandmark()
+while n_l_mark < 4:
+    if n_l_mark == 0:
+        print 'Am in n_l_mark 0'
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            for x in range(0, 12):
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    elif n_l_mark == 1:
+        print 'Am in n_l_mark 1'
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
+            for x in range(0, 12):
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    elif n_l_mark == 2:
+        print 'Am in n_l_mark 3'
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
+            for x in range(0, 12):
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    else:
+        print 'Am in n_l_mark 3'
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
+            for x in range(0, 12):
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+
+    n_l_mark = inner_frindo.getNextLandmark()
+
+"""
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
@@ -168,8 +269,9 @@ while True:
         #     :
         drive_manual = p.where_to_go(inner_frindo.getEstCoordinates(), inner_frindo.getLCoordinates()[next_mark])
         print drive_manual
+	print inner_frindo.getEstCoordinates()
         print "Turning ", drive_manual['turn_dir'], "degrees :", drive_manual['turn_degree']
-        turn(drive_manual['turn_dir'], drive_manual['turn_degree'], inner_frindo)
+        turn(drive_manual['turn_dir'], abs(drive_manual['turn_degree']), inner_frindo)
         #go_forward(drive_manual['dist'], inner_frindo)
         p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
                            WIN_RF1, WIN_World)
@@ -263,3 +365,4 @@ while True:
 
         # TODO : ENSURE THAT WE FIND A LANDMARK BEFORE LEAVING THIS CASE
         #        E.G. DRIVE 20 CM AWAY, AND REDO PROCEDURE
+"""
