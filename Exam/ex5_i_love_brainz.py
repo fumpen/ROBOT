@@ -159,10 +159,12 @@ def where_to_go(pose, goal):
     if math.isnan(ang):
         print "pose information :", pose
         print "goal information :", goal
-    if ang <= 0:
+    if ang <= 0 and ang > -180:
         turn_dir = 'right'
     else:
         turn_dir = 'left'
+        ang = abs(ang)
+
     turn_deg = ang
     length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])
 
