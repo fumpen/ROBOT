@@ -179,11 +179,11 @@ def go_go_go (frindo, inner_state, goal):
     turn(dest['turn_dir'], dest['turn_degree'], inner_state)
     while (inner_state.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
         and (inner_state.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
-        ret = go_forward(dest[0], inner_state)
+        ret = go_forward(dest['dist'], inner_state)
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
-        print 'dest[0] (go_go_go if-statement):' + str(dest[0])
-        if ret != dest[0]:
+        print 'dest[dist] (go_go_go if-statement):' + str(dest[0])
+        if ret != dest['dist']:
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' + str(right) + ', ' + str(left) + ', ' + str(forward)
             if right or forward:
