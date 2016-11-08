@@ -118,7 +118,7 @@ def turn(dir, deg, inner_state):
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(obs_prop['obs_obj'][3])
     if obs_prop['obs_obj'][3]:
-        if obs_prop['obs_obj'][1] > 75:
+        if obs_prop['obs_obj'][1] < 75:
             inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
@@ -229,7 +229,7 @@ while sum_mark < 4:
         print 'Am in n_l_mark 0'
         for x in range(0, turn_times):
             turn('right', turn_deg, inner_frindo)
-        if inner_frindo.getNextLandmark()[0] == 1:
+        if inner_frindo.getFlag()[0] == 1:
             ret_obj = find_landmark(inner_frindo, 0)
             if ret_obj['goal']:
                 turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
@@ -241,6 +241,7 @@ while sum_mark < 4:
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
+        print 'getFlag: ' + str(inner_frindo.getFlag())
         inner_frindo.reset_landmarks()
     elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
