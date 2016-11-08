@@ -241,6 +241,7 @@ def draw_world(est_pose, particles, world):
 
 
 def innit_particles(num_particles=1000):
+    print 'INIT PARTICLES!!!!!!!!'
     # Initialize particles
     particles = []
     for i in range(num_particles):
