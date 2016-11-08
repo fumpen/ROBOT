@@ -187,7 +187,10 @@ def where_to_go(pose, goal):
     print 'goal: ' , str(goal)
     print 'estimated course: dist=' , str(length) , 'dir=' , turn_dir,  \
           'turn degree=' , str(turn_deg)
-    return [length, turn_dir, turn_deg]
+    return {'dist' : length,
+            'turn_dir' : turn_dir,
+            'turn_degree' : turn_deg}
+#[length, turn_dir, turn_deg]
 
 
 def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
