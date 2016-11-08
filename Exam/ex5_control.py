@@ -221,12 +221,12 @@ while n_l_mark[3] < 1:
         for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
-        if inner_frindo.getFlag()[0] == 1:
+        if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
-        elif inner_frindo.sum_of_observed_landmarks() > 1:
+        else:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
@@ -235,12 +235,12 @@ while n_l_mark[3] < 1:
         for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
-        if inner_frindo.getFlag()[0] == 1:
+        if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
             for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
-        elif inner_frindo.sum_of_observed_landmarks() > 1:
+        else:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
@@ -249,12 +249,12 @@ while n_l_mark[3] < 1:
         for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
-        if inner_frindo.getFlag()[0] == 1:
+        if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
             for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
-        elif inner_frindo.sum_of_observed_landmarks() > 1:
+        else:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
@@ -263,12 +263,12 @@ while n_l_mark[3] < 1:
         for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
-        if inner_frindo.getFlag()[0] == 1:
+        if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
             for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
-        elif inner_frindo.sum_of_observed_landmarks() > 1:
+        else:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
