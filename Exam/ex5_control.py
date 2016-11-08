@@ -94,6 +94,12 @@ class FrindosInnerWorld:
             x += val
         return x
 
+    def sum_of_checklist_landmarks(self):
+        x = 0
+        for val in self.landmark_checklist:
+           x += val
+        return x
+
         # Handles turning the robot along with updating robot knowledge,
 # in form of orientation change and
 def turn(dir, deg, inner_state):
@@ -206,9 +212,10 @@ def go_go_go (frindo, inner_state, goal):
                     turn('right', 30, inner_state)
                     go_forward(20, inner_state)
 
+sum_mark = inner_frindo.sum_of_checklist_landmarks()
 n_l_mark = inner_frindo.getNextLandmark()
 turn_times = 5
-while n_l_mark[3] < 1:
+while sum_mark < 4:
     if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
         for x in range(0, turn_times):
@@ -265,9 +272,9 @@ while n_l_mark[3] < 1:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
-
+        
+    sum_mark = inner_frindo.sum_of_checklist_landmarks()
     n_l_mark = inner_frindo.getNextLandmark()
-
 """
 while True:
     curr_l_flag = inner_frindo.getFlag()
