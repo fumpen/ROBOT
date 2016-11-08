@@ -29,7 +29,7 @@ LANDMARK_COORDINATES = {0: [0, 0],
                         2: [0, 300],
                         3: [300, 300]}
 
-INIT_POS = (0,0,np.radians(0))
+INIT_POS = (0, 0, np.radians(0))
 
 INIT_goal = 0
 
