@@ -118,10 +118,10 @@ def turn(dir, deg, inner_frindo):
     m.turn_baby_turn(abs(deg), dir, frindo)
     if dir == 'left':
         obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                                      deg, world, WIN_RF1, WIN_World)
+                                      deg+10, world, WIN_RF1, WIN_World)
     else:
         obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
+                                      ((-1.0) * (deg+10)), world, WIN_RF1, WIN_World)
     inner_frindo.update_particles(obs_prop['particles'])
     inner_frindo.update_l_flag(obs_prop['obs_obj'][3])
     if obs_prop['obs_obj'][3]:
