@@ -171,7 +171,7 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 
 def go_go_go (frindo, inner_state, goal):
     dest = p.where_to_go(inner_state.getEstCoordinates(), goal)
-    turn(frindo, dest[1], dest[2])
+    turn(dest['turn_dir'], dest['turn_degree'], inner_state)
     while (inner_state.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
         and (inner_state.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
         print 'go_go_go goal: ' + str(goal)
@@ -209,15 +209,16 @@ def go_go_go (frindo, inner_state, goal):
                     go_forward(20, inner_state)
 
 n_l_mark = inner_frindo.getNextLandmark()
+turn_times = 5
 while n_l_mark[3] < 1:
     if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
-        for x in range(0, 12):
+        for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
-            for x in range(0, 12):
+            for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
@@ -226,12 +227,12 @@ while n_l_mark[3] < 1:
         inner_frindo.reset_landmarks()
     elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
-        for x in range(0, 12):
+        for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
-            for x in range(0, 12):
+            for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
@@ -240,12 +241,12 @@ while n_l_mark[3] < 1:
         inner_frindo.reset_landmarks()
     elif n_l_mark[2] < 1:
         print 'Am in n_l_mark 3'
-        for x in range(0, 12):
+        for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
-            for x in range(0, 12):
+            for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
@@ -254,12 +255,12 @@ while n_l_mark[3] < 1:
         inner_frindo.reset_landmarks()
     else:
         print 'Am in n_l_mark 3'
-        for x in range(0, 12):
+        for x in range(0, turn_times):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
-            for x in range(0, 12):
+            for x in range(0, turn_times):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
