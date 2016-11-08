@@ -101,6 +101,7 @@ class FrindosInnerWorld:
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
+            print dicte['obs_obj'][1]
             if dicte['obs_obj'][1] < 75:
                 self.updateCurrentGoal(dicte['obs_obj'][3])
         self.update_est_coordinate((dicte['est_pos'].getX(),
@@ -147,7 +148,7 @@ def find_landmark(inner_frindo, goal_number):
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
         if ret['obs_obj'][3] is not None:
-            print "found :", ret['obs_obj']
+            print "found :", ret['obs_obj'] 
             if ret['obs_obj'][3] == goal_number:
                 goal = True
                 break
