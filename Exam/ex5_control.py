@@ -82,11 +82,6 @@ class FrindosInnerWorld:
     def getNextLandmark(self):
         return self.next_l
 
-def update_landmark(num_landmark):
-    if num_landmark == 1:
-        LANDMARK[1] = 1
-    elif num_landmark == 0:
-        LANDMARK[0] = 1
 
 
 # Handles turning the robot along with updating robot knowledge,
@@ -204,8 +199,9 @@ while True:
         #     :
         drive_manual = p.where_to_go(inner_frindo.getEstCoordinates(), inner_frindo.getLCoordinates()[next_mark])
         print drive_manual
-        turn(drive_manual[1], drive_manual[2], inner_frindo)
-        go_forward(drive_manual[0], inner_frindo)
+        print "Turning ", drive_manual['turn_dir'], "degrees :", drive_manual['turn_degree']
+        turn(drive_manual['turn_dir'], drive_manual['turn_degree'], inner_frindo)
+        #go_forward(drive_manual['dist'], inner_frindo)
         p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
                                   WIN_RF1, WIN_World)
         p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
