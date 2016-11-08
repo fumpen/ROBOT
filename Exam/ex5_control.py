@@ -90,6 +90,11 @@ class FrindosInnerWorld:
         while x < 4:
             self.l_flag[x] = 0
             x += 1
+    def sum_of_observed_landmarks(self):
+        x = 0
+        for key, val in self.l_flag.iteritems():
+            x += val
+        return x
 
         # Handles turning the robot along with updating robot knowledge,
 # in form of orientation change and
