@@ -23,15 +23,17 @@ cv2.moveWindow(WIN_World, 500, 50)
 
 LANDMARK = {0: 0,
             1: 0,
-	    2: 0,
-	    3: 0}
+	        2: 0,
+	        3: 0}
 
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [300, 0],
-			2: [0, 300],
-			3: [300, 300]}
+			            2: [0, 300],
+			            3: [300, 300]}
 
 INIT_POS = (0,0,np.radians(0))
+
+innit_landmark_list = [0, 0, 0, 0]
 
 class FrindosInnerWorld:
 
@@ -39,14 +41,16 @@ class FrindosInnerWorld:
     l_coordinates = dict
     est_coordinate = tuple
     particles = list
-    next_l = int
+    landmark_checklist = list
 
-    def __init__(self, l_flag = LANDMARK, l_coordinates = LANDMARK_COORDINATES, est_coordinate= INIT_POS, particles = p.innit_particles(1000), next_l=0):
+    def __init__(self, l_flag = LANDMARK, l_coordinates = LANDMARK_COORDINATES,
+                 est_coordinate= INIT_POS, particles = p.innit_particles(1000),
+                 landmark_checklist = innit_landmark_list):
         self.l_flag = l_flag
         self.l_coordinates = l_coordinates
         self.est_coordinate = est_coordinate
         self.particles = particles
-        self.next_l = next_l
+        self.landmark_checklist = landmark_checklist
 
     def update_l_flag(self, key, mark):
         if key:
@@ -54,8 +58,8 @@ class FrindosInnerWorld:
         else:
             self.l_flag[mark] = 0
 
-    def update_next_l(self):
-        self.next_l += 1
+    def update_next_l(self, list_index):
+        self.landmark_checklist[list_index] = 1
 
     def update_l_coordinates(self, coordinates):
         self.l_coordinates = coordinates
@@ -79,11 +83,15 @@ class FrindosInnerWorld:
         return self.particles
 
     def getNextLandmark(self):
-        return self.next_l
+        return self.landmark_checklist
 
+    def reset_landmarks(self):
+        x = 0
+        while x < 4:
+            self.l_flag[x] = 0
+            x += 1
 
-
-# Handles turning the robot along with updating robot knowledge,
+        # Handles turning the robot along with updating robot knowledge,
 # in form of orientation change and
 def turn(dir, deg, inner_state):
     m.turn_baby_turn(deg, dir, frindo)
@@ -101,6 +109,7 @@ def turn(dir, deg, inner_state):
                                ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
+    inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
@@ -112,6 +121,8 @@ def go_forward(length, inner_state):
                        WIN_RF1, WIN_World)
     obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0 , 0.0, world,
                                   WIN_RF1, WIN_World)
+
+    inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
@@ -191,8 +202,8 @@ def go_go_go (frindo, inner_state, goal):
                     go_forward(20, inner_state)
 
 n_l_mark = inner_frindo.getNextLandmark()
-while n_l_mark < 4:
-    if n_l_mark == 0:
+while n_l_mark[3] < 1:
+    if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
         for x in range(0, 12):
             print 'x_streame: ' + str(x)
@@ -206,7 +217,7 @@ while n_l_mark < 4:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
-    elif n_l_mark == 1:
+    elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
         for x in range(0, 12):
             print 'x_streame: ' + str(x)
@@ -220,7 +231,7 @@ while n_l_mark < 4:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
-    elif n_l_mark == 2:
+    elif n_l_mark[2] < 1:
         print 'Am in n_l_mark 3'
         for x in range(0, 12):
             print 'x_streame: ' + str(x)
