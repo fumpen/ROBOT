@@ -29,8 +29,8 @@ LANDMARK = {0: 0,
 
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [300, 0],
-			2: [0, 300],
-			3: [300, 300]}
+			            2: [0, 300],
+			            3: [300, 300]}
 
 INIT_POS = (0,0,np.radians(0))
 
@@ -82,6 +82,15 @@ class FrindosInnerWorld:
     def getNextLandmark(self):
         return self.next_l
 
+    def reset_landmarks(self):
+        for x in range(0, 4):
+            self.l_flag[x] = 0
+
+    def sum_of_observed_landmarks(self):
+        y = 0
+        for x in range(0, 4):
+            y += self.l_flag[x]
+        return y
 
 
 # Handles turning the robot along with updating robot knowledge,
@@ -149,6 +158,7 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 # Initializes Frindo Inner World class
 #return 0
 
+
 def go_go_go (frindo, inner_state, goal):
     dest = p.where_to_go(inner_state.getEstCoordinates(), goal)
     turn(frindo, dest[1], dest[2])
@@ -184,7 +194,57 @@ def go_go_go (frindo, inner_state, goal):
                 else:
                     turn('right', 30, inner_state)
                     go_forward(20, inner_state)
-                    
+
+n_l_mark = inner_frindo.getNextLandmark()
+while n_l_mark < 4:
+    if n_l_mark == 0:
+        for x in range(0, 12) :
+            find_landmark(inner_frindo, 0)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            for x in range(0, 12):
+                find_landmark(inner_frindo, 0)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    elif n_l_mark == 1:
+        for x in range(0, 12) :
+            find_landmark(inner_frindo, 0)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            for x in range(0, 12):
+                find_landmark(inner_frindo, 0)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    elif n_l_mark == 2:
+        for x in range(0, 12) :
+            find_landmark(inner_frindo, 0)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            for x in range(0, 12):
+                find_landmark(inner_frindo, 0)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+    else:
+        for x in range(0, 12) :
+            find_landmark(inner_frindo, 0)
+        if inner_frindo.getFlag()[0] == 1:
+            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            for x in range(0, 12):
+                find_landmark(inner_frindo, 0)
+        elif inner_frindo.sum_of_observed_landmarks() > 1:
+            print 'FUCK'
+            go_forward(30, inner_frindo)
+        inner_frindo.reset_landmarks()
+
+    n_l_mark = inner_frindo.getNextLandmark()
+
+"""
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
@@ -215,82 +275,6 @@ while True:
         print "reached hard reset"
         # re-establish location
         reset_marks_seen()
-        # Search for landmarks
         find_landmark(inner_frindo)
         flags = inner_frindo.getFlag()
-        # while flags[inner_frindo.getNextLandmark()] != 1:
-        #     break #inner_frindo.getEstCoordinates()
-
-        #continue
-
-
-
-
-        # TODO: FIGURE A ROUTE FROM OBSERVED
-        #     : FIRST ESTABLISH POSITION (ACCEPT WE KNOW NOTHING)
-        #     : Start by resetting landmarks seen
-        #     : find at least 1 landmark, drive to if necessary
-        #     : find second and or third landmark, figure a route to next landmark
-        #     : adjust if obstacles occur,
-        #     : however reframe from moving toward previously visitted landmark.
-
-
-
-    # if curr_l_flag[0] == curr_l_flag[1] == 1:
-    #     print "Found Both landmarks"
-    #     dest = p.where_to_go(p.estimate_position(inner_frindo.getParticles()), [0, 150])
-    #     turn(dest[1], dest[2], inner_frindo)
-    #     sleep(0.5)
-
-    #     go_forward(dest[0], inner_frindo)
-    #     for t in range(1, 3):
-    #         q = find_landmark(inner_frindo)
-    #         if q[0][0]:
-    #             dest = p.where_to_go(q[0][0], [0, 150])
-    #             turn(dest[1], dest[2], inner_frindo)
-    #             sleep(0.5)
-    #             go_forward(dest[0], inner_frindo)
-    #     break
-    # elif curr_l_flag[0] + curr_l_flag[1] == 1:
-    #     print "Found one landmark!! In elif"
-    #     x = find_landmark(inner_frindo)
-    #     if np.degrees(x[0]['obs_obj'][2]) >= 0.0:
-    #         turn_dir = 'left'
-    #     else:
-    #         turn_dir = 'right'
-    #     x = turn(turn_dir, abs(np.degrees(x[0]['obs_obj'][2])), inner_frindo)
-    #     sleep(0.5)
-
-    #     if x['obs_obj'][1] > 20.0:
-    #         go_forward(x[0][1][1] - 20.0, inner_frindo)
-    #         sleep(0.5)
-
-    #     turn('right', 80.0, inner_frindo)
-    #     sleep(0.5)
-
-    #     go_forward(80.0, inner_frindo)
-    #     sleep(0.5)
-
-    #     turn('left', 80.0, inner_frindo)
-    #     sleep(0.5)
-
-    #     go_forward(60.0, inner_frindo)
-    #     particles = x[2]
-    #     previously_turned = 0.0
-    #     while previously_turned <= 360:
-    #         curr_l_flag = inner_frindo.getFlag()
-    #         if curr_l_flag[0] == curr_l_flag[1] != 1:
-    #             x = find_landmark(inner_frindo)
-    #         else:
-    #             break
-    #         previously_turned += x[1]
-
-    # else:
-    #     # Initial program case, which would only be called if no landmarks have been seen.
-    #     # Or in the case that we do not know where we are.
-    #     previously_turned = 0.0
-    #     print "Sitting in Else inside while loop"
-    #     find_landmark(inner_frindo)
-
-        # TODO : ENSURE THAT WE FIND A LANDMARK BEFORE LEAVING THIS CASE
-        #        E.G. DRIVE 20 CM AWAY, AND REDO PROCEDURE
+"""
