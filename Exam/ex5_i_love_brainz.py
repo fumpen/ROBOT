@@ -184,46 +184,6 @@ def where_to_go(pose, goal):
 #[length, turn_dir, turn_deg]
 
 
-def in_range(list_of_weigthed_particles, random_number, dicte, listLength):
-    if list_of_weigthed_particles[dicte['i']][1] <= random_number < list_of_weigthed_particles[dicte['i']][0]:
-        return list_of_weigthed_particles[dicte['i']][2]
-    elif list_of_weigthed_particles[dicte['i']][0] < random_number:
-        a = np.power(2.0, dicte['n'])
-        b = np.divide(1.0, a)
-        c = b * listLength
-        x = int(round(c))
-        dicte['i'] += x
-        dicte['n'] += 1
-        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
-    elif list_of_weigthed_particles[dicte['i']][1] > random_number:
-        dicte['i'] -= int(round((np.divide(1.0, np.power(2.0, dicte['n'])) * listLength)))
-        dicte['n'] += 1
-        return in_range(list_of_weigthed_particles, random_number, dicte, listLength)
-    else:
-        print '---return when in range--- fucked up.... ( -__- )'
-        raise
-
-
-def when_in_range(w_particles, lower, upper, value):
-    lower = lower
-    upper = upper
-    #print "initialize resampling"
-    while True:
-        ind = (upper-lower)/2
-        if upper-lower <= 1:
-            return w_particles[lower][2]
-        #print "running when in range"
-        if w_particles[upper-ind][1] < value:
-            if w_particles[upper-ind+1][1] >= value:
-                return w_particles[upper-ind+1][2]
-            else:
-                lower += ind
-        else:
-            if w_particles[upper-ind-1][1] < value:
-                return w_particles[upper-ind-1][2]
-            else:
-                upper -= ind
-
 def resample_particles(w_particles):
     N = len(w_particles[:,0])
     new_particles = []
