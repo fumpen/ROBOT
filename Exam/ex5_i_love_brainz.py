@@ -54,9 +54,6 @@ def move_vector(p, velocity):
     return [unit_v[0]*velocity, -unit_v[1]*velocity]
 
 
-def dist_vector(vec):
-    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
-
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
@@ -79,7 +76,7 @@ def diff_weight(diff, varians):
 # observed landmark. Turning right will cause for positive angle, and reversed
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
-    mark_dist = dist_vector(part2Mark)
+    mark_dist = np.linalg.norm(part2Mark)
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
