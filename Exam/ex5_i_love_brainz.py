@@ -163,7 +163,9 @@ def where_to_go(pose, goal):
         turn_dir = 'right'
     else:
         turn_dir = 'left'
-        ang = abs(ang)
+        
+        if ang < 0:
+            ang += 360
 
     turn_deg = ang
     length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])
