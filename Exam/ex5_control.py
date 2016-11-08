@@ -188,6 +188,7 @@ def go_go_go (frindo, inner_state, goal):
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' + str(right) + ', ' + str(left) + ', ' + str(forward)
             if right or forward:
+                print 'collision detect'
                 if left:
                     while forward or left:
                         turn('left', 20, inner_state)
@@ -201,6 +202,7 @@ def go_go_go (frindo, inner_state, goal):
                     turn('left', 30, inner_state)
                     go_forward(20, inner_state)
             elif left:
+                print 'collision detect'
                 if forward:
                     while forward or left:
                         turn('right', 20, inner_state)
