@@ -52,11 +52,9 @@ class FrindosInnerWorld:
         self.particles = particles
         self.landmark_checklist = landmark_checklist
 
-    def update_l_flag(self, key, mark):
-        if key:
-            self.l_flag[mark] = 1
-        else:
-            self.l_flag[mark] = 0
+    def update_l_flag(self, key):
+        if 0 <= key <= 3:
+            self.l_flag[key] = 1
 
     def update_next_l(self, list_index):
         self.landmark_checklist[list_index] = 1
@@ -113,7 +111,7 @@ def turn(dir, deg, inner_state):
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
                                ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
-    inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
+    inner_state.update_l_flag(obs_prop['obs_obj'][3])
     if obs_prop['obs_obj'][3]:
         if obs_prop['obs_obj'][1] > 75:
             inner_state.update_next_l(obs_prop['obs_obj'][3])
@@ -133,7 +131,7 @@ def go_forward(length, inner_state):
         if obs_prop['obs_obj'][1] > 75:
             inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_particles(obs_prop['particles'])
-    inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
+    inner_state.update_l_flag(obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
