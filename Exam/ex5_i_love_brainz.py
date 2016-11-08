@@ -21,14 +21,6 @@ CBLACK = (0, 0, 0)
 landmarks = [(0, 0), (300, 0), (0, 300), (300, 300)]
 
 
-def add_to_angular(present, delta):
-    # Ensures that the orientation of the particle stays in range 0-360
-    new_angle = np.degrees(present) + delta
-    if new_angle >= 360.0:
-        new_angle = new_angle - 360.0
-    elif new_angle < 0.0:
-        new_angle = new_angle + 360.0
-    return np.radians(new_angle)
 
 def add_to_angular_v2(present, delta):
     # Ensures that the orientation of the particle stays in range 0-360
