@@ -101,7 +101,7 @@ class FrindosInnerWorld:
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
-            print dicte['obs_obj'][1]
+            print "control.update_from_update_particle.obs_obj[1]: " + dicte['obs_obj'][1]
             if dicte['obs_obj'][1] < 75:
                 self.updateCurrentGoal(dicte['obs_obj'][3])
         self.update_est_coordinate((dicte['est_pos'].getX(),
