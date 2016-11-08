@@ -83,7 +83,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 25)
+    dist_weight = diff_weight(dist_diff, 75)
 
     orientation = direction(p.getTheta())
     angle_to_mark = vector_angle(part2Mark, orientation)
