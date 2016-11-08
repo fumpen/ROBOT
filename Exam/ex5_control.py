@@ -172,11 +172,14 @@ def find_landmark(inner_frindo, goal_number):
 
 def go_go_go(frindo, inner_frindo, goal):
     """go to a specific point (probably a landmark)"""
-    while (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
-        and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
+    while (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
+        and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
-        ret = go_forward(dest['dist'] - 30, inner_frindo)
+        if 0 < (dest['dist']- 50):
+            ret = go_forward(dest['dist'] - 30, inner_frindo)
+        else:
+            break
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
