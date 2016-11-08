@@ -239,7 +239,6 @@ def resample_particles(w_particles):
     beta = 0.0
 
     mw = w_particles[w_particles[:,0] == max(w_particles[:, 0])][0,0]
-    print mw
     for i in range(N):
         beta += random.random() * 2.0 * mw
         while beta > w_particles[index,0]:
