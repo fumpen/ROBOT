@@ -90,7 +90,7 @@ def turn(dir, deg, inner_state):
     # print '##############'
     # print 'turn:'  + str(deg)
     if dir == 'left':
-        p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+        p.update_particles(inner_state.getParticles(), cam, 0.0, (deg + 15),
                            world, WIN_RF1, WIN_World)
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
                                world, WIN_RF1, WIN_World)
@@ -98,7 +98,7 @@ def turn(dir, deg, inner_state):
         p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
                            world, WIN_RF1, WIN_World)
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
-                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
+                               ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
@@ -194,13 +194,14 @@ n_l_mark = inner_frindo.getNextLandmark()
 while n_l_mark < 4:
     if n_l_mark == 0:
         print 'Am in n_l_mark 0'
-        for x in range(0, 2):
-            print x
-            find_landmark(inner_frindo, 0)
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             for x in range(0, 12):
-                find_landmark(inner_frindo, 0)
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
             print 'FUCK'
             go_forward(30, inner_frindo)
@@ -208,35 +209,41 @@ while n_l_mark < 4:
     elif n_l_mark == 1:
         print 'Am in n_l_mark 1'
         for x in range(0, 12):
-            find_landmark(inner_frindo, 0)
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
             for x in range(0, 12):
-                find_landmark(inner_frindo, 0)
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
     elif n_l_mark == 2:
         print 'Am in n_l_mark 3'
-        for x in range(0, 12) :
-            find_landmark(inner_frindo, 0)
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
             for x in range(0, 12):
-                find_landmark(inner_frindo, 0)
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
             print 'FUCK'
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
     else:
         print 'Am in n_l_mark 3'
-        for x in range(0, 12) :
-            find_landmark(inner_frindo, 0)
+        for x in range(0, 12):
+            print 'x_streame: ' + str(x)
+            turn('right', 25, inner_frindo)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
             for x in range(0, 12):
-                find_landmark(inner_frindo, 0)
+                print 'x_streame: ' + str(x)
+                turn('right', 25, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() > 1:
             print 'FUCK'
             go_forward(30, inner_frindo)
