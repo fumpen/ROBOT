@@ -170,12 +170,11 @@ def where_to_go(pose, goal):
     if math.isnan(ang):
         print "pose information :", pose
         print "goal information :", goal
-    if ang <= 180:
+    if ang <= 0:
         turn_dir = 'right'
-        turn_deg = ang
     else:
         turn_dir = 'left'
-        turn_deg = 180 - ang
+    turn_deg = ang
     length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])
 
     # length = np.sqrt(
@@ -185,8 +184,8 @@ def where_to_go(pose, goal):
     print 'REPORT FROM: where_to_go'
     print 'est_particle: ' , str([pose[0], pose[1]])
     print 'goal: ' , str(goal)
-    print 'estimated course: dist=' , str(length) , 'dir=' , turn_dir,  \
-          'turn degree=' , str(turn_deg)
+    print 'estimated course: dist= ' + str(length) + ', dir= ' + turn_dir,  \
+          'turn degree=' + str(turn_deg)
     return {'dist' : length,
             'turn_dir' : turn_dir,
             'turn_degree' : turn_deg}
