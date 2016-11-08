@@ -5,6 +5,7 @@ import camera
 import numpy as np
 import cv2
 import sensor as s
+from time import sleep
 
 # Configuration setup
 frindo = robot.Robot()
@@ -101,8 +102,16 @@ class FrindosInnerWorld:
 
 
 def make_observation(inner_frindo):
-    return p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+    obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                               0.0, world, WIN_RF1, WIN_World)
+    inner_frindo.update_particles(obs_prop['particles'])
+    inner_frindo.update_l_flag(obs_prop['obs_obj'][3])
+    if obs_prop['obs_obj'][3]:
+        if obs_prop['obs_obj'][1] < 75:
+            inner_frindo.update_next_l(obs_prop['obs_obj'][3])
+    inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
+                                        obs_prop['est_pos'].getY(),
+                                        obs_prop['est_pos'].getTheta()))
 
 def turn(dir, deg, inner_frindo):
     print 'turn_deg (control.py turn(): ' + str(deg)
@@ -121,6 +130,7 @@ def turn(dir, deg, inner_frindo):
     inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
+    sleep(0.2)
     return obs_prop
 
 def go_forward(length, inner_frindo):
@@ -136,6 +146,7 @@ def go_forward(length, inner_frindo):
     inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
+    sleep(0.2)
     return dist_driven
 
 
