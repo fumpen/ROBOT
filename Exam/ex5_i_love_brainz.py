@@ -109,7 +109,7 @@ def weight_particles(particles, measured_angle, measured_distance, mark_nr):
         sum_dist_w += dist_w  #tmp
         sum_angle_w += angle_w
 
-        list_of_particles.append([dist_w*0.6, angle_w*0.4, p])
+        list_of_particles.append([dist_w*0.8, angle_w*0.2, p])
 
     list_of_particles = np.array(list_of_particles)
 
@@ -241,6 +241,7 @@ def draw_world(est_pose, particles, world):
 
 
 def innit_particles(num_particles=1000):
+    print 'INIT PARTICLES!!!!!!!!'
     # Initialize particles
     particles = []
     for i in range(num_particles):
