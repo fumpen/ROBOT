@@ -5,6 +5,7 @@ import camera
 import numpy as np
 import cv2
 import sensor as s
+from time import sleep
 
 # Configuration setup
 frindo = robot.Robot()
@@ -121,6 +122,7 @@ def turn(dir, deg, inner_frindo):
     inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
+    sleep(0.2)
     return obs_prop
 
 def go_forward(length, inner_frindo):
@@ -136,6 +138,7 @@ def go_forward(length, inner_frindo):
     inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
+    sleep(0.2)
     return dist_driven
 
 
