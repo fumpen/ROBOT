@@ -83,7 +83,7 @@ def weight(p, obs_angle, obs_dist, mark_nr):
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
-    dist_weight = diff_weight(dist_diff, 25)
+    dist_weight = diff_weight(dist_diff, 75)
 
     orientation = direction(p.getTheta())
     angle_to_mark = vector_angle(part2Mark, orientation)
@@ -261,8 +261,8 @@ def innit_particles(num_particles=1000):
     # Initialize particles
     particles = []
     for i in range(num_particles):
-        p = particle.Particle(500.0 * np.random.ranf() - 100,
-                              500.0 * np.random.ranf() - 100,
+        p = particle.Particle(375.0 * np.random.ranf() - 100,
+                              375.0 * np.random.ranf() - 100,
                               2.0 * np.pi * np.random.ranf() - np.pi,
                               1.0 / num_particles)
         particles.append(p)
