@@ -46,4 +46,5 @@ def determine_way_around(frindo):
         forward = True
     if leftSensor(frindo) < 350:
         left = True
+    print 'Right: ' + str(right) + ', Left: ' + str(left) + ', Forward: ' + str(forward)
     return right, left, forward

@@ -157,8 +157,9 @@ innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 def go_go_go (frindo, inner_state, goal):
     dest = p.where_to_go(inner_state.getEstCoordinates(), goal)
     turn(frindo, dest[1], dest[2])
-    while (inner_state.getEstCoordinates()[0] not in range(goal[0]-30, goal[0]+30)) \
-        and (inner_state.getEstCoordinates()[1] not in range(goal[1]-30, goal[1]+30)):
+    while (inner_state.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
+        and (inner_state.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
+        print 'go_go_go goal: ' + str(goal)
         ret = go_forward(dest[0], inner_state)
         if ret != dest[0]:
             right, left, forward = s.determine_way_around(frindo)
@@ -172,7 +173,6 @@ def go_go_go (frindo, inner_state, goal):
                         right, left, forward = s.determine_way_around(frindo)
                     turn('right', 20, inner_state)
                     go_forward(20, inner_state)
-                    right, left, forward = s.determine_way_around(frindo)
                 else:
                     turn('left', 30, inner_state)
                     go_forward(20, inner_state)
@@ -193,6 +193,7 @@ def go_go_go (frindo, inner_state, goal):
 n_l_mark = inner_frindo.getNextLandmark()
 while n_l_mark < 4:
     if n_l_mark == 0:
+        print 'Am in n_l_mark 0'
         for x in range(0, 12):
             find_landmark(inner_frindo, 0)
         if inner_frindo.getFlag()[0] == 1:
@@ -204,7 +205,8 @@ while n_l_mark < 4:
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
     elif n_l_mark == 1:
-        for x in range(0, 12) :
+        print 'Am in n_l_mark 1'
+        for x in range(0, 12):
             find_landmark(inner_frindo, 0)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
@@ -215,6 +217,7 @@ while n_l_mark < 4:
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
     elif n_l_mark == 2:
+        print 'Am in n_l_mark 3'
         for x in range(0, 12) :
             find_landmark(inner_frindo, 0)
         if inner_frindo.getFlag()[0] == 1:
@@ -226,6 +229,7 @@ while n_l_mark < 4:
             go_forward(30, inner_frindo)
         inner_frindo.reset_landmarks()
     else:
+        print 'Am in n_l_mark 3'
         for x in range(0, 12) :
             find_landmark(inner_frindo, 0)
         if inner_frindo.getFlag()[0] == 1:
