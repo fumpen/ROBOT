@@ -81,11 +81,6 @@ class FrindosInnerWorld:
     def getNextLandmark(self):
         return self.next_l
 
-def update_landmark(num_landmark):
-    if num_landmark == 1:
-        LANDMARK[1] = 1
-    elif num_landmark == 0:
-        LANDMARK[0] = 1
 
 
 # Handles turning the robot along with updating robot knowledge,
