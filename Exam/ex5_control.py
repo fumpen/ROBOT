@@ -103,13 +103,14 @@ class FrindosInnerWorld:
            x += val
         return x
 
-        # Handles turning the robot along with updating robot knowledge,
-# in form of orientation change and
+
+def make_observation(inner_frindo):
+    return p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+                              0.0, world, WIN_RF1, WIN_World)
+
 def turn(dir, deg, inner_frindo):
     print 'turn_deg (control.py turn(): ' + str(deg)
     m.turn_baby_turn(abs(deg), dir, frindo)
-    # print '##############'
-    # print 'turn:'  + str(deg)
     if dir == 'left':
         obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                       deg, world, WIN_RF1, WIN_World)
@@ -227,6 +228,7 @@ sum_mark = inner_frindo.sum_of_checklist_landmarks()
 n_l_mark = inner_frindo.getNextLandmark()
 turn_times = 10
 turn_deg = 15
+make_observation(inner_frindo)
 while sum_mark < 4:
     print 'checklist: ' + str(inner_frindo.getNextLandmark())
     if n_l_mark[0] < 1:
