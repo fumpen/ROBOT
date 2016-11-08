@@ -233,7 +233,7 @@ while sum_mark < 4:
             ret_obj = find_landmark(inner_frindo, 0)
             if ret_obj['goal']:
                 turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-                go_forward(ret_obj['dist'])
+                go_forward(ret_obj['dist'], inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             for x in range(0, turn_times):
