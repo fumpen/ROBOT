@@ -97,19 +97,16 @@ class FrindosInnerWorld:
         # Handles turning the robot along with updating robot knowledge,
 # in form of orientation change and
 def turn(dir, deg, inner_state):
-    m.turn_baby_turn(deg, dir, frindo)
+    print 'turn_deg: ' + str(deg)
+    m.turn_baby_turn(abs(deg), dir, frindo)
     # print '##############'
     # print 'turn:'  + str(deg)
     if dir == 'left':
-        p.update_particles(inner_state.getParticles(), cam, 0.0, (deg + 15),
-                           world, WIN_RF1, WIN_World)
-        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
-                               world, WIN_RF1, WIN_World)
-    else:
-        p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
-                           world, WIN_RF1, WIN_World)
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
-                               ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
+                                      deg, world, WIN_RF1, WIN_World)
+    else:
+        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
+                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(obs_prop['obs_obj'][3])
     if obs_prop['obs_obj'][3]:
@@ -122,10 +119,8 @@ def turn(dir, deg, inner_state):
 
 def go_forward(length, inner_state):
     qwe = m.lige_gear_sensor(frindo, length)
-    p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+    obs_prop =p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
                        WIN_RF1, WIN_World)
-    obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0 , 0.0, world,
-                                  WIN_RF1, WIN_World)
 
     if obs_prop['obs_obj'][3]:
         if obs_prop['obs_obj'][1] > 75:
