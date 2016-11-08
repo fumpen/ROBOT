@@ -177,7 +177,7 @@ def go_go_go(frindo, inner_frindo, goal):
         and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-40, goal[1]+40)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
-        ret = go_forward(dest['dist'], inner_frindo)
+        ret = go_forward(dest['dist'] - 30, inner_frindo)
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
@@ -235,7 +235,7 @@ while sum_mark < 4:
             ret_obj = find_landmark(inner_frindo, 0)
             if ret_obj['goal']:
                 turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-                go_forward(ret_obj['dist'], inner_frindo)
+                go_forward(ret_obj['dist'] - 30, inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             recon_area(turn_times, turn_deg)
