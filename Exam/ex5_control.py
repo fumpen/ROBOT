@@ -182,7 +182,7 @@ def go_go_go (frindo, inner_state, goal):
         ret = go_forward(dest['dist'], inner_state)
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
-        print 'dest[dist] (go_go_go if-statement):' + str(dest[0])
+        print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
         if ret != dest['dist']:
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' + str(right) + ', ' + str(left) + ', ' + str(forward)
