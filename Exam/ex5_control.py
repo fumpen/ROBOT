@@ -173,7 +173,7 @@ def go_go_go(frindo, inner_frindo, goal):
         and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
-        if 0 < (dest['dist']- 50):
+        if 0 < (dest['dist'] - 50):
             ret = go_forward(dest['dist'] - 50, inner_frindo)
         else:
             break
@@ -220,7 +220,7 @@ def recon_area(turns, deg):
 
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
-    print 'Am in n_l_mark 0'
+    print 'current goal: ' + str(goal)
     recon_area(turn_times, turn_deg)
     if inner_frindo.getFlag()[goal] == 1:
         ret_obj = find_landmark(inner_frindo, goal)
