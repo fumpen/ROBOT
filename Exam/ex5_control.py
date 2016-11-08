@@ -53,7 +53,9 @@ class FrindosInnerWorld:
         self.landmark_checklist = landmark_checklist
 
     def update_l_flag(self, key):
+        print 'update l_flag: ' + str(key)
         if 0 <= key <= 3:
+            print 'updated l_flag'
             self.l_flag[key] = 1
 
     def update_next_l(self, list_index):
