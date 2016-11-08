@@ -181,6 +181,7 @@ def find_landmark(inner_frindo, goal_number):
     return {'dist': dist, 'dir': dir, 'deg': deg, 'goal': goal}
 
 
+
 def go_go_go(frindo, inner_frindo, goal):
     dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
     turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)

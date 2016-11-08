@@ -288,9 +288,9 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
             particle.move_particle(p, 0.0, 0.0, curr_angle)
             #print 'cur_ang_rad: ' + str(curr_angle)
     if velocity != 0.0:
-        particle.add_uncertainty(particles, 12, 10)
+        particle.add_uncertainty(particles, 12, 5)
     if velocity == 0.0 and angular_velocity != 0.0:
-        particle.add_uncertainty(particles, 0, 10)
+        particle.add_uncertainty(particles, 0, 5)
 
     # Fetch next frame
     colour, distorted = cam.get_colour()
@@ -312,7 +312,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particles = resample_particles(list_of_particles[:,[0,2]])
 
-        particle.add_uncertainty(particles, 15, 10)
+        particle.add_uncertainty(particles, 15, 5)
 
         cam.draw_object(colour)
     else:
@@ -320,7 +320,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
-        particle.add_uncertainty(particles, 10, 10)
+        particle.add_uncertainty(particles, 10, 5)
 
     est_pose = particle.estimate_pose(particles)
 
