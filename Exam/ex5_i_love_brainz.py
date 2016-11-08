@@ -54,9 +54,6 @@ def move_vector(p, velocity):
     return [unit_v[0]*velocity, -unit_v[1]*velocity]
 
 
-def dist_vector(vec):
-    return np.linalg.norm(vec) #np.sqrt(vec[0]**2 + vec[1]**2)
-
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
@@ -79,7 +76,7 @@ def diff_weight(diff, varians):
 # observed landmark. Turning right will cause for positive angle, and reversed
 def weight(p, obs_angle, obs_dist, mark_nr):
     part2Mark = particle_landmark_vector(mark_nr, p)
-    mark_dist = dist_vector(part2Mark)
+    mark_dist = np.linalg.norm(part2Mark)
     dist_diff = abs(obs_dist - mark_dist)
     if dist_diff <= 0.000001:
         dist_diff = 0.00001
@@ -206,15 +203,6 @@ def resample_particles(w_particles):
 
 
 # For graphic
-def jet(x):
-    """Colour map for drawing particles. This function determines the colour of
-    a particle from its weight."""
-    r = (x >= 3.0/8.0 and x < 5.0/8.0) * (4.0 * x - 3.0/2.0) + (x >= 5.0/8.0 and x < 7.0/8.0) + (x >= 7.0/8.0) * (-4.0 * x + 9.0/2.0)
-    g = (x >= 1.0/8.0 and x < 3.0/8.0) * (4.0 * x - 1.0/2.0) + (x >= 3.0/8.0 and x < 5.0/8.0) + (x >= 5.0/8.0 and x < 7.0/8.0) * (-4.0 * x + 7.0/2.0)
-    b = (x < 1.0/8.0) * (4.0 * x + 1.0/2.0) + (x >= 1.0/8.0 and x < 3.0/8.0) + (x >= 3.0/8.0 and x < 5.0/8.0) * (-4.0 * x + 5.0/2.0)
-
-    return (255.0*r, 255.0*g, 255.0*b)
-
 def draw_world(est_pose, particles, world):
     """Visualization.
     This functions draws robots position in the world."""
@@ -223,20 +211,15 @@ def draw_world(est_pose, particles, world):
 
     world[:] = CWHITE # Clear background to white
 
-    # Find largest weight
-    max_weight = 0
-    for particle in particles:
-        max_weight = max(max_weight, particle.getWeight())
 
     # Draw particles
     for particle in particles:
         x = int(particle.getX()) + offset
         y = int(particle.getY()) + offset
-        colour = jet(particle.getWeight() / max_weight)
-        cv2.circle(world, (x,y), 2, colour, 2)
+        cv2.circle(world, (x,y), 2, CBLUE, 2)
         b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset,
                                      int(particle.getY() - 15.0*np.sin(particle.getTheta()))+offset)
-        cv2.line(world, (x,y), b, colour, 2)
+        cv2.line(world, (x,y), b, CBLUE, 2)
 
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
