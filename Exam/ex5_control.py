@@ -195,6 +195,7 @@ while n_l_mark < 4:
     if n_l_mark == 0:
         print 'Am in n_l_mark 0'
         for x in range(0, 12):
+            print x
             find_landmark(inner_frindo, 0)
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
