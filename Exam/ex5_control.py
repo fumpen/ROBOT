@@ -218,15 +218,14 @@ sum_mark = inner_frindo.sum_of_checklist_landmarks()
 n_l_mark = inner_frindo.getNextLandmark()
 turn_times = 5
 while sum_mark < 4:
+    print 'checklist: ' + str(inner_frindo.getNextLandmark())
     if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
         for x in range(0, turn_times):
-            print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             for x in range(0, turn_times):
-                print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         else:
             print 'FUCK'
@@ -235,12 +234,10 @@ while sum_mark < 4:
     elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
         for x in range(0, turn_times):
-            print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
             for x in range(0, turn_times):
-                print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         else:
             print 'FUCK'
@@ -249,12 +246,10 @@ while sum_mark < 4:
     elif n_l_mark[2] < 1:
         print 'Am in n_l_mark 3'
         for x in range(0, turn_times):
-            print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
             for x in range(0, turn_times):
-                print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         else:
             print 'FUCK'
@@ -263,12 +258,10 @@ while sum_mark < 4:
     else:
         print 'Am in n_l_mark 3'
         for x in range(0, turn_times):
-            print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
             for x in range(0, turn_times):
-                print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
         else:
             print 'FUCK'
