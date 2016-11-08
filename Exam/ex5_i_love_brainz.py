@@ -351,7 +351,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
 
         particles = resample_particles(list_of_particles[:,[0,2]])
-        
+
         particle.add_uncertainty(particles, 15, 10)
 
         cam.draw_object(colour)
