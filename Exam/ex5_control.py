@@ -7,6 +7,7 @@ import numpy as np
 import math
 from time import sleep
 import cv2
+import sensor as s
 
 
 # Configuration setup
@@ -160,7 +161,35 @@ def go_go_go (frindo, inner_state, goal):
         and (inner_state.getEstCoordinates()[1] not in range(goal[1]-30, goal[1]+30)):
         ret = go_forward(dest[0], inner_state)
         if ret != dest[0]:
-
+            right, left, forward = s.determine_way_around(frindo)
+            if right or forward:
+                if left:
+                    while forward or left:
+                        turn('left', 20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    while right:
+                        go_forward(20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    turn('right', 20, inner_state)
+                    go_forward(20, inner_state)
+                    right, left, forward = s.determine_way_around(frindo)
+                else:
+                    turn('left', 30, inner_state)
+                    go_forward(20, inner_state)
+            elif left:
+                if forward:
+                    while forward or left:
+                        turn('right', 20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    while right:
+                        go_forward(20, inner_state)
+                        right, left, forward = s.determine_way_around(frindo)
+                    turn('left', 20, inner_state)
+                    go_forward(20, inner_state)
+                else:
+                    turn('right', 30, inner_state)
+                    go_forward(20, inner_state)
+                    
 while True:
     curr_l_flag = inner_frindo.getFlag()
     # TODO : implement for multiple landmarks, not only 2.
