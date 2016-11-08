@@ -117,7 +117,7 @@ def go_forward(length, inner_state):
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
-    return obs_prop
+    return qwe
 
 def find_landmark(inner_frindo, previously_moved=0.0):
     """
