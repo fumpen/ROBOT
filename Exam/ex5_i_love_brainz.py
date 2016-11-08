@@ -223,20 +223,15 @@ def draw_world(est_pose, particles, world):
 
     world[:] = CWHITE # Clear background to white
 
-    # Find largest weight
-    max_weight = 0
-    for particle in particles:
-        max_weight = max(max_weight, particle.getWeight())
 
     # Draw particles
     for particle in particles:
         x = int(particle.getX()) + offset
         y = int(particle.getY()) + offset
-        colour = jet(particle.getWeight() / max_weight)
-        cv2.circle(world, (x,y), 2, colour, 2)
+        cv2.circle(world, (x,y), 2, CBLUE, 2)
         b = (int(particle.getX() + 15.0*np.cos(particle.getTheta()))+offset,
                                      int(particle.getY() - 15.0*np.sin(particle.getTheta()))+offset)
-        cv2.line(world, (x,y), b, colour, 2)
+        cv2.line(world, (x,y), b, CBLUE, 2)
 
     # Draw landmarks
     lm0 = (landmarks[0][0]+offset, landmarks[0][1]+offset)
