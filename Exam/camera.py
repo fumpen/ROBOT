@@ -72,7 +72,7 @@ class Camera(object):
             time.sleep(1) # wait for camera
 
             self.cam.resolution = self.imageSize
-            self.cam.framerate = 5
+            self.cam.framerate = 1
 
             self.cam.shutter_speed = self.cam.exposure_speed
             self.cam.exposure_mode = 'off'
@@ -109,7 +109,7 @@ class Camera(object):
             self.cam.set(capPropId("FRAME_WIDTH"), self.imageSize[0])
             self.cam.set(capPropId("FRAME_HEIGHT"), self.imageSize[1])
             #self.cam.set(capPropId("BUFFERSIZE"), 1) # Does not work
-            self.cam.set(capPropId("FPS"), 15)
+            self.cam.set(capPropId("FPS"), 1)
 
             time.sleep(1)
 
