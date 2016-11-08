@@ -169,6 +169,7 @@ while True:
         #     :
         drive_manual = p.where_to_go(inner_frindo.getEstCoordinates(), inner_frindo.getLCoordinates()[next_mark])
         print drive_manual
+	print inner_frindo.getEstCoordinates()
         print "Turning ", drive_manual['turn_dir'], "degrees :", drive_manual['turn_degree']
         turn(drive_manual['turn_dir'], abs(drive_manual['turn_degree']), inner_frindo)
         #go_forward(drive_manual['dist'], inner_frindo)
