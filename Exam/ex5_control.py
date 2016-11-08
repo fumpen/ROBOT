@@ -1,12 +1,8 @@
 import ex5_i_love_brainz as p
-import particle
 import moves as m
 import robot
 import camera
-import random
 import numpy as np
-import math
-from time import sleep
 import cv2
 import sensor as s
 
@@ -24,13 +20,13 @@ cv2.moveWindow(WIN_World, 500, 50)
 
 LANDMARK = {0: 0,
             1: 0,
-	        2: 0,
-	        3: 0}
+            2: 0,
+            3: 0}
 
 LANDMARK_COORDINATES = {0: [0, 0],
                         1: [300, 0],
-			            2: [0, 300],
-			            3: [300, 300]}
+                        2: [0, 300],
+                        3: [300, 300]}
 
 INIT_POS = (0,0,np.radians(0))
 
@@ -129,8 +125,8 @@ def turn(dir, deg, inner_frindo):
 
 def go_forward(length, inner_frindo):
     dist_driven = m.lige_gear_sensor(frindo, length)
-    obs_prop =p.update_particles(inner_frindo.getParticles(), cam, length, 0.0, world,
-                       WIN_RF1, WIN_World)
+    obs_prop = p.update_particles(inner_frindo.getParticles(), cam, length,
+                                  0.0, world, WIN_RF1, WIN_World)
 
     if obs_prop['obs_obj'][3]:
         if obs_prop['obs_obj'][1] > 75:
