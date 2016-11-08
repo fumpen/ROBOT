@@ -173,7 +173,7 @@ def find_landmark(inner_frindo, goal_number):
 inner_frindo = FrindosInnerWorld()
 
 #particles = p.innit_particles(1000)
-innit_est_pose = p.estimate_position(inner_frindo.getParticles())
+#innit_est_pose = p.estimate_position(inner_frindo.getParticles())
 
 # Initializes Frindo Inner World class
 #return 0
