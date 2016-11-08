@@ -100,52 +100,40 @@ class FrindosInnerWorld:
            x += val
         return x
 
+    def update_from_update_particle(self, dicte):
+        self.update_particles(dicte['particles'])
+        self.update_l_flag(dicte['obs_obj'][3])
+        if dicte['obs_obj'][3]:
+            if dicte['obs_obj'][1] < 75:
+                self.update_next_l(dicte['obs_obj'][3])
+        self.update_est_coordinate((dicte['est_pos'].getX(),
+                                    dicte['est_pos'].getY(),
+                                    dicte['est_pos'].getTheta()))
+
 
 def make_observation(inner_frindo):
-    obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                               0.0, world, WIN_RF1, WIN_World)
-    inner_frindo.update_particles(obs_prop['particles'])
-    inner_frindo.update_l_flag(obs_prop['obs_obj'][3])
-    if obs_prop['obs_obj'][3]:
-        if obs_prop['obs_obj'][1] < 75:
-            inner_frindo.update_next_l(obs_prop['obs_obj'][3])
-    inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
-                                        obs_prop['est_pos'].getY(),
-                                        obs_prop['est_pos'].getTheta()))
+    inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
     print 'turn_deg (control.py turn(): ' + str(deg)
     m.turn_baby_turn(abs(deg), dir, frindo)
     if dir == 'left':
-        obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+        ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                       deg, world, WIN_RF1, WIN_World)
     else:
-        obs_prop = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                               ((-1.0) * deg), world, WIN_RF1, WIN_World)
-    inner_frindo.update_particles(obs_prop['particles'])
-    inner_frindo.update_l_flag(obs_prop['obs_obj'][3])
-    if obs_prop['obs_obj'][3]:
-        if obs_prop['obs_obj'][1] < 75:
-            inner_frindo.update_next_l(obs_prop['obs_obj'][3])
-    inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
-                                       obs_prop['est_pos'].getY(),
-                                       obs_prop['est_pos'].getTheta()))
+        ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+                                    ((-1.0) * deg), world, WIN_RF1, WIN_World)
+    inner_frindo.update_from_update_particle(ret_dict)
     sleep(0.2)
-    return obs_prop
+    return ret_dict
 
 def go_forward(length, inner_frindo):
     dist_driven = m.lige_gear_sensor(frindo, length)
-    obs_prop = p.update_particles(inner_frindo.getParticles(), cam, length,
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, length,
                                   0.0, world, WIN_RF1, WIN_World)
-
-    if obs_prop['obs_obj'][3]:
-        if obs_prop['obs_obj'][1] > 75:
-            inner_frindo.update_next_l(obs_prop['obs_obj'][3])
-    inner_frindo.update_particles(obs_prop['particles'])
-    inner_frindo.update_l_flag(obs_prop['obs_obj'][3])
-    inner_frindo.update_est_coordinate((obs_prop['est_pos'].getX(),
-                                       obs_prop['est_pos'].getY(),
-                                       obs_prop['est_pos'].getTheta()))
+    inner_frindo.update_from_update_particle(ret_dict)
     sleep(0.2)
     return dist_driven
 
