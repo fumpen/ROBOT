@@ -109,7 +109,9 @@ def turn(dir, deg, inner_state):
                                ((-1.0) * deg - 15), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
-    inner_state.update_next_l(obs_prop['obs_obj'][3])
+    if obs_prop['obs_obj'][3]:
+        if obs_prop['obs_obj'][1] > 75:
+            inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
                                        obs_prop['est_pos'].getY(),
                                        obs_prop['est_pos'].getTheta()))
@@ -122,7 +124,9 @@ def go_forward(length, inner_state):
     obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0 , 0.0, world,
                                   WIN_RF1, WIN_World)
 
-    inner_state.update_next_l(obs_prop['obs_obj'][3])
+    if obs_prop['obs_obj'][3]:
+        if obs_prop['obs_obj'][1] > 75:
+            inner_state.update_next_l(obs_prop['obs_obj'][3])
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
     inner_state.update_est_coordinate((obs_prop['est_pos'].getX(),
