@@ -276,17 +276,12 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation
-
         curr_angle = add_to_angular_v2(np.degrees(p.getTheta()), angular_velocity)
-        # print 'theta_rad: ' + str(p.getTheta())
-        # print 'theta_deg: ' + str(np.degrees(p.getTheta()))
-        # print 'cur_ang_deg: ' + str(np.degrees(curr_angle))
         if velocity > 0.0:
             [x, y] = move_vector(p, velocity)
             particle.move_particle(p, x, y, curr_angle)
         else:
             particle.move_particle(p, 0.0, 0.0, curr_angle)
-            #print 'cur_ang_rad: ' + str(curr_angle)
     if velocity != 0.0:
         particle.add_uncertainty(particles, 12, 5)
     if velocity == 0.0 and angular_velocity != 0.0:
@@ -303,7 +298,6 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
         obs_landmark = ret_landmark(colourProb, objectType)
         observed_obj = [objectType, measured_distance, measured_angle,
                         obs_landmark]
-
 
         list_of_particles = weight_particles(particles,
                                              np.degrees(measured_angle),
@@ -324,18 +318,13 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
     est_pose = particle.estimate_pose(particles)
 
-    #print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])
     draw_world(est_pose, particles, world)
     # Show frame
     cv2.imshow(WIN_RF1, colour)
     # Show world
     cv2.imshow(WIN_World, world)
-    #print est_pose
+
     return {'est_pos': est_pose,
             'obs_obj': observed_obj,
             'particles': particles}
 
-
-# Lazily avoiding to import particle in control for no reason what-so-ever...
-def estimate_position(particles):
-    return particle.estimate_pose(particles)

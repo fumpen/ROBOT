@@ -33,7 +33,7 @@ INIT_POS = (0,0,np.radians(0))
 innit_landmark_list = [0, 0, 0, 0]
 
 class FrindosInnerWorld:
-
+    """This class keeps track of where the frindo thinks it is"""
     l_flag = dict
     l_coordinates = dict
     est_coordinate = tuple
@@ -140,6 +140,7 @@ def go_forward(length, inner_state):
 
 
 def find_landmark(inner_frindo, goal_number):
+    """attempt to find a given landmark"""
     dest = p.where_to_go(inner_frindo.getEstCoordinates(),
                          inner_frindo.getLCoordinates()[goal_number])
     ret = turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
@@ -183,6 +184,7 @@ def find_landmark(inner_frindo, goal_number):
 
 
 def go_go_go(frindo, inner_frindo, goal):
+    """go to a specific point (probably a landmark)"""
     dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
     turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
     while (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-40, goal[0]+40)) \
@@ -224,6 +226,11 @@ def go_go_go(frindo, inner_frindo, goal):
                     go_forward(20, inner_frindo)
 
 
+def recon_area(turns, deg):
+    for x in range(0, turns):
+        turn('right', deg, inner_frindo)
+
+
 inner_frindo = FrindosInnerWorld()
 sum_mark = inner_frindo.sum_of_checklist_landmarks()
 n_l_mark = inner_frindo.getNextLandmark()
@@ -233,8 +240,7 @@ while sum_mark < 4:
     print 'checklist: ' + str(inner_frindo.getNextLandmark())
     if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
-        for x in range(0, turn_times):
-            turn('right', turn_deg, inner_frindo)
+        recon_area(turn_times, turn_deg)
         if inner_frindo.getFlag()[0] == 1:
             ret_obj = find_landmark(inner_frindo, 0)
             if ret_obj['goal']:
@@ -242,42 +248,35 @@ while sum_mark < 4:
                 go_forward(ret_obj['dist'], inner_frindo)
         elif inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
-            for x in range(0, turn_times):
-                turn('right', 25, inner_frindo)
+            recon_area(turn_times, turn_deg)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
         print 'getFlag: ' + str(inner_frindo.getFlag())
     elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
-        for x in range(0, turn_times):
-            turn('right', turn_deg, inner_frindo)
+        recon_area(turn_times, turn_deg)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
-            for x in range(0, turn_times):
-                turn('right', 25, inner_frindo)
+            recon_area(turn_times, turn_deg)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
     elif n_l_mark[2] < 1:
         print 'Am in n_l_mark 3'
-        for x in range(0, turn_times):
-            turn('right', turn_deg, inner_frindo)
+        recon_area(turn_times, turn_deg)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
-            for x in range(0, turn_times):
-                turn('right', turn_deg, inner_frindo)
+            recon_area(turn_times, turn_deg)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
     else:
         print 'Am in n_l_mark 3'
-        for x in range(0, turn_times):
-            turn('right', turn_deg, inner_frindo)
+        recon_area(turn_times, turn_deg)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
-            for x in range(0, turn_times):
-                turn('right', turn_deg, inner_frindo)
+            recon_area(turn_times, turn_deg)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
