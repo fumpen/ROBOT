@@ -95,9 +95,13 @@ def turn(dir, deg, inner_state):
     # print '##############'
     # print 'turn:'  + str(deg)
     if dir == 'left':
-        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+        p.update_particles(inner_state.getParticles(), cam, 0.0, deg,
+                           world, WIN_RF1, WIN_World)
+        obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
                                world, WIN_RF1, WIN_World)
     else:
+        p.update_particles(inner_state.getParticles(), cam, 0.0, 0.0,
+                           world, WIN_RF1, WIN_World)
         obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0,
                                ((-1.0) * deg), world, WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
@@ -109,7 +113,9 @@ def turn(dir, deg, inner_state):
 
 def go_forward(length, inner_state):
     qwe = m.lige_gear_sensor(frindo, length)
-    obs_prop = p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+    p.update_particles(inner_state.getParticles(), cam, length, 0.0, world,
+                       WIN_RF1, WIN_World)
+    obs_prop = p.update_particles(inner_state.getParticles(), cam, 0.0 , 0.0, world,
                                   WIN_RF1, WIN_World)
     inner_state.update_particles(obs_prop['particles'])
     inner_state.update_l_flag(True, obs_prop['obs_obj'][3])
@@ -128,7 +134,7 @@ def find_landmark(inner_frindo, previously_moved=0.0):
     """
     degrees_moved = previously_moved
     move_pr_turn = 25.0
-    while degrees_moved <= 360:
+    while degrees_moved <= 180:
         degrees_moved += move_pr_turn
         ret = turn('right', move_pr_turn, inner_frindo)
         if ret['obs_obj'][3] is not None:
@@ -169,7 +175,7 @@ while True:
         drive_manual = p.where_to_go(inner_frindo.getEstCoordinates(), inner_frindo.getLCoordinates()[next_mark])
         print drive_manual
         print "Turning ", drive_manual['turn_dir'], "degrees :", drive_manual['turn_degree']
-        turn(drive_manual['turn_dir'], drive_manual['turn_degree'], inner_frindo)
+        turn(drive_manual['turn_dir'], abs(drive_manual['turn_degree']), inner_frindo)
         #go_forward(drive_manual['dist'], inner_frindo)
         p.update_particles(inner_frindo.getParticles(), cam, 0.0, 0.0, world,
                                   WIN_RF1, WIN_World)
