@@ -31,7 +31,7 @@ LANDMARK_COORDINATES = {0: [0, 0],
 
 INIT_POS = (0,0,np.radians(0))
 
-innit_landmark_list = [0, 0, 0, 0]
+INIT_goal = 0
 
 class FrindosInnerWorld:
     """This class keeps track of where the frindo thinks it is"""
@@ -39,16 +39,16 @@ class FrindosInnerWorld:
     l_coordinates = dict
     est_coordinate = tuple
     particles = list
-    landmark_checklist = list
+    current_goal = int
 
     def __init__(self, l_flag = LANDMARK, l_coordinates = LANDMARK_COORDINATES,
                  est_coordinate= INIT_POS, particles = p.innit_particles(1000),
-                 landmark_checklist = innit_landmark_list):
+                 current_goal = INIT_goal):
         self.l_flag = l_flag
         self.l_coordinates = l_coordinates
         self.est_coordinate = est_coordinate
         self.particles = particles
-        self.landmark_checklist = landmark_checklist
+        self.current_goal = current_goal
 
     def update_l_flag(self, key):
         print 'update l_flag: ' + str(key)
@@ -56,8 +56,11 @@ class FrindosInnerWorld:
             print 'updated l_flag'
             self.l_flag[key] = 1
 
-    def update_next_l(self, list_index):
-        self.landmark_checklist[list_index] = 1
+    def updateCurrentGoal(self, goal):
+        if self.current_goal + 1 == goal:
+            self.current_goal = goal
+        else:
+            self.current_goal = 0
 
     def update_l_coordinates(self, coordinates):
         self.l_coordinates = coordinates
@@ -80,8 +83,8 @@ class FrindosInnerWorld:
     def getParticles(self):
         return self.particles
 
-    def getNextLandmark(self):
-        return self.landmark_checklist
+    def getCurrentGoal(self):
+        return self.current_goal
 
     def reset_landmarks(self):
         x = 0
@@ -94,18 +97,12 @@ class FrindosInnerWorld:
             x += val
         return x
 
-    def sum_of_checklist_landmarks(self):
-        x = 0
-        for val in self.landmark_checklist:
-           x += val
-        return x
-
     def update_from_update_particle(self, dicte):
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
             if dicte['obs_obj'][1] < 75:
-                self.update_next_l(dicte['obs_obj'][3])
+                self.updateCurrentGoal(dicte['obs_obj'][3])
         self.update_est_coordinate((dicte['est_pos'].getX(),
                                     dicte['est_pos'].getY(),
                                     dicte['est_pos'].getTheta()))
@@ -177,7 +174,7 @@ def go_go_go(frindo, inner_frindo, goal):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
         if 0 < (dest['dist']- 50):
-            ret = go_forward(dest['dist'] - 30, inner_frindo)
+            ret = go_forward(dest['dist'] - 50, inner_frindo)
         else:
             break
         print 'go_go_go goal: ' + str(goal)
@@ -222,60 +219,31 @@ def recon_area(turns, deg):
         turn('right', deg, inner_frindo)
 
 
+def move_logic(turn_times, turn_deg, inner_frindo, goal):
+    print 'Am in n_l_mark 0'
+    recon_area(turn_times, turn_deg)
+    if inner_frindo.getFlag()[goal] == 1:
+        ret_obj = find_landmark(inner_frindo, goal)
+        if ret_obj['goal']:
+            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
+            if 0 < (ret_obj['dist'] - 50):
+                go_forward(ret_obj['dist'] - 50, inner_frindo)
+    elif inner_frindo.sum_of_observed_landmarks() < 2:
+        go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
+        recon_area(turn_times, turn_deg)
+    else:
+        print 'FUCK'
+        go_forward(30, inner_frindo)
+    print 'getFlag: ' + str(inner_frindo.getFlag())
+    inner_frindo.reset_landmarks()
+
+
 inner_frindo = FrindosInnerWorld()
-sum_mark = inner_frindo.sum_of_checklist_landmarks()
-n_l_mark = inner_frindo.getNextLandmark()
+current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
-while sum_mark < 4:
-    print 'checklist: ' + str(inner_frindo.getNextLandmark())
-    if n_l_mark[0] < 1:
-        print 'Am in n_l_mark 0'
-        recon_area(turn_times, turn_deg)
-        if inner_frindo.getFlag()[0] == 1:
-            ret_obj = find_landmark(inner_frindo, 0)
-            if ret_obj['goal']:
-                turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-                go_forward(ret_obj['dist'] - 30, inner_frindo)
-        elif inner_frindo.sum_of_observed_landmarks() < 2:
-            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
-            recon_area(turn_times, turn_deg)
-        else:
-            print 'FUCK'
-            go_forward(30, inner_frindo)
-        print 'getFlag: ' + str(inner_frindo.getFlag())
-        inner_frindo.reset_landmarks()
-    elif n_l_mark[1] < 1:
-        print 'Am in n_l_mark 1'
-        recon_area(turn_times, turn_deg)
-        if inner_frindo.sum_of_observed_landmarks() < 2:
-            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
-            recon_area(turn_times, turn_deg)
-        else:
-            print 'FUCK'
-            go_forward(30, inner_frindo)
-        inner_frindo.reset_landmarks()
-    elif n_l_mark[2] < 1:
-        print 'Am in n_l_mark 3'
-        recon_area(turn_times, turn_deg)
-        if inner_frindo.sum_of_observed_landmarks() < 2:
-            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
-            recon_area(turn_times, turn_deg)
-        else:
-            print 'FUCK'
-            go_forward(30, inner_frindo)
-        inner_frindo.reset_landmarks()
-    else:
-        print 'Am in n_l_mark 3'
-        recon_area(turn_times, turn_deg)
-        if inner_frindo.sum_of_observed_landmarks() < 2:
-            go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
-            recon_area(turn_times, turn_deg)
-        else:
-            print 'FUCK'
-            go_forward(30, inner_frindo)
-        inner_frindo.reset_landmarks()
-        
-    sum_mark = inner_frindo.sum_of_checklist_landmarks()
-    n_l_mark = inner_frindo.getNextLandmark()
+while current_goal < 4:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, current_goal)
+    current_goal = inner_frindo.getCurrentGoal()
