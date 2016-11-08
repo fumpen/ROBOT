@@ -360,30 +360,16 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particles = resample_particles(list_of_particles[:,[0,2]])#[]
 
-        # for count in range(0, num_particles):
-        #     rando = np.random.uniform(0.0,1.0)
-        #     p = when_in_range(list_of_particles,
-        #                       0,
-        #                       num_particles,
-        #                       rando)
-        #     particles.append(
-        #         particle.Particle(p.getX(), p.getY(), p.getTheta(),
-        #                           1.0 / num_particles))
-        # print 'list_of_particles: ' + str(list_of_particles)
-        # print 'particles: ' + str(particles)
-
         particle.add_uncertainty(particles, 15, 10)
 
         cam.draw_object(colour)
     else:
         observed_obj = [None, None, None, None]
-        # No observation - reset weights to uniform distribution
         for p in particles:
             p.setWeight(1.0 / num_particles)
 
         particle.add_uncertainty(particles, 10, 10)
 
-    # The estimate of the robots current pose
     est_pose = particle.estimate_pose(particles)
 
     #print 'Updated pose: ' + str([est_pose.getX(), est_pose.getY()])

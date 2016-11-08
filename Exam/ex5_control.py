@@ -140,14 +140,15 @@ def go_forward(length, inner_state):
                                        obs_prop['est_pos'].getTheta()))
     return qwe
 
+"""
 def find_landmark(inner_frindo, previously_moved=0.0):
-    """
+
     :param particles: list of particles
     :param previously_moved: degrees (to mitegate turning more that 360
     :return: RET = [[est_pose, obj, particles], [objectType, measured_distance,
                     measured_angle, integer-rep-of-landmark]]
              degrees_moved: degrees turned to find a landmark
-    """
+
     degrees_moved = previously_moved
     move_pr_turn = 25.0
     while degrees_moved <= 180:
@@ -159,6 +160,23 @@ def find_landmark(inner_frindo, previously_moved=0.0):
         else:
             ret = None
     return [ret, degrees_moved]
+"""
+
+def find_landmark(inner_frindo, goal_number):
+    degrees_moved = 0.0
+    move_pr_turn = 25.0
+    goal = False
+    while degrees_moved <= 360:
+        degrees_moved += move_pr_turn
+        ret = turn('right', move_pr_turn, inner_frindo)
+        if ret['obs_obj'][3] is not None:
+            print "found :", ret['obs_obj']
+            if ret['obs_obj'][3] == goal_number:
+                goal = True
+                break
+        else:
+            ret = None
+    return [ret, goal]
 
 def reset_marks_seen():
     for i in range(0,4):
@@ -216,17 +234,27 @@ def go_go_go (frindo, inner_state, goal):
 
 sum_mark = inner_frindo.sum_of_checklist_landmarks()
 n_l_mark = inner_frindo.getNextLandmark()
-turn_times = 5
+turn_times = 8
+turn_deg = 15
 while sum_mark < 4:
     print 'checklist: ' + str(inner_frindo.getNextLandmark())
     if n_l_mark[0] < 1:
         print 'Am in n_l_mark 0'
         for x in range(0, turn_times):
-            turn('right', 25, inner_frindo)
-        if inner_frindo.sum_of_observed_landmarks() < 2:
+            turn('right', turn_deg, inner_frindo)
+        if inner_frindo.getNextLandmark()[0] == 1:
+            ret_obj = find_landmark(inner_frindo, 0)
+            if ret_obj[1]:
+                if ret_obj[0]['obs_obj'][2] < 0:
+                    turn('right', ret_obj[0]['obs_obj'][2], inner_frindo)
+                else:
+                    turn('left', ret_obj[0]['obs_obj'][2], inner_frindo)
+                go_forward(ret_obj[0]['obs_obj'][1])
+        elif inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
             for x in range(0, turn_times):
                 turn('right', 25, inner_frindo)
+
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
@@ -234,7 +262,7 @@ while sum_mark < 4:
     elif n_l_mark[1] < 1:
         print 'Am in n_l_mark 1'
         for x in range(0, turn_times):
-            turn('right', 25, inner_frindo)
+            turn('right', turn_deg, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[1])
             for x in range(0, turn_times):
@@ -246,11 +274,11 @@ while sum_mark < 4:
     elif n_l_mark[2] < 1:
         print 'Am in n_l_mark 3'
         for x in range(0, turn_times):
-            turn('right', 25, inner_frindo)
+            turn('right', turn_deg, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[2])
             for x in range(0, turn_times):
-                turn('right', 25, inner_frindo)
+                turn('right', turn_deg, inner_frindo)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
@@ -258,11 +286,11 @@ while sum_mark < 4:
     else:
         print 'Am in n_l_mark 3'
         for x in range(0, turn_times):
-            turn('right', 25, inner_frindo)
+            turn('right', turn_deg, inner_frindo)
         if inner_frindo.sum_of_observed_landmarks() < 2:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[3])
             for x in range(0, turn_times):
-                turn('right', 25, inner_frindo)
+                turn('right', turn_deg, inner_frindo)
         else:
             print 'FUCK'
             go_forward(30, inner_frindo)
