@@ -120,7 +120,7 @@ def make_observation(inner_frindo):
     inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
-    m.turn_baby_turn(abs(deg), dir, frindo)
+    m.turn_baby_turn(np.divide(abs(deg), 2), dir, frindo)
     if dir == 'left':
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                       deg+10, world, WIN_RF1, WIN_World)
@@ -134,7 +134,7 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    new_l = np.divide(length, 2)
+    new_l = np.divide(length, 3)
     print 'go_forward length post div2: ' + str(new_l)
 
     dist_driven = m.lige_gear_sensor(frindo, new_l)
@@ -183,7 +183,7 @@ def go_go_go(frindo, inner_frindo, goal):
         and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
-        if 0 < (dest['dist'] - 50.0):
+        if 0.0 < (dest['dist'] - 50.0):
             ret = go_forward(dest['dist'] - 50.0, inner_frindo)
         else:
             break
@@ -222,6 +222,8 @@ def go_go_go(frindo, inner_frindo, goal):
                     turn('right', 30, inner_frindo)
                     go_forward(20, inner_frindo)
             recon_area(15, 15, inner_frindo)
+        if inner_frindo.getFlag()[goal] == 1:
+            break
 
 
 def recon_area(turns, deg, inner_frindo):
