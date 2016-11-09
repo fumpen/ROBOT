@@ -255,12 +255,22 @@ def recon_area(turns, deg, inner_frindo, goal_nr):
 
 def start_observations(turns, deg, inner_frindo):
     print '### start_observation ###'
+    landmark1_counter = 0
     inner_frindo.reset_landmarks()
     ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
     	                          0.0, world, WIN_RF1, WIN_World)
+    if ret_dict['obs_obj'][3] == 0:
+        landmark1_counter += 1
+
     inner_frindo.update_from_update_particle(ret_dict)
+    
     for x in range(0, turns):
-        turn('right', deg, inner_frindo)
+        ret_dict = turn('right', deg, inner_frindo)
+        if ret_dict['obs_obj'][3] == 0:
+            landmark1_counter += 1
+        if landmark1_counter > 1:
+            break
+            
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print '### move_logic ### current goal: ' + str(goal)
