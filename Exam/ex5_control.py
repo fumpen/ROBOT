@@ -60,6 +60,8 @@ class FrindosInnerWorld:
         print '###################update_current_goal  with: ' + str(goal)
         if self.current_goal == goal:
             self.current_goal += 1
+        elif self.current_goal == (goal - 1):
+            pass
         else:
             self.current_goal = 0
         print 'update_current_goal after update: ' + str(self.current_goal)
