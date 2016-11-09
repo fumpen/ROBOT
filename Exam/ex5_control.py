@@ -134,9 +134,11 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    print 'go_forward length: ' + str(length)
-    dist_driven = m.lige_gear_sensor(frindo, length)
-    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, length,
+    new_l = np.divide(length, 2)
+    print 'go_forward length post div2: ' + str(new_l)
+
+    dist_driven = m.lige_gear_sensor(frindo, new_l)
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, new_l,
                                   0.0, world, WIN_RF1, WIN_World)
     inner_frindo.update_from_update_particle(ret_dict)
     sleep(0.2)
