@@ -199,36 +199,27 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
         turn(dest['dir'], dest['deg'], inner_frindo)
-        if 0 < (dest['dist'] - 50.0) < 50:
-            print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
-            turn(dest['dir'], dest['deg'], inner_frindo)
-            ret = go_forward(20.0, inner_frindo)
-        elif 50 <= (dest['dist'] - 50.0):
+        if 50 <= (dest['dist'] - 50.0):
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
             turn(dest['dir'], dest['deg'], inner_frindo)
             ret = go_forward((dest['dist'] - 50.0), inner_frindo)
         else:
-            print "KAMIKAZE!!"
-            turn(rl_wuuut(dest['dir']), abs(180.0 - dest['deg']), inner_frindo)
-            go_forward(20.0, inner_frindo)
+            print "IN GOGOGO AND THINK IM CLOSE?"
+            recon_area(25, 10, inner_frindo, goal)
             break
-        # print 'go_go_go goal: ' + str(goal)
-        # print 'ret (go_go_go if-statement):' + str(ret)
-        # print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
 
-        if ret != 20.0:
+        if ret != (dest['dist'] - 50.0):
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
             if right or forward:
                 print 'collision detect'
                 if right:
-                    while forward or right:
-                        turn('left', 10, inner_frindo)
+                    while forward or left:
+                        turn('left', 20, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
-
-                    #while right:
-                    go_forward(40, inner_frindo)
-                    #right, left, forward = s.determine_way_around(frindo)
+                    while right:
+                        go_forward(20, inner_frindo)
+                        right, left, forward = s.determine_way_around(frindo)
                     turn('right', 30, inner_frindo)
                     go_forward(40, inner_frindo)
                 else:
@@ -238,11 +229,11 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
                 print 'collision detect'
                 if forward:
                     while forward or left:
-                        turn('right', 10, inner_frindo)
+                        turn('right', 20, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
-                    # while right:
-                    #     go_forward(20, inner_frindo)
-                    #     right, left, forward = s.determine_way_around(frindo)
+                    while left:
+                        go_forward(20, inner_frindo)
+                        right, left, forward = s.determine_way_around(frindo)
                     turn('left', 30, inner_frindo)
                     go_forward(40, inner_frindo)
                 else:
