@@ -17,7 +17,7 @@ cv2.moveWindow(WIN_RF1, 50, 50)
 
 WIN_World = "World view"
 cv2.namedWindow(WIN_World)
-cv2.moveWindow(WIN_World, 500, 150)
+cv2.moveWindow(WIN_World, 700, 50)
 
 LANDMARK = {0: 0,
             1: 0,
@@ -209,13 +209,13 @@ def go_go_go(frindo, inner_frindo, goal):
                         right, left, forward = s.determine_way_around(frindo)
 
                     #while right:
-                    go_forward(20, inner_frindo)
+                    go_forward(40, inner_frindo)
                     right, left, forward = s.determine_way_around(frindo)
                     turn('right', 20, inner_frindo)
-                    go_forward(20, inner_frindo)
+                    go_forward(40, inner_frindo)
                 else:
                     turn('left', 30, inner_frindo)
-                    go_forward(20, inner_frindo)
+                    go_forward(40, inner_frindo)
             elif left:
                 print 'collision detect'
                 if forward:
@@ -226,10 +226,10 @@ def go_go_go(frindo, inner_frindo, goal):
                     #     go_forward(20, inner_frindo)
                     #     right, left, forward = s.determine_way_around(frindo)
                     turn('left', 20, inner_frindo)
-                    go_forward(20, inner_frindo)
+                    go_forward(40, inner_frindo)
                 else:
                     turn('right', 30, inner_frindo)
-                    go_forward(20, inner_frindo)
+                    go_forward(40, inner_frindo)
             recon_area(15, 15)
 
 
