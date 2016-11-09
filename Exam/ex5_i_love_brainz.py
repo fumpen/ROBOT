@@ -186,8 +186,8 @@ def where_to_go(pose, goal):
     print 'estimated course: dist= ' + str(length) + ', dir= ' + turn_dir,  \
           'turn degree=' + str(turn_deg)
     return {'dist' : length,
-            'turn_dir' : turn_dir,
-            'turn_degree' : turn_deg}
+            'dir' : turn_dir,
+            'deg' : turn_deg}
 #[length, turn_dir, turn_deg]
 
 

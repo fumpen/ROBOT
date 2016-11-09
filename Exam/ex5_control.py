@@ -145,11 +145,10 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    new_l = np.divide(length, 2)
-    print 'go_forward length post div2: ' + str(new_l)
+    print 'go_forward length: ' + str(length)
 
-    dist_driven = m.lige_gear_sensor(frindo, new_l)
-    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, new_l,
+    dist_driven = m.lige_gear_sensor(frindo, length)
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, length,
                                   0.0, world, WIN_RF1, WIN_World)
     inner_frindo.update_from_update_particle(ret_dict)
     sleep(0.2)
@@ -160,9 +159,9 @@ def find_landmark(inner_frindo, goal_number):
     """attempt to find a given landmark"""
     dest = p.where_to_go(inner_frindo.getEstCoordinates(),
                          inner_frindo.getLCoordinates()[goal_number])
-    ret = turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
+    ret = turn(dest['dir'], dest['deg'], inner_frindo)
     degrees_moved = 0.0
-    move_pr_turn = 25.0
+    move_pr_turn = 15.0
     goal = False
     while degrees_moved <= 360:
         degrees_moved += move_pr_turn+10
@@ -195,7 +194,7 @@ def go_go_go(frindo, inner_frindo, goal):
         # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
-        turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
+        turn(dest['dir'], dest['deg'], inner_frindo)
         if 0 < (dest['dist'] - 50.0):
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
             turn(dest['dir'], dest['deg'], inner_frindo)
