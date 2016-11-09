@@ -238,7 +238,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
                 else:
                     turn('right', 30, inner_frindo)
                     go_forward(20, inner_frindo)
-            recon_area(15, 15, inner_frindo, goal)
+            recon_area(15, 35, inner_frindo, goal)
         if inner_frindo.getFlag()[goal] == 1:
             break
 
