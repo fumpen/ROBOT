@@ -47,7 +47,6 @@ def particle_landmark_vector_v2(mark, point):
 # Computes distance between landmark and a point
 def dist_between_points(mark, point):
     vector = particle_landmark_vector_v2(mark, point)
-    print 'DIST_VECTOR_MEASURE: ' + str(np.linalg.norm(vector))
     return np.linalg.norm(vector)
 
 def direction(angle):
