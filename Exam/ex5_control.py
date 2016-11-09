@@ -67,7 +67,7 @@ class FrindosInnerWorld:
             self.l_flag[key] = 1
 
     def updateCurrentGoal(self, goal):
-        print '###################update_current_goal  with: ' + str(goal)
+        print '###################update_current_goal with: ' + str(goal)
         if self.current_goal == goal:
             self.current_goal += 1
         elif self.current_goal == (goal - 1):
@@ -256,6 +256,10 @@ def recon_area(turns, deg, inner_frindo):
         if inner_frindo.getFlag()[inner_frindo.getCurrentGoal()] == 1:
             break
 
+def start_observations(turns, deg, inner_frindo):
+    inner_frindo.reset_landmarks()
+    for x in range(0, turns):
+        turn('right', deg, inner_frindo)
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print 'current goal: ' + str(goal)
@@ -285,9 +289,10 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
 inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
-turn_deg = 15
+turn_deg = 25
 make_observation(inner_frindo)
-recon_area(turn_times, turn_deg, inner_frindo)
+start_observations(turn_times, turn_deg, inner_frindo)
+#recon_area(turn_times, turn_deg, inner_frindo)
 while current_goal < 4:
     print 'current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, current_goal)
