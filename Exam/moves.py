@@ -126,9 +126,12 @@ def lige_gear(frindo, dist):
 def lige_gear_sensor(frindo, dist):
     print 'Lige_gear_distance: ' + str(dist)
     g, d = choose_gear(dist)
+    print 'g (init):' + str(g)
     x = 1
     ts = dt.now()
+    print 'ts (init): ' + str(ts)
     while x < g:
+        print 'x (first while loop): ' + str(x)
         y = GEAR[x]
         frindo.go_diff(y[0], y[1], 1, 1)
         x += 1
@@ -144,6 +147,7 @@ def lige_gear_sensor(frindo, dist):
         y = 0
         time_left = abs(np.divide(
             np.divide((dist - d), GEAR_SPEED[g]), THETA_TIME))
+        print 'time_left: ' + str(time_left)
         while y < time_left:
             if not s.allSensor_gear(frindo, g):
                 break
@@ -155,11 +159,13 @@ def lige_gear_sensor(frindo, dist):
         else:
             print 'after reaching gear'
             tf = dt.now()
+            print 'tf first else: ' + str(tf)
             return dist_at_time(x, (tf - ts).total_seconds())
     else:
         print 'while gearing up'
         force_break(frindo, x)
         tf = dt.now()
+	print 'tf andet else: ' + str(tf)
         return dist_at_time(x, (tf - ts).total_seconds())
 
 
