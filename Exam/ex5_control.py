@@ -138,7 +138,7 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    new_l = np.divide(length, 3)
+    new_l = np.divide(length, 2)
     print 'go_forward length post div2: ' + str(new_l)
 
     dist_driven = m.lige_gear_sensor(frindo, new_l)
@@ -197,7 +197,7 @@ def go_go_go(frindo, inner_frindo, goal):
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
 
-        if ret != (dest['dist'] - 50.0):
+        if ret != 20.0:
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
             if right or forward:
@@ -246,6 +246,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     if ret_obj['goal']:
         turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
         if 0 < (ret_obj['dist'] - 50.0):
+            print "GOING FORWARD KNOWING WHERE THE BOX IS"
             go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
