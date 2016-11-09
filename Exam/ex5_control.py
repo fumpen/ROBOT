@@ -58,12 +58,10 @@ class FrindosInnerWorld:
 
     def updateCurrentGoal(self, goal):
         print '###################update_current_goal  with: ' + str(goal)
-        new_goal = self.current_goal
-        if new_goal + 1 == goal:
-            new_goal = goal
+        if self.current_goal == goal:
+            self.current_goal += 1
         else:
-            new_goal = 0
-        self.current_goal = new_goal
+            self.current_goal = 0
         print 'update_current_goal after update: ' + str(self.current_goal)
 
     def update_l_coordinates(self, coordinates):
