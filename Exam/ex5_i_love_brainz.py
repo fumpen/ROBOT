@@ -158,20 +158,24 @@ def where_to_go(pose, goal):
     returns a list of the length the robot needs to drive, the degrees it
     needs to turn and the direction it needs to turn"""
 
-    ang = vector_angle(particle_landmark_vector_v2(goal, [pose[0],pose[1]]),
-                       direction(pose[2]))
+    ang = vector_angle(direction(pose[2]), particle_landmark_vector_v2(goal, [pose[0],pose[1]]))
 
     if math.isnan(ang):
         print "pose information :", pose
         print "goal information :", goal
 
-    if ang <= 0 and ang > -180:
-        turn_dir = 'right'
+    if ang < 0:
+        if ang < -180:
+	   turn_dir = 'left'
+	   ang += 360
+	else:
+	   turn_dir = 'right'
     else:
-        turn_dir = 'left'
-
-        if ang < 0:
-            ang += 360
+	if ang > 180:
+	   turn_dir = 'right'
+	   ang -= 360
+	else:
+	   turn_dir = 'left'
 
     turn_deg = ang
     length = np.linalg.norm([pose[0]-goal[0], pose[1]-goal[1]])

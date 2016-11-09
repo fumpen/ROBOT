@@ -192,7 +192,7 @@ def go_go_go(frindo, inner_frindo, goal):
         # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
-        turn(dest['dir'], abs(dest['deg']), inner_frindo)
+        turn(dest['dir'], dest['deg'], inner_frindo)
         if 0 < (dest['dist'] - 50.0) < 50:
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
             turn(dest['dir'], dest['deg'], inner_frindo)
@@ -291,22 +291,20 @@ inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
 turn_times = 15
 turn_deg = 25
-dest = p.where_to_go((100, 100, np.radians(0)), [0,0])
-turn(dest['dir'], abs(dest['deg']), inner_frindo)
-#start_observations(turn_times, turn_deg, inner_frindo)
-#while current_goal[0] != 1:
-#    print 'current_goal: ' + str(current_goal)
-#    move_logic(turn_times, turn_deg, inner_frindo, 0)
-#    current_goal = inner_frindo.getCurrentGoal()
-#while current_goal[1] != 1:
-#    print 'current_goal: ' + str(current_goal)
-#    move_logic(turn_times, turn_deg, inner_frindo, 1)
-#    current_goal = inner_frindo.getCurrentGoal()
-#while current_goal[2] != 1:
-#    print 'current_goal: ' + str(current_goal)
-#    move_logic(turn_times, turn_deg, inner_frindo, 2)
-#    current_goal = inner_frindo.getCurrentGoal()
-#while current_goal[3] != 1:
-#    print 'current_goal: ' + str(current_goal)
-#    move_logic(turn_times, turn_deg, inner_frindo, 3)
-#    current_goal = inner_frindo.getCurrentGoal()
+start_observations(turn_times, turn_deg, inner_frindo)
+while current_goal[0] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 0)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[1] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 1)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[2] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 2)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[3] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 3)
+    current_goal = inner_frindo.getCurrentGoal()
