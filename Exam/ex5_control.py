@@ -129,7 +129,7 @@ class FrindosInnerWorld:
 #    inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
-    print '¤¤¤ turn ¤¤¤'
+    print '### turn ###'
     print 'turn.deg: ' + str(deg)
     print 'turn.dir: ' + str(dir)
     m.turn_baby_turn(abs(np.divide(deg,2)), dir, frindo)
@@ -146,7 +146,7 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    print '¤¤¤ go_forward ¤¤¤'
+    print '### go_forward ###'
     print 'go_forward length: ' + str(length)
 
     dist_driven = m.lige_gear_sensor(frindo, length)
@@ -158,7 +158,7 @@ def go_forward(length, inner_frindo):
 
 
 def find_landmark(inner_frindo, goal_number):
-    print '¤¤¤ find_landmark ¤¤¤'
+    print '### find_landmark ###'
     """attempt to find a given landmark"""
     dest = p.where_to_go(inner_frindo.getEstCoordinates(),
                          inner_frindo.getLCoordinates()[goal_number])
@@ -191,7 +191,7 @@ def find_landmark(inner_frindo, goal_number):
 
 
 def go_go_go(frindo, inner_frindo, goal):
-    print '¤¤¤ go_go_go ¤¤¤'
+    print '### go_go_go ###'
     """ go to a specific point (probably a landmark) """
     """ Runs until robot thinks we're safely within range """
     while p.dist_between_points(goal, inner_frindo.getEstCoordinates()) > 50:
@@ -254,17 +254,18 @@ def go_go_go(frindo, inner_frindo, goal):
 
 
 def recon_area(turns, deg, inner_frindo, goal):
-    print '¤¤¤ recon_area ¤¤¤'
+    print '### recon_area ###'
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
         in_fdo_dict = inner_frindo.getFlag()
         print 'RECON AREA: ' + str(in_fdo_dict)
+        print 'RECON AREA - GOAL: ' + str(goal)
         if in_fdo_dict[goal] == 1:
             break
 
 def start_observations(turns, deg, inner_frindo):
-    print '¤¤¤ start_observation ¤¤¤'
+    print '### start_observation ###'
     inner_frindo.reset_landmarks()
     ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
     	                          0.0, world, WIN_RF1, WIN_World)
@@ -273,7 +274,7 @@ def start_observations(turns, deg, inner_frindo):
         turn('right', deg, inner_frindo)
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
-    print '¤¤¤ move_logic ¤¤¤ current goal: ' + str(goal)
+    print '### move_logic ### current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
         if 50 <= (ret_obj['dist'] - 50.0):
@@ -304,18 +305,18 @@ turn_times = 15
 turn_deg = 35
 start_observations(turn_times, turn_deg, inner_frindo)
 while current_goal[0] != 1:
-    print '¤¤¤while loop 0¤¤¤ current_goal: ' + str(current_goal)
+    print '### while loop 0 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 0)
     current_goal = inner_frindo.getCurrentGoal()
 while current_goal[1] != 1:
-    print '¤¤¤while loop 1¤¤¤ current_goal: ' + str(current_goal)
+    print '### while loop 1 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 1)
     current_goal = inner_frindo.getCurrentGoal()
 while current_goal[2] != 1:
-    print '¤¤¤while loop 2¤¤¤ current_goal: ' + str(current_goal)
+    print '### while loop 2 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 2)
     current_goal = inner_frindo.getCurrentGoal()
 while current_goal[3] != 1:
-    print '¤¤¤while loop 3¤¤¤ current_goal: ' + str(current_goal)
+    print '### while loop 3 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 3)
     current_goal = inner_frindo.getCurrentGoal()
