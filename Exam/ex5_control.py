@@ -105,6 +105,7 @@ class FrindosInnerWorld:
         while x < 4:
             self.l_flag[x] = 0
             x += 1
+
     def sum_of_observed_landmarks(self):
         x = 0
         for key, val in self.l_flag.iteritems():
@@ -204,9 +205,9 @@ def go_go_go(frindo, inner_frindo, goal):
             turn(rl_wuuut(dest['dir']), abs(180.0 - dest['deg']), inner_frindo)
             go_forward(20.0, inner_frindo)
             break
-        print 'go_go_go goal: ' + str(goal)
-        print 'ret (go_go_go if-statement):' + str(ret)
-        print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
+        # print 'go_go_go goal: ' + str(goal)
+        # print 'ret (go_go_go if-statement):' + str(ret)
+        # print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
 
         if ret != 20.0:
             right, left, forward = s.determine_way_around(frindo)
@@ -249,6 +250,8 @@ def recon_area(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
+        if inner_frindo.getFlag(inner_frindo.current_goal()) == 1:
+            break
 
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
@@ -277,7 +280,7 @@ current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
-#recon_area(turn_times, turn_deg, inner_frindo)
+recon_area(turn_times, turn_deg, inner_frindo)
 while current_goal < 4:
     print 'current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, current_goal)
