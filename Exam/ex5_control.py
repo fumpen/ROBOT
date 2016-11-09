@@ -57,7 +57,7 @@ class FrindosInnerWorld:
             self.l_flag[key] = 1
 
     def updateCurrentGoal(self, goal):
-        print 'update_current_goal  with: ' + str(goal)
+        print '###################update_current_goal  with: ' + str(goal)
         new_goal = self.current_goal
         if new_goal + 1 == goal:
             new_goal = goal
@@ -104,6 +104,7 @@ class FrindosInnerWorld:
     def update_from_update_particle(self, dicte):
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
+        print "Print obs_obj[3]: "  + str(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
             print "control.update_from_update_particle.obs_obj[1]: " + str(dicte['obs_obj'][1]) + 'landmark: ' + str(dicte['obs_obj'][3])
             if dicte['obs_obj'][1] < 75:
@@ -225,19 +226,18 @@ def recon_area(turns, deg):
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print 'current goal: ' + str(goal)
-    recon_area(turn_times, turn_deg)
-    if inner_frindo.getFlag()[goal] == 1:
-        ret_obj = find_landmark(inner_frindo, goal)
-        if ret_obj['goal']:
-            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-            if 0 < (ret_obj['dist'] - 50.0):
-                go_forward(ret_obj['dist'] - 50.0, inner_frindo)
-    elif inner_frindo.sum_of_observed_landmarks() < 2:
+    ret_obj = find_landmark(inner_frindo, goal)
+    if ret_obj['goal']:
+        turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
+        if 0 < (ret_obj['dist'] - 50.0):
+            go_forward(ret_obj['dist'] - 50.0, inner_frindo)
+    elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
         recon_area(turn_times, turn_deg)
     else:
         print 'FUCK'
         go_forward(30, inner_frindo)
+        recon_area(turn_times, turn_deg)
     print 'getFlag: ' + str(inner_frindo.getFlag())
     inner_frindo.reset_landmarks()
 
@@ -247,6 +247,7 @@ current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
+recon_area(turn_times, turn_deg)
 while current_goal < 4:
     #print 'current_goal: ' + str(current_goal)
     #move_logic(turn_times, turn_deg, inner_frindo, current_goal)
