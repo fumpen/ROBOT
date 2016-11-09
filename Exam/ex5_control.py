@@ -125,10 +125,10 @@ class FrindosInnerWorld:
                                     dicte['est_pos'].getTheta()))
 
 
-def make_observation(inner_frindo):
-    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                              0.0, world, WIN_RF1, WIN_World)
-    inner_frindo.update_from_update_particle(ret_dict)
+#def make_observation(inner_frindo):
+#    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+#                              0.0, world, WIN_RF1, WIN_World)
+#    inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
     m.turn_baby_turn(np.divide(abs(deg), 2), dir, frindo)
@@ -258,6 +258,9 @@ def recon_area(turns, deg, inner_frindo):
 
 def start_observations(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+    	                          0.0, world, WIN_RF1, WIN_World)
+    inner_frindo.update_from_update_particle(ret_dict)
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
 
@@ -290,7 +293,7 @@ inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
 turn_deg = 25
-make_observation(inner_frindo)
+#make_observation(inner_frindo)
 start_observations(turn_times, turn_deg, inner_frindo)
 #recon_area(turn_times, turn_deg, inner_frindo)
 while current_goal < 4:
