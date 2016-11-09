@@ -248,6 +248,13 @@ turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
 while current_goal < 4:
-    print 'current_goal: ' + str(current_goal)
-    move_logic(turn_times, turn_deg, inner_frindo, current_goal)
-    current_goal = inner_frindo.getCurrentGoal()
+    #print 'current_goal: ' + str(current_goal)
+    #move_logic(turn_times, turn_deg, inner_frindo, current_goal)
+    #current_goal = inner_frindo.getCurrentGoal()
+    go_forward(50, inner_frindo)
+    raw_input()
+    go_forward(50, inner_frindo)
+    raw_input()
+    go_forward(50, inner_frindo)
+    raw_input()
+    go_forward(50, inner_frindo)
