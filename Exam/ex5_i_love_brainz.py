@@ -305,7 +305,7 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
         particle.add_uncertainty(particles, 15, 5)
 
-        cam.draw_object(colour)
+        #cam.draw_object(colour)
     else:
         observed_obj = [None, None, None, None]
         for p in particles:
@@ -315,11 +315,11 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
 
     est_pose = particle.estimate_pose(particles)
 
-    draw_world(est_pose, particles, world)
+    #draw_world(est_pose, particles, world)
     # Show frame
-    cv2.imshow(WIN_RF1, colour)
+    #cv2.imshow(WIN_RF1, colour)
     # Show world
-    cv2.imshow(WIN_World, world)
+    #cv2.imshow(WIN_World, world)
 
     return {'est_pos': est_pose,
             'obs_obj': observed_obj,
