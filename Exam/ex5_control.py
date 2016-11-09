@@ -101,7 +101,7 @@ class FrindosInnerWorld:
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
-            print "control.update_from_update_particle.obs_obj[1]: " + str(dicte['obs_obj'][1])
+            print "control.update_from_update_particle.obs_obj[1]: " + str(dicte['obs_obj'][1]) + 'landmark: ' + str(dicte['obs_obj'][3])
             if dicte['obs_obj'][1] < 75:
                 self.updateCurrentGoal(dicte['obs_obj'][3])
         self.update_est_coordinate((dicte['est_pos'].getX(),
@@ -115,7 +115,6 @@ def make_observation(inner_frindo):
     inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
-    print 'turn_deg (control.py turn(): ' + str(deg)
     m.turn_baby_turn(abs(deg), dir, frindo)
     if dir == 'left':
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
