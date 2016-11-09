@@ -190,14 +190,14 @@ def find_landmark(inner_frindo, goal_number):
     return {'dist': dist, 'dir': dir, 'deg': deg, 'goal': goal}
 
 
-def go_go_go(frindo, inner_frindo, goal):
+def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     print '### go_go_go ###'
     """ go to a specific point (probably a landmark) """
     """ Runs until robot thinks we're safely within range """
-    while p.dist_between_points(goal, inner_frindo.getEstCoordinates()) > 50:
+    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 50:
         # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
-        dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
+        dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
         turn(dest['dir'], dest['deg'], inner_frindo)
         if 0 < (dest['dist'] - 50.0) < 50:
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
@@ -292,7 +292,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
             # go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         print 'ELIF GOAL: ' + str(goal)
-        go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
+        go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal], goal)
     else:
         print 'FUCK'
         print 'ELSE(fuck) GOAL: ' + str(goal)
