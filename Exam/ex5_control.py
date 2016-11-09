@@ -138,7 +138,7 @@ def turn(dir, deg, inner_frindo):
     return ret_dict
 
 def go_forward(length, inner_frindo):
-    new_l = np.divide(length, 3)
+    new_l = np.divide(length, 2)
     print 'go_forward length post div2: ' + str(new_l)
 
     dist_driven = m.lige_gear_sensor(frindo, new_l)
@@ -190,15 +190,14 @@ def go_go_go(frindo, inner_frindo, goal):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
         if 0.0 < (dest['dist'] - 50.0):
-            ret = go_forward(dest['dist'] - 50.0, inner_frindo)
+            ret = go_forward(20.0, inner_frindo)
         else:
             break
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
-        # WHAT THE FUCK DOES THIS IF DO?!
-        # Why do we want it to be exactly 50 cm from ?
-        if ret != (dest['dist'] - 50.0):
+
+        if ret != 20.0:
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
             if right or forward:
@@ -235,7 +234,7 @@ def go_go_go(frindo, inner_frindo, goal):
             break
 
 
-def recon_area(turns, deg,inner_frindo):
+def recon_area(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
