@@ -33,6 +33,12 @@ INIT_POS = (0, 0, np.radians(0))
 
 INIT_goal = 0
 
+def rl_wuuut(dir):
+    if dir == 'right':
+        return 'left'
+    else:
+        return 'right'
+
 class FrindosInnerWorld:
     """This class keeps track of where the frindo thinks it is"""
     l_flag = dict
@@ -189,9 +195,14 @@ def go_go_go(frindo, inner_frindo, goal):
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
-        if 0.0 < (dest['dist'] - 50.0):
+        if 0 < (dest['dist'] - 50.0):
+            print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
+            turn(dest['dir'], dest['deg'], inner_frindo)
             ret = go_forward(20.0, inner_frindo)
         else:
+            print "KAMIKAZE!!"
+            turn(rl_wuuut(dest['dir']), abs(180.0 - dest['deg']), inner_frindo)
+            go_forward(20.0, inner_frindo)
             break
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
@@ -244,9 +255,13 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print 'current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
-        turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
         if 0 < (ret_obj['dist'] - 50.0):
             print "GOING FORWARD KNOWING WHERE THE BOX IS"
+            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
+            go_forward(20, inner_frindo)
+        else:
+            print "IM TOO CLOSE TO THE DANM BOX"
+            turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
             go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
