@@ -249,13 +249,12 @@ def go_go_go(frindo, inner_frindo, goal):
             break
 
 
-def recon_area(turns, deg, inner_frindo, goal):
+def recon_area(turns, deg, inner_frindo, goal_nr):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
-        in_fdo_dict = inner_frindo.getFlag()
-        print 'RECON AREA: ' + str(in_fdo_dict)
-        if in_fdo_dict[goal] == 1:
+        print 'RECON AREA: ' + str(goal_nr)
+        if inner_frindo.getFlag()[goal_nr] == 1:
             break
 
 def start_observations(turns, deg, inner_frindo):
