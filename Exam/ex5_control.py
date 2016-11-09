@@ -125,6 +125,8 @@ def turn(dir, deg, inner_frindo):
     else:
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                     ((-1.0) * (deg+10)), world, WIN_RF1, WIN_World)
+    if ret_dict['obs_obj'][1]:
+        print 'observed landmark nr: ' + str(ret_dict['obs_obj'][3])
     inner_frindo.update_from_update_particle(ret_dict)
     sleep(0.2)
     return ret_dict
