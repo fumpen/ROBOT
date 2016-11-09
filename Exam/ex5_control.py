@@ -277,9 +277,11 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     if ret_obj['goal']:
         if 50 <= (ret_obj['dist'] - 50.0):
             print "GOING FORWARD(long) KNOWING WHERE THE BOX IS"
+            print 'IF GOAL: ' + str(goal)
             turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
             go_forward((ret_obj['dist'] - 50.0), inner_frindo)
         else:
+            print 'ELSE GOAL: ' + str(goal)
             current_goal = inner_frindo.getCurrentGoal()
             if current_goal[goal] == 1:
                 pass
@@ -289,9 +291,11 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
             # turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
             # go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
+        print 'ELIF GOAL: ' + str(goal)
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
     else:
         print 'FUCK'
+        print 'ELSE(fuck) GOAL: ' + str(goal)
         go_forward(30, inner_frindo)
         recon_area(turn_times, turn_deg, inner_frindo, goal)
     print 'getFlag: ' + str(inner_frindo.getFlag())
