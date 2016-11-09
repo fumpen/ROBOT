@@ -31,7 +31,7 @@ LANDMARK_COORDINATES = {0: [0, 0],
 
 INIT_POS = (0, 0, np.radians(0))
 
-INIT_goal = 0
+INIT_goal = [0, 0, 0, 0]
 
 def rl_wuuut(dir):
     if dir == 'right':
@@ -45,7 +45,7 @@ class FrindosInnerWorld:
     l_coordinates = dict
     est_coordinate = tuple
     particles = list
-    current_goal = int
+    current_goal = list
 
     def __init__(self,
                  l_flag = LANDMARK,
@@ -68,12 +68,10 @@ class FrindosInnerWorld:
 
     def updateCurrentGoal(self, goal):
         print '###################update_current_goal  with: ' + str(goal)
-        if self.current_goal == goal:
-            self.current_goal += 1
-        elif self.current_goal == (goal - 1):
-            pass
+        if 0 <= goal <= 3:
+            self.current_goal[goal] = 1
         else:
-            self.current_goal = 0
+            raise
         print 'update_current_goal after update: ' + str(self.current_goal)
 
     def update_l_coordinates(self, coordinates):
@@ -288,7 +286,19 @@ turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
 recon_area(turn_times, turn_deg, inner_frindo)
-while current_goal < 4:
+while current_goal[0] != 1:
     print 'current_goal: ' + str(current_goal)
-    move_logic(turn_times, turn_deg, inner_frindo, current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 0)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[1] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 1)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[2] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 2)
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[3] != 1:
+    print 'current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 3)
     current_goal = inner_frindo.getCurrentGoal()
