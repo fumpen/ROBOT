@@ -194,14 +194,19 @@ def go_go_go (frindo, inner_state, goal):
                     go_forward(20, inner_state)
 
 n_l_mark = inner_frindo.getNextLandmark()
+
+# Dummy test for actually going to landmarks
 while n_l_mark < 4:
     if n_l_mark == 0:
         print 'Am in n_l_mark 0'
+        # Establish position estimate, hoping to see more than one landmark
         for x in range(0, 12):
             print 'x_streame: ' + str(x)
             turn('right', 25, inner_frindo)
+        # if landmark 1 was seen, go to it.
         if inner_frindo.getFlag()[0] == 1:
             go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[0])
+            # re-establish position
             for x in range(0, 12):
                 print 'x_streame: ' + str(x)
                 turn('right', 25, inner_frindo)
