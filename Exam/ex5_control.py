@@ -242,16 +242,16 @@ def go_go_go(frindo, inner_frindo, goal):
                 else:
                     turn('right', 30, inner_frindo)
                     go_forward(20, inner_frindo)
-            recon_area(15, 15, inner_frindo)
+            recon_area(15, 15, inner_frindo, goal)
         if inner_frindo.getFlag()[goal] == 1:
             break
 
 
-def recon_area(turns, deg, inner_frindo):
+def recon_area(turns, deg, inner_frindo, goal):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
-        if inner_frindo.getFlag()[inner_frindo.getCurrentGoal()] == 1:
+        if inner_frindo.getFlag()[goal] == 1:
             break
 
 def start_observations(turns, deg, inner_frindo):
@@ -283,14 +283,14 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     else:
         print 'FUCK'
         go_forward(30, inner_frindo)
-        recon_area(turn_times, turn_deg, inner_frindo)
+        recon_area(turn_times, turn_deg, inner_frindo, goal)
     print 'getFlag: ' + str(inner_frindo.getFlag())
 
 
 inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
-turn_times = 10
-turn_deg = 35
+turn_times = 15
+turn_deg = 25
 start_observations(turn_times, turn_deg, inner_frindo)
 while current_goal[0] != 1:
     print 'current_goal: ' + str(current_goal)
