@@ -190,14 +190,13 @@ def go_go_go(frindo, inner_frindo, goal):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
         if 0.0 < (dest['dist'] - 50.0):
-            ret = go_forward(dest['dist'] - 50.0, inner_frindo)
+            ret = go_forward(20.0, inner_frindo)
         else:
             break
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
-        # WHAT THE FUCK DOES THIS IF DO?!
-        # Why do we want it to be exactly 50 cm from ?
+
         if ret != (dest['dist'] - 50.0):
             right, left, forward = s.determine_way_around(frindo)
             print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
@@ -235,7 +234,7 @@ def go_go_go(frindo, inner_frindo, goal):
             break
 
 
-def recon_area(turns, deg):
+def recon_area(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
@@ -247,7 +246,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     if ret_obj['goal']:
         turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
         if 0 < (ret_obj['dist'] - 50.0):
-            go_forward(ret_obj['dist'] - 50.0, inner_frindo)
+            go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
     else:
