@@ -225,7 +225,6 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
         obstacle_avoidance(inner_frindo)
         recon_area(10, 35, inner_frindo, goal)
 
-
 def recon_area(turns, deg, inner_frindo, goal_nr):
     print '### recon_area ###'
     inner_frindo.reset_landmarks()
