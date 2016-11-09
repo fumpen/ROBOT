@@ -102,6 +102,7 @@ class FrindosInnerWorld:
     def update_from_update_particle(self, dicte):
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
+        print "Print obs_obj[3]: "  + str(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
             print "control.update_from_update_particle.obs_obj[1]: " + str(dicte['obs_obj'][1]) + 'landmark: ' + str(dicte['obs_obj'][3])
             if dicte['obs_obj'][1] < 75:
@@ -244,7 +245,7 @@ current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
 turn_deg = 15
 make_observation(inner_frindo)
-recon_area(turn_times, turn_deg)
+#recon_area(turn_times, turn_deg)
 while current_goal < 4:
     print 'current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, current_goal)
