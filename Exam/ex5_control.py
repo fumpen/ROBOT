@@ -205,7 +205,7 @@ def go_go_go(frindo, inner_frindo, goal):
                 print 'collision detect'
                 if right:
                     while forward or right:
-                        turn('left', 30, inner_frindo)
+                        turn('left', 10, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
 
                     #while right:
@@ -220,7 +220,7 @@ def go_go_go(frindo, inner_frindo, goal):
                 print 'collision detect'
                 if forward:
                     while forward or left:
-                        turn('right', 20, inner_frindo)
+                        turn('right', 10, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
                     # while right:
                     #     go_forward(20, inner_frindo)
