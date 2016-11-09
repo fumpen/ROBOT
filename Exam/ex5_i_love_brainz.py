@@ -245,7 +245,6 @@ def draw_world(est_pose, particles, world):
 
 
 def innit_particles(num_particles=1000):
-    print 'INIT PARTICLES!!!!!!!!'
     # Initialize particles
     particles = []
     for i in range(num_particles):
@@ -262,8 +261,6 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     #print 'update: ' + str(angular_velocity)
     cv2.waitKey(4)
     num_particles = len(particles)
-    print 'brainz.update_particles.velocity: ' + str(velocity)
-    print 'brainz.update_particles.ang_velocity: ' + str(angular_velocity)
     for p in particles:
         # calculates new orientation
         curr_angle = add_to_angular_v2(np.degrees(p.getTheta()), angular_velocity)
