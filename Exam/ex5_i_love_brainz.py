@@ -38,11 +38,16 @@ def particle_landmark_vector(mark, particle):
     y = -1.0 * (mark_y - particle.getY())
     return [x, y]
 
-def particle_landmark_vector_v2(mark, vector):
+def particle_landmark_vector_v2(mark, point):
     #(mark_x, mark_y) = landmarks[mark]
-    x = mark[0] - vector[0]
-    y = -1.0 * (mark[1] - vector[1])
+    x = mark[0] - point[0]
+    y = -1.0 * (mark[1] - point[1])
     return [x, y]
+
+# Computes distance between landmark and a point
+def dist_between_points(mark, point):
+    vector = particle_landmark_vector_v2(mark, point)
+    return np.linalg.norm(vector)
 
 def direction(angle):
     x = np.cos(angle)
@@ -159,11 +164,12 @@ def where_to_go(pose, goal):
     if math.isnan(ang):
         print "pose information :", pose
         print "goal information :", goal
+
     if ang <= 0 and ang > -180:
         turn_dir = 'right'
     else:
         turn_dir = 'left'
-        
+
         if ang < 0:
             ang += 360
 
@@ -248,8 +254,8 @@ def innit_particles(num_particles=1000):
     # Initialize particles
     particles = []
     for i in range(num_particles):
-        p = particle.Particle(375.0 * np.random.ranf() - 100,
-                              375.0 * np.random.ranf() - 100,
+        p = particle.Particle(500 * np.random.ranf() - 100,
+                              500 * np.random.ranf() - 100,
                               2.0 * np.pi * np.random.ranf() - np.pi,
                               1.0 / num_particles)
         particles.append(p)
@@ -314,4 +320,3 @@ def update_particles(particles, cam, velocity, angular_velocity, world,
     return {'est_pos': est_pose,
             'obs_obj': observed_obj,
             'particles': particles}
-
