@@ -295,7 +295,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
 inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
 turn_times = 15
-turn_deg = 25
+turn_deg = 35
 start_observations(turn_times, turn_deg, inner_frindo)
 while current_goal[0] != 1:
     print 'current_goal: ' + str(current_goal)
