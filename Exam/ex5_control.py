@@ -189,58 +189,42 @@ def find_landmark(inner_frindo, goal_number):
     return {'dist': dist, 'dir': dir, 'deg': deg, 'goal': goal}
 
 
+def obstacle_avoidance(inner_frindo):
+    right, left, forward = s.determine_way_around(frindo)
+    print 'right, left, forward (obstacle_avoidance):', str(right), str(left), str(
+        forward)
+    while right or forward or left:
+        if right and forward:
+            turn('left', 40, inner_frindo)
+        elif left and forward:
+            turn('right', 40, inner_frindo)
+        elif right:
+            turn('left', 40, inner_frindo)
+            go_forward(50, inner_frindo)
+        elif left:
+            turn('right', 40, inner_frindo)
+            go_forward(50, inner_frindo)
+        else:
+            turn('right', 40, inner_frindo)
+        right, left, forward = s.determine_way_around(frindo)
+
+
 def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     print '### go_go_go ###'
-    """ go to a specific point (probably a landmark) """
-    """ Runs until robot thinks we're safely within range """
-    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 65.0:
-        # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
-        #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
-        dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
-        turn(dest['dir'], dest['deg'], inner_frindo)
-        if 65.0 <= (dest['dist'] - 65.0):
-            print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
-            turn(dest['dir'], dest['deg'], inner_frindo)
-            ret = go_forward((dest['dist'] - 65.0), inner_frindo)
-        else:
-            print "IN GOGOGO AND THINK IM CLOSE?"
-            recon_area(25, 10, inner_frindo, goal)
-            break
+    """ go to a specific point (probably a landmark)
+    Runs until robot thinks we're safely within range """
+    dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
+    turn(dest['dir'], dest['deg'], inner_frindo)
+    if 65.0 <= (dest['dist'] - 65.0):
+        print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
+        ret = go_forward((dest['dist'] - 65.0), inner_frindo)
+    else:
+        print "IN GOGOGO AND THINK IM CLOSE?"
+        ret = go_forward(dest['dist'] + 50, inner_frindo)
+    if ret != (dest['dist'] - 65.0):
+        obstacle_avoidance(inner_frindo)
+        recon_area(10, 35, inner_frindo, goal)
 
-        if ret != (dest['dist'] - 50.0):
-            right, left, forward = s.determine_way_around(frindo)
-            print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
-            if right or forward:
-                print 'collision detect'
-                if right:
-                    while forward or left:
-                        turn('left', 20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
-                    while right:
-                        go_forward(20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
-                    turn('right', 30, inner_frindo)
-                    go_forward(40, inner_frindo)
-                else:
-                    turn('left', 30, inner_frindo)
-                    go_forward(40, inner_frindo)
-            elif left:
-                print 'collision detect'
-                if forward:
-                    while forward or left:
-                        turn('right', 20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
-                    while left:
-                        go_forward(20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
-                    turn('left', 30, inner_frindo)
-                    go_forward(40, inner_frindo)
-                else:
-                    turn('right', 30, inner_frindo)
-                    go_forward(20, inner_frindo)
-            recon_area(15, 15, inner_frindo, goal)
-        if inner_frindo.getFlag()[goal] == 1:
-            break
 
 def recon_area(turns, deg, inner_frindo, goal_nr):
     print '### recon_area ###'
@@ -275,11 +259,13 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print '### move_logic ### current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
-        if 65.0 <= (ret_obj['dist'] - 65.0):
-            print "GOING FORWARD(long) KNOWING WHERE THE BOX IS"
+        if 0.0 <= (ret_obj['dist'] - 65.0):
+            print "GOING FOR9WARD(long) KNOWING WHERE THE BOX IS"
             print 'IF GOAL: ' + str(goal)
             turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-            go_forward((ret_obj['dist'] - 65.0), inner_frindo)
+            ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
+            if ret != (ret_obj['dist'] - 65.0):
+                obstacle_avoidance(inner_frindo)
         else:
             print 'ELSE GOAL: ' + str(goal)
             current_goal = inner_frindo.getCurrentGoal()
@@ -295,9 +281,9 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal], goal)
     else:
         print 'FUCK'
-        print 'ELSE(fuck) GOAL: ' + str(goal)
-        go_forward(30, inner_frindo)
-        recon_area(turn_times, turn_deg, inner_frindo, goal)
+        ret = go_forward(50, inner_frindo)
+        if ret != 50:
+            obstacle_avoidance(inner_frindo)
     print 'getFlag: ' + str(inner_frindo.getFlag())
 
 
