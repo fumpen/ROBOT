@@ -164,6 +164,7 @@ def where_to_go(pose, goal):
     if math.isnan(ang):
         print "pose information :", pose
         print "goal information :", goal
+
     if ang <= 0 and ang > -180:
         turn_dir = 'right'
     else:

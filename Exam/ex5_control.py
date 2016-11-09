@@ -41,9 +41,13 @@ class FrindosInnerWorld:
     particles = list
     current_goal = int
 
-    def __init__(self, l_flag = LANDMARK, l_coordinates = LANDMARK_COORDINATES,
-                 est_coordinate= INIT_POS, particles = p.innit_particles(1000),
+    def __init__(self,
+                 l_flag = LANDMARK,
+                 l_coordinates = LANDMARK_COORDINATES,
+                 est_coordinate= INIT_POS,
+                 particles = p.innit_particles(1000),
                  current_goal = INIT_goal):
+
         self.l_flag = l_flag
         self.l_coordinates = l_coordinates
         self.est_coordinate = est_coordinate
@@ -192,18 +196,21 @@ def go_go_go(frindo, inner_frindo, goal):
         print 'go_go_go goal: ' + str(goal)
         print 'ret (go_go_go if-statement):' + str(ret)
         print 'dest[dist] (go_go_go if-statement):' + str(dest['dist'])
+        # WHAT THE FUCK DOES THIS IF DO?!
+        # Why do we want it to be exactly 50 cm from ?
         if ret != (dest['dist'] - 50.0):
             right, left, forward = s.determine_way_around(frindo)
-            print 'right, left, forward (go_go_go):' + str(right) + ', ' + str(left) + ', ' + str(forward)
+            print 'right, left, forward (go_go_go):' , str(right) , str(left) , str(forward)
             if right or forward:
                 print 'collision detect'
-                if left:
-                    while forward or left:
+                if right:
+                    while forward or right:
                         turn('left', 20, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
-                    while right:
-                        go_forward(20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
+
+                    #while right:
+                    go_forward(20, inner_frindo)
+                    right, left, forward = s.determine_way_around(frindo)
                     turn('right', 20, inner_frindo)
                     go_forward(20, inner_frindo)
                 else:
@@ -215,9 +222,9 @@ def go_go_go(frindo, inner_frindo, goal):
                     while forward or left:
                         turn('right', 20, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
-                    while right:
-                        go_forward(20, inner_frindo)
-                        right, left, forward = s.determine_way_around(frindo)
+                    # while right:
+                    #     go_forward(20, inner_frindo)
+                    #     right, left, forward = s.determine_way_around(frindo)
                     turn('left', 20, inner_frindo)
                     go_forward(20, inner_frindo)
                 else:
@@ -247,6 +254,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
         recon_area(turn_times, turn_deg)
     print 'getFlag: ' + str(inner_frindo.getFlag())
     inner_frindo.reset_landmarks()
+
 
 
 inner_frindo = FrindosInnerWorld()

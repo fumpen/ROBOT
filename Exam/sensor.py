@@ -36,6 +36,7 @@ def allSensor_gear(frindo, gear):
     else:
         return False
 
+# Returnere true hvis en sensor er for tæt på en obstacle
 def determine_way_around(frindo):
     right = False
     left = False
