@@ -247,7 +247,8 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     if ret_obj['goal']:
         turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
         if 0 < (ret_obj['dist'] - 50.0):
-            go_forward(ret_obj['dist'] - 50.0, inner_frindo)
+            print "GOING FORWARD KNOWING WHERE THE BOX IS"
+            go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
     else:
