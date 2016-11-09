@@ -205,13 +205,13 @@ def go_go_go(frindo, inner_frindo, goal):
                 print 'collision detect'
                 if right:
                     while forward or right:
-                        turn('left', 20, inner_frindo)
+                        turn('left', 30, inner_frindo)
                         right, left, forward = s.determine_way_around(frindo)
 
                     #while right:
                     go_forward(40, inner_frindo)
-                    right, left, forward = s.determine_way_around(frindo)
-                    turn('right', 20, inner_frindo)
+                    #right, left, forward = s.determine_way_around(frindo)
+                    turn('right', 30, inner_frindo)
                     go_forward(40, inner_frindo)
                 else:
                     turn('left', 30, inner_frindo)
@@ -225,15 +225,17 @@ def go_go_go(frindo, inner_frindo, goal):
                     # while right:
                     #     go_forward(20, inner_frindo)
                     #     right, left, forward = s.determine_way_around(frindo)
-                    turn('left', 20, inner_frindo)
+                    turn('left', 30, inner_frindo)
                     go_forward(40, inner_frindo)
                 else:
                     turn('right', 30, inner_frindo)
                     go_forward(40, inner_frindo)
+
             recon_area(15, 15)
 
 
 def recon_area(turns, deg):
+    inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
 
@@ -253,7 +255,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
         go_forward(30, inner_frindo)
         recon_area(turn_times, turn_deg)
     print 'getFlag: ' + str(inner_frindo.getFlag())
-    inner_frindo.reset_landmarks()
+
 
 
 
