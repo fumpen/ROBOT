@@ -250,7 +250,7 @@ def recon_area(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
-        if inner_frindo.getFlag(inner_frindo.current_goal()) == 1:
+        if inner_frindo.getFlag()[inner_frindo.current_goal()] == 1:
             break
 
 
