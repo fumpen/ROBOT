@@ -159,7 +159,7 @@ def find_landmark(inner_frindo, goal_number):
                          inner_frindo.getLCoordinates()[goal_number])
     ret = turn(dest['dir'], dest['deg'], inner_frindo)
     degrees_moved = 0.0
-    move_pr_turn = 25.0
+    move_pr_turn = 35.0
     goal = False
     while degrees_moved <= 360:
         degrees_moved += move_pr_turn+10
@@ -290,7 +290,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
 inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
 turn_times = 10
-turn_deg = 25
+turn_deg = 35
 start_observations(turn_times, turn_deg, inner_frindo)
 while current_goal[0] != 1:
     print 'current_goal: ' + str(current_goal)
