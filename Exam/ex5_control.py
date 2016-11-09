@@ -193,15 +193,15 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     print '### go_go_go ###'
     """ go to a specific point (probably a landmark) """
     """ Runs until robot thinks we're safely within range """
-    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 50:
+    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 65.0:
         # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
         turn(dest['dir'], dest['deg'], inner_frindo)
-        if 50 <= (dest['dist'] - 50.0):
+        if 65.0 <= (dest['dist'] - 65.0):
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
             turn(dest['dir'], dest['deg'], inner_frindo)
-            ret = go_forward((dest['dist'] - 50.0), inner_frindo)
+            ret = go_forward((dest['dist'] - 65.0), inner_frindo)
         else:
             print "IN GOGOGO AND THINK IM CLOSE?"
             recon_area(25, 10, inner_frindo, goal)
@@ -275,11 +275,11 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print '### move_logic ### current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
-        if 50 <= (ret_obj['dist'] - 50.0):
+        if 65.0 <= (ret_obj['dist'] - 65.0):
             print "GOING FORWARD(long) KNOWING WHERE THE BOX IS"
             print 'IF GOAL: ' + str(goal)
             turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-            go_forward((ret_obj['dist'] - 50.0), inner_frindo)
+            go_forward((ret_obj['dist'] - 65.0), inner_frindo)
         else:
             print 'ELSE GOAL: ' + str(goal)
             current_goal = inner_frindo.getCurrentGoal()
