@@ -193,7 +193,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     print '### go_go_go ###'
     """ go to a specific point (probably a landmark) """
     """ Runs until robot thinks we're safely within range """
-    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 50:
+    while p.dist_between_points(goal_coordinates, inner_frindo.getEstCoordinates()) > 65.0:
         # (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal_coordinates)
