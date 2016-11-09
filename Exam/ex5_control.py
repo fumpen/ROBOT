@@ -129,7 +129,7 @@ class FrindosInnerWorld:
 #    inner_frindo.update_from_update_particle(ret_dict)
 
 def turn(dir, deg, inner_frindo):
-    m.turn_baby_turn(np.divide(abs(deg), 2), dir, frindo)
+    m.turn_baby_turn(deg, dir, frindo)
     if dir == 'left':
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                       deg, world, WIN_RF1, WIN_World)
