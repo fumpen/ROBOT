@@ -231,7 +231,7 @@ def go_go_go(frindo, inner_frindo, goal):
                     turn('right', 30, inner_frindo)
                     go_forward(20, inner_frindo)
             recon_area(15, 15, inner_frindo)
-        if inner_frindo.getFlag()[goal] == 1:
+        if inner_frindo.getFlag()['goal'] == 1:
             break
 
 
