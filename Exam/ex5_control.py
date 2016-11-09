@@ -253,7 +253,9 @@ def recon_area(turns, deg, inner_frindo, goal):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
-        if inner_frindo.getFlag()[goal] == 1:
+        in_fdo_dict = inner_frindo.getFlag()
+        print 'RECON AREA: ' + str(in_fdo_dict)
+        if in_fdo_dict[goal] == 1:
             break
 
 def start_observations(turns, deg, inner_frindo):
@@ -268,18 +270,19 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print 'current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
-        if 0 < (ret_obj['dist'] - 50.0) < 50:
-            print "GOING FORWARD(short) KNOWING WHERE THE BOX IS"
-            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-            go_forward(20, inner_frindo)
-        elif 50 <= (ret_obj['dist'] - 50.0):
+        if 50 <= (ret_obj['dist'] - 50.0):
             print "GOING FORWARD(long) KNOWING WHERE THE BOX IS"
             turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
             go_forward((ret_obj['dist'] - 50.0), inner_frindo)
         else:
-            print "IM TOO CLOSE TO THE DANM BOX"
-            turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
-            go_forward(20, inner_frindo)
+            current_goal = inner_frindo.getCurrentGoal()
+            if current_goal[goal] == 1:
+                pass
+            else:
+                recon_area(turn_times, turn_deg, inner_frindo, goal)
+            # print "IM TOO CLOSE TO THE DANM BOX"
+            # turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
+            # go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal])
     else:
