@@ -134,10 +134,10 @@ def turn(dir, deg, inner_frindo):
     m.turn_baby_turn(np.divide(abs(deg), 2), dir, frindo)
     if dir == 'left':
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                                      deg+10, world, WIN_RF1, WIN_World)
+                                      deg, world, WIN_RF1, WIN_World)
     else:
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                                    ((-1.0) * (deg+10)), world, WIN_RF1, WIN_World)
+                                    ((-1.0) * deg), world, WIN_RF1, WIN_World)
     if ret_dict['obs_obj'][1]:
         print 'observed landmark nr: ' + str(ret_dict['obs_obj'][3])
     inner_frindo.update_from_update_particle(ret_dict)
@@ -161,7 +161,7 @@ def find_landmark(inner_frindo, goal_number):
                          inner_frindo.getLCoordinates()[goal_number])
     ret = turn(dest['dir'], dest['deg'], inner_frindo)
     degrees_moved = 0.0
-    move_pr_turn = 15.0
+    move_pr_turn = 25.0
     goal = False
     while degrees_moved <= 360:
         degrees_moved += move_pr_turn+10
@@ -195,10 +195,14 @@ def go_go_go(frindo, inner_frindo, goal):
         #     and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['dir'], dest['deg'], inner_frindo)
-        if 0 < (dest['dist'] - 50.0):
+        if 0 < (dest['dist'] - 50.0) < 50:
             print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
             turn(dest['dir'], dest['deg'], inner_frindo)
             ret = go_forward(20.0, inner_frindo)
+        elif 50 <= (dest['dist'] - 50.0):
+            print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
+            turn(dest['dir'], dest['deg'], inner_frindo)
+            ret = go_forward((dest['dist'] - 50.0), inner_frindo)
         else:
             print "KAMIKAZE!!"
             turn(rl_wuuut(dest['dir']), abs(180.0 - dest['deg']), inner_frindo)
@@ -257,10 +261,14 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print 'current goal: ' + str(goal)
     ret_obj = find_landmark(inner_frindo, goal)
     if ret_obj['goal']:
-        if 0 < (ret_obj['dist'] - 50.0):
-            print "GOING FORWARD KNOWING WHERE THE BOX IS"
+        if 0 < (ret_obj['dist'] - 50.0) < 50:
+            print "GOING FORWARD(short) KNOWING WHERE THE BOX IS"
             turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
             go_forward(20, inner_frindo)
+        elif 50 <= (ret_obj['dist'] - 50.0):
+            print "GOING FORWARD(long) KNOWING WHERE THE BOX IS"
+            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
+            go_forward((ret_obj['dist'] - 50.0), inner_frindo)
         else:
             print "IM TOO CLOSE TO THE DANM BOX"
             turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
