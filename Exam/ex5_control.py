@@ -242,7 +242,7 @@ def go_go_go(frindo, inner_frindo, goal):
                     turn('right', 30, inner_frindo)
                     go_forward(20, inner_frindo)
             recon_area(15, 15, inner_frindo)
-        if inner_frindo.getFlag()['goal'] == 1:
+        if inner_frindo.getFlag()[goal] == 1:
             break
 
 
@@ -250,7 +250,8 @@ def recon_area(turns, deg, inner_frindo):
     inner_frindo.reset_landmarks()
     for x in range(0, turns):
         turn('right', deg, inner_frindo)
-        if inner_frindo.getFlag()[inner_frindo.current_goal()] == 1:
+        flag_dict = inner_frindo.getFlag()
+        if flag_dict[inner_frindo.current_goal()] == 1:
             break
 
 
