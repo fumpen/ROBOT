@@ -175,8 +175,8 @@ def find_landmark(inner_frindo, goal_number):
 
 def go_go_go(frindo, inner_frindo, goal):
     """go to a specific point (probably a landmark)"""
-    while (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50.0, goal[0]+50.0)) \
-        and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50.0, goal[1]+50.0)):
+    while (inner_frindo.getEstCoordinates()[0] not in range(goal[0]-50, goal[0]+50)) \
+        and (inner_frindo.getEstCoordinates()[1] not in range(goal[1]-50, goal[1]+50)):
         dest = p.where_to_go(inner_frindo.getEstCoordinates(), goal)
         turn(dest['turn_dir'], dest['turn_degree'], inner_frindo)
         if 0 < (dest['dist'] - 50.0):
