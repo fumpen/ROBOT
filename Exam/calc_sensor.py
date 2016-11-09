@@ -1,23 +1,9 @@
-import sensor as s
+import moves as m
 import datetime
 import robot
-
+from time import sleep
 frindo = robot.Robot()
 
-q = 0.0
-for x in range(0, 1000):
-    asd = datetime.datetime.now()
-    s.allSensor_gear(frindo, 3)
-    qwe = datetime.datetime.now()
-    q += (qwe - asd).total_seconds()
-
-print q/1000.0
-
-q = 0.0
-for x in range(0, 1000):
-    asd = datetime.datetime.now()
-    s.allSensor_gear(frindo, 3)
-    qwe = datetime.datetime.now()
-    q += (qwe - asd).total_seconds()
-
-print q/1000.0
+for x in range(0, 3):
+    sleep(0.2)
+    m.turn_baby_turn(15, 'left', frindo)
