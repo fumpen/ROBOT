@@ -17,7 +17,7 @@ cv2.moveWindow(WIN_RF1, 50, 50)
 
 WIN_World = "World view"
 cv2.namedWindow(WIN_World)
-cv2.moveWindow(WIN_World, 500, 50)
+cv2.moveWindow(WIN_World, 500, 150)
 
 LANDMARK = {0: 0,
             1: 0,
