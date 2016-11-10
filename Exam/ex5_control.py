@@ -167,7 +167,7 @@ def angle_correction(inner_frindo, goal_number):
         else:
             return False
     while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
-        print ret_landmark['deg']
+        print 'angle_correction degree: ' + str(ret_landmark['deg'])
         ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
     return True
 
@@ -249,7 +249,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
         ret = go_forward(dest['dist'] + 50, inner_frindo)
     if ret != (dest['dist'] - 65.0):
         obstacle_avoidance(inner_frindo)
-        recon_area(10, 35, inner_frindo, goal)
+        recon_area(14, 35, inner_frindo, goal)
 
 def recon_area(turns, deg, inner_frindo, goal_nr):
     print '### recon_area ###'
@@ -282,7 +282,16 @@ def start_observations(turns, deg, inner_frindo):
 def steps_forward(dist, goal_number, inner_frindo):
     print '### steps_forward ###'
     dist_remaining = dist
-    dist_step = dist/2
+    if dist < 50:
+        dist_step = dist/2
+    elif 50 <= dist < 100:
+        dist_step = dist/3
+    elif 100 <= dist < 150:
+        dist_step = dist/4
+    elif 150 <= dist < 200:
+        dist_step = dist/5
+    else:
+        dist_step = dist/6
     while dist_remaining >= dist_step:
         ret = go_forward(dist_step, inner_frindo)
         dist_remaining -= dist_step
@@ -302,7 +311,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
             #turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
             #ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
             angle_correction(inner_frindo, goal)
-            ret = steps_forward(ret_obj['dist'], goal, inner_frindo)
+            ret = steps_forward((ret_obj['dist']-60), goal, inner_frindo)
             if ret:
                 obstacle_avoidance(inner_frindo)
         else:
@@ -325,7 +334,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
 
 inner_frindo = FrindosInnerWorld()
 current_goal = inner_frindo.getCurrentGoal()
-turn_times = 15
+turn_times = 14
 turn_deg = 35
 start_observations(turn_times, turn_deg, inner_frindo)
 while current_goal[0] != 1:
@@ -339,8 +348,8 @@ while current_goal[1] != 1:
 while current_goal[2] != 1:
     print '### while loop 2 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 2)
-    current_goal = inner_frindo.getCurrentGoal()
-while current_goal[3] != 1:
-    print '### while loop 3 ### current_goal: ' + str(current_goal)
-    move_logic(turn_times, turn_deg, inner_frindo, 3)
-    current_goal = inner_frindo.getCurrentGoal()
+#    current_goal = inner_frindo.getCurrentGoal()
+#while current_goal[3] != 1:
+#    print '### while loop 3 ### current_goal: ' + str(current_goal)
+#    move_logic(turn_times, turn_deg, inner_frindo, 3)
+#    current_goal = inner_frindo.getCurrentGoal()
