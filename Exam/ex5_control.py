@@ -157,6 +157,7 @@ def go_forward(length, inner_frindo):
 
 
 def angle_correction(inner_frindo, goal_number):
+    print '### angle_correction ###'
     ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
                                   0.0, world, WIN_RF1, WIN_World)
     inner_frindo.update_from_update_particle(ret_dict)
@@ -174,7 +175,7 @@ def find_landmark(inner_frindo, goal_number):
                                   0.0, world, WIN_RF1, WIN_World)
     inner_frindo.update_from_update_particle(ret_dict)
     if ret_dict['obs_obj'][3] == goal_number:
-	goal = true
+	goal = True
         dist = ret_dict['obs_obj'][1]
         if ret_dict['obs_obj'][2] < 0:
             dir = 'right'
@@ -274,12 +275,13 @@ def start_observations(turns, deg, inner_frindo):
             break
             
 def steps_forward(dist, goal_number, inner_frindo):
+    print '### steps_forward ###'
     dist_remaining = dist
     dist_step = dist/2
     while dist_remaining >= dist_step:
         ret = go_forward(dist_step, inner_frindo)
         dist_remaining -= dist_step
-	if getCurrentGoal()[goal_number] == 0:
+	if inner_frindo.getCurrentGoal()[goal_number] == 0:
             angle_correction(inner_frindo, goal_number)
         else:
             return False
@@ -295,7 +297,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
             #turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
             #ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
             angle_correction(inner_frindo, goal)
-            ret steps_forward(ret_obj['dist'], goal, inner_frindo)
+            ret = steps_forward(ret_obj['dist'], goal, inner_frindo)
             if ret:
                 obstacle_avoidance(inner_frindo)
         else:
