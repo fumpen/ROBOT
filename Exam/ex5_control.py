@@ -110,9 +110,10 @@ class FrindosInnerWorld:
         return x
 
     def update_from_update_particle(self, dicte):
+        print '### update_from_update_particle ###'
         self.update_particles(dicte['particles'])
         self.update_l_flag(dicte['obs_obj'][3])
-        print "Print obs_obj[3]: "  + str(dicte['obs_obj'][3])
+        print "update_from_update_particle obs_obj[3]: "  + str(dicte['obs_obj'][3])
         if dicte['obs_obj'][3] is not None:
             print "control.update_from_update_particle.obs_obj[1]: " + str(dicte['obs_obj'][1]) + 'landmark: ' + str(dicte['obs_obj'][3])
             if dicte['obs_obj'][1] < 75:
