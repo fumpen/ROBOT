@@ -163,26 +163,31 @@ def angle_correction(inner_frindo, goal_number):
                     inner_frindo)
     print 'ret_landmark ang: ', ret_landmark['deg']
     print 'ret_dict ang: ', ret_dict['obs_obj'][2]
+    """
     inner_frindo.update_from_update_particle(ret_dict)
     if ret_dict['obs_obj'][2] is not None:
-        deg_to_turn = np.degrees(ret_dict['obs_obj'][2])
+        deg_to_turn = np.degrees(float(ret_dict['obs_obj'][2]))
     else:
         deg_to_turn = 0.0
     while -10.0 > deg_to_turn or 10.0 < deg_to_turn:
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
-            ret_dict = turn(ret_landmark['dir'], (np.degrees(ret_landmark['deg'])+10.0),
+            ret_dict = turn(ret_landmark['dir'], (np.degrees(float(ret_landmark['deg']))+10.0),
                             inner_frindo)
             print 'ret_landmark ang: ', ret_landmark['deg']
             print 'ret_dict ang: ', ret_dict['obs_obj'][2]
             if ret_dict['obs_obj'][2] is not None:
-                deg_to_turn = np.degrees(ret_dict['obs_obj'][2])
+                deg_to_turn = np.degrees(float(ret_dict['obs_obj'][2]))
             else:
                 deg_to_turn = 0.0
         else:
             return False
-        print '___angle_correction degree___: ', ret_dict['obs_obj'][2]
-    return True
+    """
+    print '___angle_correction degree___: ', ret_dict['obs_obj'][2]
+    if ret_dict['obs_obj'][2] is not None:
+        return True
+    else:
+        return False
 
 
 def find_landmark(inner_frindo, goal_number):
