@@ -164,10 +164,10 @@ def angle_correction(inner_frindo, goal_number):
     print 'ret_landmark ang: ', ret_landmark['deg']
     print 'ret_dict ang: ', ret_dict['obs_obj'][2]
     inner_frindo.update_from_update_particle(ret_dict)
-    while -9.0 > np.degrees(ret_dict['obs_obj'][2]) or 9.0 < np.degrees(ret_dict['obs_obj'][2]):
+    while -10.0 > np.degrees(ret_dict['obs_obj'][2]) or 10.0 < np.degrees(ret_dict['obs_obj'][2]):
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
-            ret_dict = turn(ret_landmark['dir'], np.degrees(ret_landmark['deg']),
+            ret_dict = turn(ret_landmark['dir'], (np.degrees(ret_landmark['deg'])+5),
                             inner_frindo)
             print 'ret_landmark ang: ', ret_landmark['deg']
             print 'ret_dict ang: ', ret_dict['obs_obj'][2]
@@ -235,7 +235,7 @@ def obstacle_avoidance(inner_frindo):
             turn('right', 40, inner_frindo)
         else:
             turn('right', 70, inner_frindo)
-        go_forward(40, inner_frindo)
+        go_forward(30, inner_frindo)
         right, left, forward = s.determine_way_around(frindo)
 
 
@@ -247,7 +247,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     turn(dest['dir'], dest['deg'], inner_frindo)
     if 65.0 <= (dest['dist'] - 65.0):
         print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
-        ret = go_forward((dest['dist'] - 65.0), inner_frindo)
+        ret = go_forward(np.divide((dest['dist'] - 65.0),2), inner_frindo)
     else:
         print "IN GOGOGO AND THINK IM CLOSE?"
         ret = go_forward(dest['dist'] + 50, inner_frindo)
