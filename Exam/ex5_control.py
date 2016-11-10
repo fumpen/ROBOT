@@ -299,8 +299,11 @@ def steps_forward(dist, goal_number, inner_frindo):
     while dist_remaining >= dist_step:
         ret = go_forward(dist_step, inner_frindo)
         dist_remaining -= dist_step
-	if inner_frindo.getCurrentGoal()[goal_number] == 0:
-            angle_correction(inner_frindo, goal_number)
+        if ret != dist_step:
+            return False
+        if inner_frindo.getCurrentGoal()[goal_number] == 0:
+            if not angle_correction(inner_frindo, goal_number):
+                return False
         else:
             return False
     return not dist == dist_step
