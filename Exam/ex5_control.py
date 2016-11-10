@@ -231,12 +231,11 @@ def obstacle_avoidance(inner_frindo):
             turn('right', 40, inner_frindo)
         elif right:
             turn('left', 40, inner_frindo)
-            go_forward(30, inner_frindo)
         elif left:
             turn('right', 40, inner_frindo)
-            go_forward(30, inner_frindo)
         else:
             turn('right', 70, inner_frindo)
+        go_forward(30, inner_frindo)
         right, left, forward = s.determine_way_around(frindo)
 
 
@@ -254,7 +253,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
         ret = go_forward(dest['dist'] + 50, inner_frindo)
     if ret != (dest['dist'] - 65.0):
         obstacle_avoidance(inner_frindo)
-        recon_area(14, 35, inner_frindo, goal)
+        # recon_area(14, 35, inner_frindo, goal)
 
 def recon_area(turns, deg, inner_frindo, goal_nr):
     print '### recon_area ###'
