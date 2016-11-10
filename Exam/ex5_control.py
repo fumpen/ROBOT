@@ -319,7 +319,7 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
             #ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
             angle_correction(inner_frindo, goal)
             ret = steps_forward((ret_obj['dist']-60), goal, inner_frindo)
-            if ret:
+            if not ret:
                 obstacle_avoidance(inner_frindo)
         else:
             print 'ELSE GOAL: ' + str(goal)
