@@ -29,7 +29,7 @@ def allSensor(frindo):
 
 
 def allSensor_gear(frindo, gear):
-    g = SENSOR_GEAR[gear]
+    g = SENSOR_GEAR[1]
     if (rightSensor(frindo) < g and frontSensor(frindo) < g
         and leftSensor(frindo) < g):
         return True
@@ -41,11 +41,11 @@ def determine_way_around(frindo):
     right = False
     left = False
     forward = False
-    if rightSensor(frindo) > 280:
+    if rightSensor(frindo) > 300:
         right = True
-    if frontSensor(frindo) > 280:
+    if frontSensor(frindo) > 300:
         forward = True
-    if leftSensor(frindo) > 280:
+    if leftSensor(frindo) > 300:
         left = True
     print 'Right: ' + str(right) + ', Left: ' + str(left) + ', Forward: ' + str(forward)
     return right, left, forward

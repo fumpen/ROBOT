@@ -250,7 +250,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
         ret = go_forward(np.divide((dest['dist'] - 65.0),2), inner_frindo)
     else:
         print "IN GOGOGO AND THINK IM CLOSE?"
-        ret = go_forward(dest['dist'] + 50, inner_frindo)
+        ret = go_forward(dest['dist'], inner_frindo)
     if ret != (dest['dist'] - 65.0):
         obstacle_avoidance(inner_frindo)
         # recon_area(14, 35, inner_frindo, goal)
