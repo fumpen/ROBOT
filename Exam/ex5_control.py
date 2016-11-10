@@ -158,14 +158,19 @@ def go_forward(length, inner_frindo):
 
 def angle_correction(inner_frindo, goal_number):
     print '### angle_correction ###'
-    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
-                                  0.0, world, WIN_RF1, WIN_World)
+    ret_landmark = find_landmark(inner_frindo, goal_number)
+    ret_dict = turn(ret_landmark['dir'], np.degrees(ret_landmark['deg']),
+                    inner_frindo)
+    print 'ret_landmark ang: ', ret_landmark['deg']
+    print 'ret_dict ang: ', ret_dict['obs_obj'][2]
     inner_frindo.update_from_update_particle(ret_dict)
-    while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
+    while -5.0 > np.degrees(ret_dict['obs_obj'][2]) or 5.0 < np.degrees(ret_dict['obs_obj'][2]):
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
-            ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'],
+            ret_dict = turn(ret_landmark['dir'], np.degrees(ret_landmark['obs_obj'][2]),
                             inner_frindo)
+            print 'ret_landmark ang: ', ret_landmark['deg']
+            print 'ret_dict ang: ', ret_dict['obs_obj'][2]
         else:
             return False
         print '___angle_correction degree___: ', ret_dict['obs_obj'][2]
