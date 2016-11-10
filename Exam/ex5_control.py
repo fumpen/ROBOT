@@ -164,10 +164,10 @@ def angle_correction(inner_frindo, goal_number):
     print 'ret_landmark ang: ', ret_landmark['deg']
     print 'ret_dict ang: ', ret_dict['obs_obj'][2]
     inner_frindo.update_from_update_particle(ret_dict)
-    while -5.0 > np.degrees(ret_dict['obs_obj'][2]) or 5.0 < np.degrees(ret_dict['obs_obj'][2]):
+    while -9.0 > np.degrees(ret_dict['obs_obj'][2]) or 9.0 < np.degrees(ret_dict['obs_obj'][2]):
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
-            ret_dict = turn(ret_landmark['dir'], np.degrees(ret_landmark['obs_obj'][2]),
+            ret_dict = turn(ret_landmark['dir'], np.degrees(ret_landmark['deg']),
                             inner_frindo)
             print 'ret_landmark ang: ', ret_landmark['deg']
             print 'ret_dict ang: ', ret_dict['obs_obj'][2]
@@ -352,8 +352,8 @@ while current_goal[1] != 1:
 while current_goal[2] != 1:
     print '### while loop 2 ### current_goal: ' + str(current_goal)
     move_logic(turn_times, turn_deg, inner_frindo, 2)
-#    current_goal = inner_frindo.getCurrentGoal()
-#while current_goal[3] != 1:
-#    print '### while loop 3 ### current_goal: ' + str(current_goal)
-#    move_logic(turn_times, turn_deg, inner_frindo, 3)
-#    current_goal = inner_frindo.getCurrentGoal()
+    current_goal = inner_frindo.getCurrentGoal()
+while current_goal[3] != 1:
+    print '### while loop 3 ### current_goal: ' + str(current_goal)
+    move_logic(turn_times, turn_deg, inner_frindo, 3)
+    current_goal = inner_frindo.getCurrentGoal()
