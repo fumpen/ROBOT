@@ -235,7 +235,7 @@ def obstacle_avoidance(inner_frindo):
             turn('right', 40, inner_frindo)
         else:
             turn('right', 70, inner_frindo)
-        go_forward(30, inner_frindo)
+        go_forward(40, inner_frindo)
         right, left, forward = s.determine_way_around(frindo)
 
 
