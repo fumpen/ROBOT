@@ -159,33 +159,41 @@ def go_forward(length, inner_frindo):
 def find_landmark(inner_frindo, goal_number):
     print '### find_landmark ###'
     """attempt to find a given landmark"""
-    dest = p.where_to_go(inner_frindo.getEstCoordinates(),
-                         inner_frindo.getLCoordinates()[goal_number])
-    ret = turn(dest['dir'], dest['deg'], inner_frindo)
-    degrees_moved = 0.0
-    move_pr_turn = 35.0
-    goal = False
-    while degrees_moved <= 360:
-        degrees_moved += move_pr_turn+10
-        ret = turn('right', move_pr_turn, inner_frindo)
-        if ret['obs_obj'][3] is not None:
-            print "found :", ret['obs_obj']
-            if ret['obs_obj'][3] == goal_number:
-                goal = True
-                break
-        else:
-            ret = None
-    if goal:
-        dist = ret['obs_obj'][1]
-        if ret['obs_obj'][2] < 0:
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+                                  0.0, world, WIN_RF1, WIN_World)
+    inner_frindo.update_from_update_particle(ret_dict)
+    if ret_dict['obs_obj'][3] == goal_number:
+        dist = ret_dict['obs_obj'][1]
+        if ret_dict['obs_obj'][2] < 0:
             dir = 'right'
         else:
             dir = 'left'
-        deg = ret['obs_obj'][2]
+        deg = ret_dict['obs_obj'][2]
     else:
-        dist = None
-        dir = None
-        deg = None
+        degrees_moved = 0.0
+        move_pr_turn = 35.0
+        goal = False
+        while degrees_moved <= 360:
+            degrees_moved += move_pr_turn+10
+            ret = turn('right', move_pr_turn, inner_frindo)
+            if ret['obs_obj'][3] is not None:
+                print "found :", ret['obs_obj']
+                if ret['obs_obj'][3] == goal_number:
+                    goal = True
+                    break
+            else:
+                ret = None
+        if goal:
+            dist = ret['obs_obj'][1]
+            if ret['obs_obj'][2] < 0:
+                dir = 'right'
+            else:
+                dir = 'left'
+            deg = ret['obs_obj'][2]
+        else:
+            dist = None
+            dir = None
+            deg = None
     return {'dist': dist, 'dir': dir, 'deg': deg, 'goal': goal}
 
 
@@ -272,9 +280,6 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
                 pass
             else:
                 recon_area(turn_times, turn_deg, inner_frindo, goal)
-            # print "IM TOO CLOSE TO THE DANM BOX"
-            # turn(rl_wuuut(ret_obj['dir']), abs(180 - ret_obj['deg']), inner_frindo)
-            # go_forward(20, inner_frindo)
     elif inner_frindo.sum_of_observed_landmarks() >= 2:
         print 'ELIF GOAL: ' + str(goal)
         go_go_go(frindo, inner_frindo, inner_frindo.getLCoordinates()[goal], goal)
