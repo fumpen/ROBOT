@@ -163,6 +163,7 @@ def find_landmark(inner_frindo, goal_number):
                                   0.0, world, WIN_RF1, WIN_World)
     inner_frindo.update_from_update_particle(ret_dict)
     if ret_dict['obs_obj'][3] == goal_number:
+	goal = true
         dist = ret_dict['obs_obj'][1]
         if ret_dict['obs_obj'][2] < 0:
             dir = 'right'
@@ -261,6 +262,15 @@ def start_observations(turns, deg, inner_frindo):
         if landmark1_counter > 1 and inner_frindo.sum_of_observed_landmarks() >= 2:
             break
             
+def steps_forward(dist, dist_step, goal_number, inner_frindo):
+    dist_remaining = dist
+    while dist_remaining > dist_step:
+        ret = go_forward(dist_step, inner_frindo)
+        dist -= dist_step
+	if getCurrentGoal()[goal_number] == 0:
+            angle_correction(inner_frindo, goal_number)
+        else:
+            break
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print '### move_logic ### current goal: ' + str(goal)
