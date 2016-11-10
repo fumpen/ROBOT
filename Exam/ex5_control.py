@@ -171,7 +171,7 @@ def angle_correction(inner_frindo, goal_number):
     while -10.0 > deg_to_turn or 10.0 < deg_to_turn:
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
-            ret_dict = turn(ret_landmark['dir'], (np.degrees(ret_landmark['deg'])+5),
+            ret_dict = turn(ret_landmark['dir'], (np.degrees(ret_landmark['deg'])+10.0),
                             inner_frindo)
             print 'ret_landmark ang: ', ret_landmark['deg']
             print 'ret_dict ang: ', ret_dict['obs_obj'][2]
