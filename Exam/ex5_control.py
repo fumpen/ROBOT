@@ -156,6 +156,17 @@ def go_forward(length, inner_frindo):
     return dist_driven
 
 
+def angle_correction(inner_frindo, goal_number):
+    ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
+                                  0.0, world, WIN_RF1, WIN_World)
+    inner_frindo.update_from_update_particle(ret_dict)
+    if ret_dict['obs_obj'][3] != goal_number:
+        ret_landmark = find_landmark(inner_frindo, goal_number)
+        ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+    while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
+        ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+
+
 def find_landmark(inner_frindo, goal_number):
     print '### find_landmark ###'
     """attempt to find a given landmark"""
