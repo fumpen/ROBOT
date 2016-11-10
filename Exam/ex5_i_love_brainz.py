@@ -188,7 +188,7 @@ def where_to_go(pose, goal):
     print 'est_particle: ' , str([pose[0], pose[1], pose[2]])
     print 'goal: ' , str(goal)
     print 'estimated course: dist= ' + str(length) + ', dir= ' + turn_dir,  \
-          'turn degree=' + str(turn_deg + ', goal= ' + goal)
+          'turn degree=' + str(turn_deg) + ', goal= ', goal
     return {'dist' : length,
             'dir' : turn_dir,
             'deg' : turn_deg}
@@ -269,7 +269,7 @@ def innit_particles(num_particles=1000):
 def update_particles(particles, cam, velocity, angular_velocity, world,
                      WIN_RF1, WIN_World):
     #print 'update: ' + str(angular_velocity)
-    #cv2.waitKey(4)
+    cv2.waitKey(4)
     num_particles = len(particles)
     for p in particles:
         # calculates new orientation

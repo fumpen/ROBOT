@@ -200,12 +200,12 @@ def obstacle_avoidance(inner_frindo):
             turn('right', 40, inner_frindo)
         elif right:
             turn('left', 40, inner_frindo)
-            go_forward(50, inner_frindo)
+            go_forward(30, inner_frindo)
         elif left:
             turn('right', 40, inner_frindo)
-            go_forward(50, inner_frindo)
+            go_forward(30, inner_frindo)
         else:
-            turn('right', 40, inner_frindo)
+            turn('right', 70, inner_frindo)
         right, left, forward = s.determine_way_around(frindo)
 
 
@@ -250,7 +250,7 @@ def start_observations(turns, deg, inner_frindo):
         ret_dict = turn('right', deg, inner_frindo)
         if ret_dict['obs_obj'][3] == 0:
             landmark1_counter += 1
-        if landmark1_counter > 1:
+        if landmark1_counter > 1 and inner_frindo.sum_of_observed_landmarks() >= 2:
             break
             
 
