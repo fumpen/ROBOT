@@ -273,15 +273,17 @@ def start_observations(turns, deg, inner_frindo):
         if landmark1_counter > 1 and inner_frindo.sum_of_observed_landmarks() >= 2:
             break
             
-def steps_forward(dist, dist_step, goal_number, inner_frindo):
+def steps_forward(dist, goal_number, inner_frindo):
     dist_remaining = dist
-    while dist_remaining > dist_step:
+    dist_step = dist/2
+    while dist_remaining >= dist_step:
         ret = go_forward(dist_step, inner_frindo)
-        dist -= dist_step
+        dist_remaining -= dist_step
 	if getCurrentGoal()[goal_number] == 0:
             angle_correction(inner_frindo, goal_number)
         else:
-            break
+            return False
+    return not dist == dist_step
 
 def move_logic(turn_times, turn_deg, inner_frindo, goal):
     print '### move_logic ### current goal: ' + str(goal)
@@ -290,9 +292,11 @@ def move_logic(turn_times, turn_deg, inner_frindo, goal):
         if 0.0 <= (ret_obj['dist'] - 65.0):
             print "GOING FOR9WARD(long) KNOWING WHERE THE BOX IS"
             print 'IF GOAL: ' + str(goal)
-            turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
-            ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
-            if ret != (ret_obj['dist'] - 65.0):
+            #turn(ret_obj['dir'], ret_obj['deg'], inner_frindo)
+            #ret = go_forward((ret_obj['dist'] - 65.0), inner_frindo)
+            angle_correction(inner_frindo, goal)
+            ret steps_forward(ret_obj['dist'], goal, inner_frindo)
+            if ret:
                 obstacle_avoidance(inner_frindo)
         else:
             print 'ELSE GOAL: ' + str(goal)
