@@ -129,8 +129,7 @@ class FrindosInnerWorld:
 
 def turn(dir, deg, inner_frindo):
     print '### turn ###'
-    print 'turn.deg: ' + str(deg)
-    print 'turn.dir: ' + str(dir)
+    print 'turn.deg: ' + str(deg) + ', turn.dir: ' + str(dir)
     m.turn_baby_turn(abs(np.divide(deg,2)), dir, frindo)
     if dir == 'left':
         ret_dict = p.update_particles(inner_frindo.getParticles(), cam, 0.0,
@@ -168,6 +167,7 @@ def angle_correction(inner_frindo, goal_number):
         else:
             return False
     while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
+        print ret_dict['obs_obj'][2]
         if ret_dict['obs_obj'][2] <= 0:
             ret_dict = turn('right', ret_dict['obs_obj'][2], inner_frindo)
         else:
@@ -218,6 +218,7 @@ def find_landmark(inner_frindo, goal_number):
 
 
 def obstacle_avoidance(inner_frindo):
+    print '### obstacle_avoidance ###'
     right, left, forward = s.determine_way_around(frindo)
     print 'right, left, forward (obstacle_avoidance):', str(right), str(left), str(
         forward)
