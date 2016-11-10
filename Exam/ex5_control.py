@@ -169,13 +169,12 @@ def angle_correction(inner_frindo, goal_number):
         deg_to_turn = np.degrees(float(ret_dict['obs_obj'][2]))
     else:
         deg_to_turn = 0.0
+    print 'deg_to_turn: ', deg_to_turn
     while -10.0 > deg_to_turn or 10.0 < deg_to_turn:
         ret_landmark = find_landmark(inner_frindo, goal_number)
         if ret_landmark['dir'] is not None:
             ret_dict = turn(ret_landmark['dir'], (np.degrees(float(ret_landmark['deg']))+10.0),
                             inner_frindo)
-            print 'ret_landmark ang: ', ret_landmark['deg']
-            print 'ret_dict ang: ', ret_dict['obs_obj'][2]
             if ret_dict['obs_obj'][2] is not None:
                 deg_to_turn = np.degrees(float(ret_dict['obs_obj'][2]))
             else:
@@ -260,7 +259,7 @@ def go_go_go(frindo, inner_frindo, goal_coordinates, goal):
     turn(dest['dir'], dest['deg'], inner_frindo)
     if 65.0 <= (dest['dist'] - 65.0):
         print "GOING FORWARD IN GOGOGO NOT KNOWING ANYTHING"
-        ret = go_forward(np.divide((dest['dist'] - 65.0),2), inner_frindo)
+        ret = go_forward(np.divide((dest['dist'] - 65.0),3), inner_frindo)
     else:
         print "IN GOGOGO AND THINK IM CLOSE?"
         ret = go_forward(dest['dist'], inner_frindo)
