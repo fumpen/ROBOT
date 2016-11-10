@@ -162,10 +162,14 @@ def angle_correction(inner_frindo, goal_number):
     inner_frindo.update_from_update_particle(ret_dict)
     if ret_dict['obs_obj'][3] != goal_number:
         ret_landmark = find_landmark(inner_frindo, goal_number)
-        ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+        if ret_landmark['dir'] is not None:
+            ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+        else:
+            return False
     while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
         print ret_landmark['deg']
         ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+    return True
 
 
 def find_landmark(inner_frindo, goal_number):
