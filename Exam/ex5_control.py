@@ -168,7 +168,10 @@ def angle_correction(inner_frindo, goal_number):
         else:
             return False
     while -5.0 > ret_dict['obs_obj'][2] or 5.0 < ret_dict['obs_obj'][2]:
-        ret_dict = turn(ret_landmark['dir'], ret_landmark['deg'], inner_frindo)
+        if ret_dict['obs_obj'][2] <= 0:
+            ret_dict = turn('right', ret_dict['obs_obj'][2], inner_frindo)
+        else:
+            ret_dict = turn('left', ret_dict['obs_obj'][2], inner_frindo)
     return True
 
 
